@@ -19,5 +19,9 @@
 # include <sys/stat.h>
 # include "../libft/libft.h"
 
+typedef struct s_export {
+	char			*data;
+	struct s_export	*next;
+}	t_export;
 
 #endif
