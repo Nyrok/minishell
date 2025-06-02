@@ -1,18 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putchar_fd.c                                    :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hkonte <hkonte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/15 14:27:31 by hkonte            #+#    #+#             */
-/*   Updated: 2024/11/15 14:46:50 by hkonte           ###   ########.fr       */
+/*   Created: 2025/06/02 13:41:35 by hkonte            #+#    #+#             */
+/*   Updated: 2025/06/02 13:41:42 by hkonte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "minishell.h"
 
-void	ft_putchar_fd(const char c, int fd)
+int	main(int argc, char *argv[])
 {
-	write(fd, &c, 1);
+	ft_putnbr_fd(argc, 1);
+	ft_putstr_fd(argv[0], 1);
+	return (EXIT_SUCCESS);
 }
