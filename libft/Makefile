@@ -49,7 +49,7 @@ ${NAME}:	${OBJS}
 	ar rcs ${NAME} ${OBJS}
 
 .c.o:
-	${CC} ${CCFLAGS} -I. -c $< -o $@
+	${CC} ${CCFLAGS} -I ../includes -c $< -o $@
 
 clean:
 	rm -f ${OBJS}
