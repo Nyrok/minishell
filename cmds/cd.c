@@ -12,7 +12,7 @@
 
 #include "cmds.h"
 
-int	cd(char *path)
+int	cd(const char *path)
 {
 	if (!path)
 	{

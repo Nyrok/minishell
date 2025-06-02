@@ -13,7 +13,7 @@
 #include <stdio.h>
 #include "../libft/libft.h"
 
-int	echo(int argc, char **argv)
+int	echo(int argc, const char **argv)
 {
 	int	i;
 	int	nl;
