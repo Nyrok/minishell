@@ -35,4 +35,5 @@ int	main(int argc, char **argv)
 	}
 	if (nl)
 		printf("\n");
+	return (EXIT_SUCCESS);
 }

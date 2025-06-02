@@ -1,11 +1,28 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cd.c                                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: cduquair <cduquair@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/02 13:41:35 by cduquair          #+#    #+#             */
+/*   Updated: 2025/06/02 13:41:42 by hkonte           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "cmds.h"
 
-int	cd(const char *path)
+int	main(int argc, char **argv)
 {
-	if (chdir(path) != 0)
+	if (argc != 2)
 	{
-		printf("Impossible d'entrer de ce dossier !");
-		return (-1);
+		printf("Usage: ./cd <path>");
+		return (EXIT_FAILURE);
 	}
-	return (1);
+	if (chdir(argv[1]) != 0)
+	{
+		printf("Cannot enter into the folder.");
+		return (EXIT_FAILURE);
+	}
+	return (EXIT_SUCCESS);
 }
