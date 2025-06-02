@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   echo.c                                             :+:      :+:    :+:   */
+/*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hkonte <hkonte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,27 +12,8 @@
 
 #include "cmds.h"
 
-int	echo(int argc, const char **argv)
+int	ft_exit(void)
 {
-	int	i;
-	int	nl;
-
-	nl = 0;
-	if (argc > 1 && ft_strncmp(argv[1], "-n", 2) == 0)
-	{
-		i = 2;
-		nl = 1;
-	}
-	else
-		i = 1;
-	while (i < argc)
-	{
-		printf("%s", argv[i]);
-		if (i + 1 < argc)
-			printf(" ");
-		i++;
-	}
-	if (argc == 1 || nl)
-		printf("\n");
+	exit(EXIT_SUCCESS);
 	return (1);
 }
