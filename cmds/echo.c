@@ -15,8 +15,8 @@
 
 int	main(int argc, char **argv)
 {
-	size_t	i;
-	int		nl;
+	int	i;
+	int	nl;
 
 	nl = 0;
 	if (argc > 1 && ft_strncmp(argv[1], "-n", 2) == 0)
