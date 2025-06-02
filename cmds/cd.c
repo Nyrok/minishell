@@ -12,17 +12,17 @@
 
 #include "cmds.h"
 
-int	main(int argc, char **argv)
+int	cd(char *path)
 {
-	if (argc != 2)
+	if (!path)
 	{
-		printf("Usage: ./cd <path>");
-		return (EXIT_FAILURE);
+		printf("Empty path provided.");
+		return (0);
 	}
-	if (chdir(argv[1]) != 0)
+	if (chdir(path) != 0)
 	{
 		printf("Cannot enter into the folder.");
-		return (EXIT_FAILURE);
+		return (0);
 	}
-	return (EXIT_SUCCESS);
+	return (1);
 }

@@ -13,7 +13,7 @@
 #include <stdio.h>
 #include "../libft/libft.h"
 
-int	main(int argc, char **argv)
+int	echo(int argc, char **argv)
 {
 	int	i;
 	int	nl;
@@ -33,7 +33,7 @@ int	main(int argc, char **argv)
 			printf(" ");
 		i++;
 	}
-	if (nl)
+	if (argc == 1 || nl)
 		printf("\n");
-	return (EXIT_SUCCESS);
+	return (1);
 }
