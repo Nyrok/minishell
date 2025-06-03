@@ -36,49 +36,43 @@ char	*data_spliter(char	*str)
 	return (key);
 }
 
-t_export	*list_maker(int argc, char **argv, char **envp)
+void	remove_first(t_export **datas, t_export *actual, t_export *temp)
 {
-	t_export	*datas;
-	t_export	*actual;
-	char		*key;
-	int			i;
-
-	i = 0;
-	datas = add_cell(envp[i]);
-	actual = datas;
-	key = data_spliter(envp[i]);
-	while (envp[i] != NULL)
-	{
-		if (ft_strcmp(key, argv[1]) != 0)
-		{
-			actual->next = add_cell(envp[i]);
-			actual = actual->next;
-		}
-		i++;
-	}
-	free(key);
-	return (datas);
+	temp = actual->next;
+	*datas = temp;
 }
 
-int	unset(int argc, char **argv, char **envp)
+void	unset_list_maker(int argc, char **argv, t_export **datas)
 {
-	t_export	*datas;
 	t_export	*actual;
-	int			i;
+	t_export	*temp;
+	t_export	*previous;
+	char		*key;
 
-	if (envp[0] == NULL || args_checker(argc) == 0)
-		return (0);
-	datas = list_maker(argc, argv, envp);
-	actual = datas;
+	actual = *datas;
+	previous = NULL;
 	while (actual != NULL)
 	{
-		printf("%s\n", actual->data);
+		key = data_spliter(actual->data);
+		if (previous == NULL && ft_strcmp(key, argv[1]) == 0)
+			remove_first(datas, actual, temp);
+		else if (actual->next != NULL && ft_strcmp(key, argv[1]) == 0)
+		{
+			temp = actual->next->next;
+			actual = previous;
+			actual->next = temp;
+		}
+		else if (ft_strcmp(key, argv[1]) == 0)
+			previous->next = NULL;
+		previous = actual;
 		actual = actual->next;
+		free(key);
 	}
-	return (1);
 }
 
-int	main(int argc, char **argv, char **envp)
+void	unset(int argc, char **argv, t_export **datas)
 {
-	unset(argc, argv, envp);
+	if (datas == NULL || args_checker(argc) == 0)
+		return ;
+	unset_list_maker(argc, argv, datas);
 }

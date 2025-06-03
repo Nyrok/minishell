@@ -26,5 +26,9 @@ typedef struct s_export {
 
 t_export	*add_cell(char *str);
 int			args_checker(int argc);
+t_export	*list_maker(int argc, char **argv, char **envp);
+char		*data_spliter(char	*str);
+void		export(int argc, char **argv, t_export **datas);
+void		unset(int argc, char **argv, t_export **datas);
 
 #endif

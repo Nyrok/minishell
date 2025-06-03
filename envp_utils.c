@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   export.c                                           :+:      :+:    :+:   */
+/*   envp_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hkonte <hkonte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,19 +10,46 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cmds.h"
+#include "cmds/cmds.h"
 
-void	export(int argc, char **argv, t_export **datas)
+t_export	*add_cell(char *str)
 {
+	t_export	*cell;
+
+	cell = malloc(sizeof(t_export));
+	cell->data = ft_strdup((const char *)str);
+	cell->next = NULL;
+	return (cell);
+}
+
+int	args_checker(int argc)
+{
+	if (argc != 2)
+	{
+		printf("1 argument !");
+		return (0);
+	}
+	return (1);
+}
+
+t_export	*list_maker(int argc, char **argv, char **envp)
+{
+	t_export	*datas;
 	t_export	*actual;
+	char		*key;
 	int			i;
 
 	i = 0;
-	actual = *datas;
-	if (datas == NULL || args_checker(argc) == 0)
-		return ;
-	while (actual->next != NULL)
+	datas = add_cell(envp[i]);
+	actual = datas;
+	key = data_spliter(envp[i]);
+	while (envp[i] != NULL)
+	{
+		actual->next = add_cell(envp[i]);
 		actual = actual->next;
-	actual->next = add_cell(argv[1]);
-	actual = *datas;
+		i++;
+	}
+	free(key);
+	actual = NULL;
+	return (datas);
 }

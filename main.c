@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   export.c                                           :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hkonte <hkonte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,19 +10,36 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cmds.h"
 
-void	export(int argc, char **argv, t_export **datas)
+#include "cmds/cmds.h"
+
+int	main(int argc, char **argv, char **envp)
 {
+	t_export	*datas;
 	t_export	*actual;
-	int			i;
 
-	i = 0;
-	actual = *datas;
-	if (datas == NULL || args_checker(argc) == 0)
-		return ;
-	while (actual->next != NULL)
+	datas = list_maker(argc, argv, envp);
+	actual = datas;
+	while (actual != NULL)
+	{
+		printf("%s\n", actual->data);
 		actual = actual->next;
-	actual->next = add_cell(argv[1]);
-	actual = *datas;
+	}
+	export(argc, argv, &datas);
+	printf("\n\n\n\n\n");
+	actual = datas;
+	while (actual != NULL)
+	{
+		printf("%s\n", actual->data);
+		actual = actual->next;
+	}
+	argv[1] = "LOL";
+	printf("\n\n\n===UNSET===\n\n\n");
+	unset(argc, argv, &datas);
+	actual = datas;
+	while (actual != NULL)
+	{
+		printf("%s\n", actual->data);
+		actual = actual->next;
+	}
 }
