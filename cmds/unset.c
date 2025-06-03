@@ -12,44 +12,63 @@
 
 #include "cmds.h"
 
-t_export	*add_cell(char *str)
+char	*data_spliter(char	*str)
 {
-	t_export	*cell;
+	int		i;
+	int		j;
+	char	*key;
 
-	cell = malloc(sizeof(t_export));
-	cell->data = ft_strdup((const char *)str);
-	cell->next = NULL;
-	return (cell);
-}
-
-int	args_checker(int argc)
-{
-	if (argc != 2)
+	i = 0;
+	while (str[i])
 	{
-		printf("1 argument !");
-		return (0);
+		if (str[i] == '=')
+			break ;
+		i++;
 	}
-	return (1);
+	j = 0;
+	key = malloc((i + 1) * sizeof(char));
+	while (j < i && str[i])
+	{
+		key[j] = str[j];
+		j++;
+	}
+	key[j] = '\0';
+	return (key);
 }
 
-int	export(int argc, char **argv, char **envp)
+t_export	*list_maker(int argc, char **argv, char **envp)
+{
+	t_export	*datas;
+	t_export	*actual;
+	char		*key;
+	int			i;
+
+	i = 0;
+	datas = add_cell(envp[i]);
+	actual = datas;
+	key = data_spliter(envp[i]);
+	while (envp[i] != NULL)
+	{
+		if (ft_strcmp(key, argv[1]) != 0)
+		{
+			actual->next = add_cell(envp[i]);
+			actual = actual->next;
+		}
+		i++;
+	}
+	free(key);
+	return (datas);
+}
+
+int	unset(int argc, char **argv, char **envp)
 {
 	t_export	*datas;
 	t_export	*actual;
 	int			i;
 
-	i = 0;
 	if (envp[0] == NULL || args_checker(argc) == 0)
-		return (-1);
-	datas = add_cell(envp[i]);
-	actual = datas;
-	while (envp[i] != NULL)
-	{
-		actual->next = add_cell(envp[i]);
-		actual = actual->next;
-		i++;
-	}
-	actual->next = add_cell(argv[1]);
+		return (0);
+	datas = list_maker(argc, argv, envp);
 	actual = datas;
 	while (actual != NULL)
 	{
@@ -57,4 +76,9 @@ int	export(int argc, char **argv, char **envp)
 		actual = actual->next;
 	}
 	return (1);
+}
+
+int	main(int argc, char **argv, char **envp)
+{
+	unset(argc, argv, envp);
 }

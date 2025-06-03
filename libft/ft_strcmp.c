@@ -1,30 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cmds.h                                             :+:      :+:    :+:   */
+/*   ft_strncmp.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hkonte <hkonte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/02 13:41:35 by hkonte            #+#    #+#             */
-/*   Updated: 2025/06/02 13:41:42 by hkonte           ###   ########.fr       */
+/*   Created: 2024/07/03 14:07:59 by hkonte            #+#    #+#             */
+/*   Updated: 2024/07/11 14:50:47 by hkonte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef CMDS_H
-# define CMDS_H
+#include "./libft.h"
 
-# include <stdio.h>
-# include <stdlib.h>
-# include <unistd.h> 
-# include <sys/stat.h>
-# include "../libft/libft.h"
+int	ft_strcmp(char *s1, char *s2)
+{
+	int	i;
 
-typedef struct s_export {
-	char			*data;
-	struct s_export	*next;
-}	t_export;
-
-t_export	*add_cell(char *str);
-int			args_checker(int argc);
-
-#endif
+	i = 0;
+	while (s1[i] || s2[i])
+	{
+		if (s1[i] > s2[i])
+		{
+			return (s1[i] - s2[i]);
+		}
+		else if (s1[i] < s2[i])
+		{
+			return (s1[i] - s2[i]);
+		}
+		i++;
+	}
+	return (0);
+}
