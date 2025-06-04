@@ -13,33 +13,32 @@
 
 #include "cmds/cmds.h"
 
-int	main(int argc, char **argv, char **envp)
+int	main(void)
 {
-	t_export	*datas;
-	t_export	*actual;
-
-	datas = list_maker(argc, argv, envp);
-	actual = datas;
-	while (actual != NULL)
+	char	*user_input;
+	while (1)
 	{
-		printf("%s\n", actual->data);
-		actual = actual->next;
-	}
-	export(argc, argv, &datas);
-	printf("\n\n\n\n\n");
-	actual = datas;
-	while (actual != NULL)
-	{
-		printf("%s\n", actual->data);
-		actual = actual->next;
-	}
-	argv[1] = "LOL";
-	printf("\n\n\n===UNSET===\n\n\n");
-	unset(argc, argv, &datas);
-	actual = datas;
-	while (actual != NULL)
-	{
-		printf("%s\n", actual->data);
-		actual = actual->next;
+		user_input = readline("minishell>");
+		check_cmds(user_input);
+		free(user_input);
 	}
 }
+
+// int	main(int argc, char **argv, char **envp)
+// {
+// 	t_export	*datas;
+
+// 	datas = list_maker(envp);
+// 	env(datas);
+// 	if (argc == 1 || envp == NULL)
+// 		return (-1);
+// 	printf("\n\n\n===EXPORT===\n\n\n");
+// 	export(argc, argv, &datas);
+// 	env(datas);
+// 	argv[1] = "LOL";
+// 	argv[2] = "LOL2";
+// 	argv[3] = "WSL2_GUI_APPS_ENABLED";
+// 	printf("\n\n\n===UNSET===\n\n\n");
+// 	unset(argc, argv, &datas);
+// 	env(datas);
+// }

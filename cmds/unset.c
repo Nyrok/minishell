@@ -1,14 +1,15 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   export.c                                           :+:      :+:    :+:   */
+/*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hkonte <hkonte@student.42.fr>              +#+  +:+       +#+        */
+/*   By: cduquair <cduquair@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/29 13:13:55 by hkonte            #+#    #+#             */
-/*   Updated: 2024/11/29 13:14:27 by hkonte           ###   ########.fr       */
+/*   Created: 2025/06/02 13:41:35 by hkonte            #+#    #+#             */
+/*   Updated: 2025/06/02 13:41:42 by hkonte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #include "cmds.h"
 
@@ -48,31 +49,37 @@ void	unset_list_maker(int argc, char **argv, t_export **datas)
 	t_export	*temp;
 	t_export	*previous;
 	char		*key;
+	int			i;
 
-	actual = *datas;
 	previous = NULL;
-	while (actual != NULL)
+	i = 0;
+	while (i < argc - 1)
 	{
-		key = data_spliter(actual->data);
-		if (previous == NULL && ft_strcmp(key, argv[1]) == 0)
-			remove_first(datas, actual, temp);
-		else if (actual->next != NULL && ft_strcmp(key, argv[1]) == 0)
+		actual = *datas;
+		while (actual != NULL)
 		{
-			temp = actual->next->next;
-			actual = previous;
-			actual->next = temp;
+			key = data_spliter(actual->data);
+			if (previous == NULL && ft_strcmp(key, argv[i + 1]) == 0)
+				remove_first(datas, actual, temp);
+			else if (actual->next != NULL && ft_strcmp(key, argv[i + 1]) == 0)
+			{
+				temp = actual->next;
+				actual = previous;
+				actual->next = temp;
+			}
+			else if (ft_strcmp(key, argv[i + 1]) == 0)
+				previous->next = NULL;
+			previous = actual;
+			actual = actual->next;
+			free(key);
 		}
-		else if (ft_strcmp(key, argv[1]) == 0)
-			previous->next = NULL;
-		previous = actual;
-		actual = actual->next;
-		free(key);
+		i++;
 	}
 }
 
 void	unset(int argc, char **argv, t_export **datas)
 {
-	if (datas == NULL || args_checker(argc) == 0)
+	if (datas == NULL || argc == 0)
 		return ;
 	unset_list_maker(argc, argv, datas);
 }

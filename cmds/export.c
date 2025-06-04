@@ -3,12 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hkonte <hkonte@student.42.fr>              +#+  +:+       +#+        */
+/*   By: cduquair <cduquair@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/29 13:13:55 by hkonte            #+#    #+#             */
-/*   Updated: 2024/11/29 13:14:27 by hkonte           ###   ########.fr       */
+/*   Created: 2025/06/02 13:41:35 by hkonte            #+#    #+#             */
+/*   Updated: 2025/06/02 13:41:42 by hkonte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #include "cmds.h"
 
@@ -17,12 +18,16 @@ void	export(int argc, char **argv, t_export **datas)
 	t_export	*actual;
 	int			i;
 
-	i = 0;
 	actual = *datas;
-	if (datas == NULL || args_checker(argc) == 0)
+	i = 0;
+	if (datas == NULL || argc == 1)
 		return ;
 	while (actual->next != NULL)
 		actual = actual->next;
-	actual->next = add_cell(argv[1]);
-	actual = *datas;
+	while (i < argc - 1)
+	{
+		actual->next = add_cell(argv[i + 1]);
+		actual = actual->next;
+		i++;
+	}
 }

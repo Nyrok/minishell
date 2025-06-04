@@ -17,6 +17,8 @@
 # include <stdlib.h>
 # include <unistd.h> 
 # include <sys/stat.h>
+# include <readline/readline.h>
+# include <readline/history.h>
 # include "../libft/libft.h"
 
 typedef struct s_export {
@@ -25,10 +27,11 @@ typedef struct s_export {
 }	t_export;
 
 t_export	*add_cell(char *str);
-int			args_checker(int argc);
-t_export	*list_maker(int argc, char **argv, char **envp);
+t_export	*list_maker(char **envp);
 char		*data_spliter(char	*str);
 void		export(int argc, char **argv, t_export **datas);
 void		unset(int argc, char **argv, t_export **datas);
+void		env(t_export *datas);
+void		check_cmds(char *user_input);
 
 #endif

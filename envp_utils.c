@@ -22,17 +22,7 @@ t_export	*add_cell(char *str)
 	return (cell);
 }
 
-int	args_checker(int argc)
-{
-	if (argc != 2)
-	{
-		printf("1 argument !");
-		return (0);
-	}
-	return (1);
-}
-
-t_export	*list_maker(int argc, char **argv, char **envp)
+t_export	*list_maker(char **envp)
 {
 	t_export	*datas;
 	t_export	*actual;
