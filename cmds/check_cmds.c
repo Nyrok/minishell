@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cmds.h"
+#include "../minishell.h"
 
 int	args_counter(char **args)
 {
@@ -22,7 +22,7 @@ int	args_counter(char **args)
 	return (i);
 }
 
-void	check_cmds(char *user_input, t_export **datas)
+int	check_cmds(char *user_input, t_export **datas)
 {
 	char	**args;
 	int		total_args;
@@ -39,4 +39,7 @@ void	check_cmds(char *user_input, t_export **datas)
 		export(total_args, args, datas);
 	else if (ft_strncmp(user_input, "unset", 5) == 0)
 		unset(total_args, args, datas);
+	else
+		return (0);
+	return (1);
 }

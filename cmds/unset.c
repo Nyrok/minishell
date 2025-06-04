@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 
-#include "cmds.h"
+#include "../minishell.h"
 
 char	*data_spliter(char	*str)
 {

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cmds/cmds.h"
+#include "minishell.h"
 
 t_export	*add_cell(char *str)
 {

@@ -1,25 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env.c                                             :+:      :+:    :+:   */
+/*   executor.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cduquair <cduquair@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hkonte <hkonte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/02 13:41:35 by hkonte            #+#    #+#             */
 /*   Updated: 2025/06/02 13:41:42 by hkonte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#ifndef EXECUTOR_H
+# define EXECUTOR_H
 
-void	env(t_export *datas)
+typedef struct s_cmds_paths
 {
-	t_export	*actual;
+	char	**paths;	
+}	t_cmds_paths;
 
-	actual = datas;
-	while (actual != NULL)
-	{
-		printf("%s\n", actual->data);
-		actual = actual->next;
-	}
-}
+void			cmd_searcher(char *cmd, char **paths);
+t_cmds_paths	*cmds_paths_maker();
+
+#endif

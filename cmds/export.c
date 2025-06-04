@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 
-#include "cmds.h"
+#include "../minishell.h"
 
 void	export(int argc, char **argv, t_export **datas)
 {

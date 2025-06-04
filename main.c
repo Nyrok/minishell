@@ -10,21 +10,30 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
-#include "cmds/cmds.h"
+#include "minishell.h"
 
 int	main(int argc, char **argv, char **envp)
 {
-	char	*user_input;
-	t_export	*datas;
+	char		*user_input;
+	t_main		*main_struct;
 
-	datas = list_maker(envp);
+	main_struct = malloc(sizeof(t_main));
+	main_struct->datas = list_maker(envp);
+	main_struct->cmds_paths = cmds_paths_maker();
+	int	i;
+	i = 0;
+	while (main_struct->cmds_paths->paths[i])
+	{
+		printf("%s\n", main_struct->cmds_paths->paths[i]);
+		i++;
+	}
 	(void)argc;
 	(void)argv;
 	while (1)
 	{
-		user_input = readline("minishell>");
-		check_cmds(user_input, &datas);
+		user_input = readline(PURPLE "minishell>" RESET);
+		if (check_cmds(user_input, &main_struct->datas) == 0)
+			cmd_searcher(user_input, main_struct->cmds_paths->paths);
 		free(user_input);
 	}
 }
