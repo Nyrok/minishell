@@ -12,16 +12,21 @@
 
 #include "cmds.h"
 
-int	cd(const char *path)
+int	cd(int total_args, const char *path)
 {
+	if (total_args > 2)
+	{
+		printf("-bash: cd: too many arguments");
+		return (0);
+	}
 	if (!path)
 	{
-		printf("Empty path provided.");
+		printf("Empty path provided.\n");
 		return (0);
 	}
 	if (chdir(path) != 0)
 	{
-		printf("Cannot enter into the folder.");
+		printf("Cannot enter into the folder.\n");
 		return (0);
 	}
 	return (1);

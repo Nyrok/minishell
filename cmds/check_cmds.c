@@ -12,17 +12,31 @@
 
 #include "cmds.h"
 
-void	check_cmds(char *user_input)
+int	args_counter(char **args)
 {
+	int	i;
 
+	i = 0;
+	while (args[i])
+		i++;
+	return (i);
+}
+
+void	check_cmds(char *user_input, t_export **datas)
+{
+	char	**args;
+	int		total_args;
+
+	args = ft_split(user_input, ' ');
+	total_args = args_counter(args);
 	if (ft_strncmp(user_input, "cd", 2) == 0)
-		printf("cd\n");
+		cd(total_args, args[1]); // Mettre une erreur si CD a + de 1 argument donc si args > 2
 	else if (ft_strncmp(user_input, "echo", 4) == 0)
-		printf("echo\n");
+		echo(total_args, (const char **)args);
 	else if (ft_strncmp(user_input, "env", 3) == 0)
-		printf("env\n");
+		env(*datas);
 	else if (ft_strncmp(user_input, "export", 6) == 0)
-		printf("export\n");
+		export(total_args, args, datas);
 	else if (ft_strncmp(user_input, "unset", 5) == 0)
-		printf("unset\n");
+		unset(total_args, args, datas);
 }

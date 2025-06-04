@@ -13,13 +13,18 @@
 
 #include "cmds/cmds.h"
 
-int	main(void)
+int	main(int argc, char **argv, char **envp)
 {
 	char	*user_input;
+	t_export	*datas;
+
+	datas = list_maker(envp);
+	(void)argc;
+	(void)argv;
 	while (1)
 	{
 		user_input = readline("minishell>");
-		check_cmds(user_input);
+		check_cmds(user_input, &datas);
 		free(user_input);
 	}
 }
