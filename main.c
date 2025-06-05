@@ -14,9 +14,32 @@
 
 t_main	*main_struct;
 
+void	anti_leaks(t_main **main_struct)
+{
+	t_envp			*tmp;
+	int				i;
+
+	i = 0;
+	while ((*main_struct)->datas != NULL)
+	{
+		tmp = (*main_struct)->datas;
+		(*main_struct)->datas = (*main_struct)->datas->next;
+		free(tmp->data);
+		free(tmp);
+	}
+	while ((*main_struct)->cmds_paths->paths[i] != NULL)
+	{
+		printf("CLEARING\n");
+		free((*main_struct)->cmds_paths->paths[i]);
+		i++;
+	}
+	free((*main_struct)->cmds_paths->paths);
+}
+
 void handle_signal(int signal) {
 	if (signal == SIGINT)
 	{
+		anti_leaks(&main_struct);
 		printf("END\n");
 		exit(0);
 	}

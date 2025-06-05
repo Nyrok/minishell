@@ -30,7 +30,7 @@ int	check_cmds(char *user_input, t_envp **datas)
 	args = ft_split(user_input, ' ');
 	total_args = args_counter(args);
 	if (ft_strncmp(user_input, "cd", 2) == 0)
-		cd(total_args, args[1]); // Mettre une erreur si CD a + de 1 argument donc si args > 2
+		cd(total_args, args[1]);
 	else if (ft_strncmp(user_input, "echo", 4) == 0)
 		echo(total_args, (const char **)args);
 	else if (ft_strncmp(user_input, "env", 3) == 0)

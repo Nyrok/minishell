@@ -26,12 +26,14 @@ t_envp	*add_cell(char *str)
 
 t_envp	*list_maker(char **envp)
 {
-	t_envp	*datas;
-	t_envp	*actual;
+	t_envp		*datas;
+	t_envp		*actual;
 	char		*key;
 	int			i;
 
 	i = 0;
+	if (envp[i] == NULL)
+		return (NULL);
 	datas = add_cell(envp[i]);
 	actual = datas;
 	key = data_spliter(envp[i]);
@@ -42,6 +44,5 @@ t_envp	*list_maker(char **envp)
 		i++;
 	}
 	free(key);
-	actual = NULL;
 	return (datas);
 }
