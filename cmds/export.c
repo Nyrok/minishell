@@ -13,9 +13,9 @@
 
 #include "../minishell.h"
 
-void	export(int argc, char **argv, t_export **datas)
+void	export(int argc, char **argv, t_envp **datas)
 {
-	t_export	*actual;
+	t_envp	*actual;
 	int			i;
 
 	actual = *datas;

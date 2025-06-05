@@ -12,9 +12,9 @@
 
 #include "../minishell.h"
 
-void	env(t_export *datas)
+void	env(t_envp *datas)
 {
-	t_export	*actual;
+	t_envp	*actual;
 
 	actual = datas;
 	while (actual != NULL)

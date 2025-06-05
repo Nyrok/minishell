@@ -28,6 +28,8 @@ char	*data_spliter(char	*str)
 	}
 	j = 0;
 	key = malloc((i + 1) * sizeof(char));
+	if (key == NULL)
+		return (0);
 	while (j < i && str[i])
 	{
 		key[j] = str[j];
@@ -37,17 +39,17 @@ char	*data_spliter(char	*str)
 	return (key);
 }
 
-void	remove_first(t_export **datas, t_export *actual, t_export *temp)
+void	remove_first(t_envp **datas, t_envp *actual, t_envp *temp)
 {
 	temp = actual->next;
 	*datas = temp;
 }
 
-void	unset_list_maker(int argc, char **argv, t_export **datas)
+void	unset_list_maker(int argc, char **argv, t_envp **datas)
 {
-	t_export	*actual;
-	t_export	*temp;
-	t_export	*previous;
+	t_envp	*actual;
+	t_envp	*temp;
+	t_envp	*previous;
 	char		*key;
 	int			i;
 
@@ -77,7 +79,7 @@ void	unset_list_maker(int argc, char **argv, t_export **datas)
 	}
 }
 
-void	unset(int argc, char **argv, t_export **datas)
+void	unset(int argc, char **argv, t_envp **datas)
 {
 	if (datas == NULL || argc == 0)
 		return ;

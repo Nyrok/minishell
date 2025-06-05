@@ -12,20 +12,22 @@
 
 #include "minishell.h"
 
-t_export	*add_cell(char *str)
+t_envp	*add_cell(char *str)
 {
-	t_export	*cell;
+	t_envp	*cell;
 
-	cell = malloc(sizeof(t_export));
+	cell = malloc(sizeof(t_envp));
+	if (cell == NULL)
+		return (NULL);
 	cell->data = ft_strdup((const char *)str);
 	cell->next = NULL;
 	return (cell);
 }
 
-t_export	*list_maker(char **envp)
+t_envp	*list_maker(char **envp)
 {
-	t_export	*datas;
-	t_export	*actual;
+	t_envp	*datas;
+	t_envp	*actual;
 	char		*key;
 	int			i;
 

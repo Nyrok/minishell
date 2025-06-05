@@ -20,6 +20,8 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <fcntl.h>
+# include <sys/types.h>
+# include <sys/wait.h>
 # include "libft/libft.h"
 # include "cmds/cmds.h"
 # include "executor/executor.h"
@@ -29,7 +31,7 @@
 
 typedef struct s_main
 {
-	t_export		*datas;
+	t_envp			*datas;
 	t_cmds_paths	*cmds_paths;
 }	t_main;
 

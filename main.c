@@ -12,12 +12,24 @@
 
 #include "minishell.h"
 
+t_main	*main_struct;
+
+void handle_signal(int signal) {
+	if (signal == SIGINT)
+	{
+		printf("END\n");
+		exit(0);
+	}
+}
+
 int	main(int argc, char **argv, char **envp)
 {
 	char		*user_input;
-	t_main		*main_struct;
 
+	signal(SIGINT, handle_signal);
 	main_struct = malloc(sizeof(t_main));
+	if (main_struct == NULL)
+		return (0);
 	main_struct->datas = list_maker(envp);
 	main_struct->cmds_paths = cmds_paths_maker();
 	int	i;
@@ -33,9 +45,10 @@ int	main(int argc, char **argv, char **envp)
 	{
 		user_input = readline(PURPLE "minishell>" RESET);
 		if (check_cmds(user_input, &main_struct->datas) == 0)
-			cmd_searcher(user_input, main_struct->cmds_paths->paths);
+			cmd_searcher(user_input, main_struct->cmds_paths->paths, main_struct->datas);
 		free(user_input);
 	}
+	return (1);
 }
 
 // int	main(int argc, char **argv, char **envp)

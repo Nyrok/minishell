@@ -18,6 +18,8 @@ t_cmds_paths	*cmds_paths_maker()
 
 	cmds_paths = malloc(sizeof(t_cmds_paths));
 	cmds_paths->paths = malloc(8 * sizeof(char *));
+	if (cmds_paths->paths == NULL)
+		return (NULL);
 	cmds_paths->paths[0] = ft_strdup("/bin");
 	cmds_paths->paths[1] = ft_strdup("/sbin");
 	cmds_paths->paths[2] = ft_strdup("/usr/bin");

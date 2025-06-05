@@ -22,7 +22,7 @@ int	args_counter(char **args)
 	return (i);
 }
 
-int	check_cmds(char *user_input, t_export **datas)
+int	check_cmds(char *user_input, t_envp **datas)
 {
 	char	**args;
 	int		total_args;
