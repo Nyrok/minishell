@@ -26,7 +26,7 @@ void	export(int argc, char **argv, t_envp **datas)
 		actual = actual->next;
 	while (i < argc - 1)
 	{
-		actual->next = add_cell(argv[i + 1]);
+		actual->next = add_cell(argv[i + 1]); // AMELIORER EXPORT : KEY NE COMMENCE PAS PAR UN CHIFFRE ET SI YA PAS DE = ON AJOUTE PAS MAIS ON MET PAS DERREUR
 		actual = actual->next;
 		i++;
 	}

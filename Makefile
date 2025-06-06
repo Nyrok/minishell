@@ -1,8 +1,8 @@
 CC = cc
 FLAGS = -Wall -Werror -Wextra
-OUT = main.o envp_utils.o cmds/cd.o cmds/echo.o cmds/env.o cmds/export.o cmds/pwd.o cmds/unset.o cmds/check_cmds.o executor/cmd_searcher.o cmds_paths_utils.o
+OUT = main.o envp_utils.o cmds/cd.o cmds/echo.o cmds/env.o cmds/export.o cmds/pwd.o cmds/unset.o cmds/check_cmds.o executor/cmd_searcher.o cmds_paths_utils.o line_reader.o
 CFLAGS = -Wall -Werror -Wextra -c -I .
-SRC = main.c envp_utils.c cmds/cd.c cmds/echo.c cmds/env.c cmds/export.c cmds/pwd.c cmds/unset.c cmds/check_cmds.c executor/cmd_searcher.c cmds_paths_utils.c
+SRC = main.c envp_utils.c cmds/cd.c cmds/echo.c cmds/env.c cmds/export.c cmds/pwd.c cmds/unset.c cmds/check_cmds.c executor/cmd_searcher.c cmds_paths_utils.c line_reader.c
 NAME = minishell
 LIBFT_DIR = ./libft
 LIBFT = $(LIBFT_DIR)/libft.a

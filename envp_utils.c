@@ -43,6 +43,7 @@ t_envp	*list_maker(char **envp)
 		actual = actual->next;
 		i++;
 	}
+	actual->next = NULL;
 	free(key);
 	return (datas);
 }

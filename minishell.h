@@ -35,4 +35,7 @@ typedef struct s_main
 	t_cmds_paths	*cmds_paths;
 }	t_main;
 
+void	line_reader(t_main	 *main_struct);
+void	anti_leaks(t_main **main_struct);
+
 #endif

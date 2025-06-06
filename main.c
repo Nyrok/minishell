@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-t_main	*main_struct;
+int signalll = 0;
 
 void	anti_leaks(t_main **main_struct)
 {
@@ -29,25 +29,27 @@ void	anti_leaks(t_main **main_struct)
 	}
 	while ((*main_struct)->cmds_paths->paths[i] != NULL)
 	{
-		printf("CLEARING\n");
+		printf("CLEARING %s\n", (*main_struct)->cmds_paths->paths[i]);
 		free((*main_struct)->cmds_paths->paths[i]);
 		i++;
 	}
+	//printf("CLEARING %s\n", (*main_struct)->cmds_paths->paths[i]);
+	//free((*main_struct)->cmds_paths->paths[i]);
 	free((*main_struct)->cmds_paths->paths);
+	free((*main_struct)->cmds_paths);
+	free((*main_struct));
+	exit(0);
 }
 
-void handle_signal(int signal) {
+void	handle_signal(int signal)
+{
 	if (signal == SIGINT)
-	{
-		anti_leaks(&main_struct);
-		printf("END\n");
-		exit(0);
-	}
+		signalll = SIGINT;
 }
 
 int	main(int argc, char **argv, char **envp)
 {
-	char		*user_input;
+	t_main		*main_struct;
 
 	signal(SIGINT, handle_signal);
 	main_struct = malloc(sizeof(t_main));
@@ -64,13 +66,7 @@ int	main(int argc, char **argv, char **envp)
 	}
 	(void)argc;
 	(void)argv;
-	while (1)
-	{
-		user_input = readline(PURPLE "minishell>" RESET);
-		if (check_cmds(user_input, &main_struct->datas) == 0)
-			cmd_searcher(user_input, main_struct->cmds_paths->paths, main_struct->datas);
-		free(user_input);
-	}
+	line_reader(main_struct);
 	return (1);
 }
 
