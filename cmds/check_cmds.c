@@ -22,7 +22,7 @@ int	args_counter(char **args)
 	return (i);
 }
 
-int	check_cmds(char *user_input, t_envp **datas)
+int	check_cmds(char *user_input, t_envp **datas, t_history *history)
 {
 	char	**args;
 	int		total_args;
@@ -39,6 +39,8 @@ int	check_cmds(char *user_input, t_envp **datas)
 		export(total_args, args, datas);
 	else if (ft_strncmp(user_input, "unset", 5) == 0)
 		unset(total_args, args, datas);
+	else if (ft_strncmp(user_input, "history", 7) == 0)
+		print_history(history);
 	else
 		return (0);
 	return (1);

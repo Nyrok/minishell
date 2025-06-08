@@ -29,7 +29,7 @@ void	anti_leaks(t_main **main_struct)
 	}
 	while ((*main_struct)->cmds_paths->paths[i] != NULL)
 	{
-		printf("CLEARING %s\n", (*main_struct)->cmds_paths->paths[i]);
+		printf("CLEARING %s\n", (*main_struct)->cmds_paths->paths[i]); // Penser à free l'historique aussi
 		free((*main_struct)->cmds_paths->paths[i]);
 		i++;
 	}
@@ -44,7 +44,13 @@ void	anti_leaks(t_main **main_struct)
 void	handle_signal(int signal)
 {
 	if (signal == SIGINT)
+	{
 		signalll = SIGINT;
+		write(1, "\n", 1);
+		rl_replace_line("", 0);
+		rl_on_new_line();
+		rl_redisplay();
+	}
 }
 
 int	main(int argc, char **argv, char **envp)
