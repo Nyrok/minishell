@@ -27,7 +27,7 @@ void	list_history_add(t_history **history, char *cmd)
 	t_history	*actual;
 
 	actual = *history;
-	while(actual->next != NULL)
+	while (actual->next != NULL)
 		actual = actual->next;
 	actual->next = malloc(sizeof(t_history));
 	actual->next->cmd = ft_strdup(cmd);

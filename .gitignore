@@ -4,3 +4,4 @@
 cmds/*
 !cmds/*.c
 minishell
+*.supp

@@ -11,12 +11,12 @@
 /* ************************************************************************** */
 
 
-#include "../minishell.h"
+#include "minishell.h"
 
 void	export(int argc, char **argv, t_envp **datas)
 {
 	t_envp	*actual;
-	int			i;
+	int		i;
 
 	actual = *datas;
 	i = 0;

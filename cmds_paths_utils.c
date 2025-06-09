@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-t_cmds_paths	*cmds_paths_maker()
+t_cmds_paths	*cmds_paths_maker(void)
 {
 	t_cmds_paths	*cmds_paths;
 
