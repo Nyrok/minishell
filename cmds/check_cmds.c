@@ -32,7 +32,7 @@ int	check_cmds(char *user_input, t_envp **datas, t_history *history)
 	if (ft_strncmp(user_input, "cd", 2) == 0)
 		cd(total_args, args[1]);
 	else if (ft_strncmp(user_input, "echo", 4) == 0)
-		echo(total_args, (const char **)args);
+		return (echo(total_args, (const char **)args));
 	else if (ft_strncmp(user_input, "env", 3) == 0)
 		env(*datas);
 	else if (ft_strncmp(user_input, "export", 6) == 0)
@@ -41,6 +41,8 @@ int	check_cmds(char *user_input, t_envp **datas, t_history *history)
 		unset(total_args, args, datas);
 	else if (ft_strncmp(user_input, "history", 7) == 0)
 		print_history(history);
+	else if (ft_strncmp(user_input, "exit", 4) == 0)
+		ft_exit(); 
 	else
 		return (0);
 	return (1);

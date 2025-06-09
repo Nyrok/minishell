@@ -19,7 +19,7 @@ t_envp	*add_cell(char *str)
 	cell = malloc(sizeof(t_envp));
 	if (cell == NULL)
 		return (NULL);
-	cell->data = ft_strdup((const char *)str);
+	cell->data = str;
 	cell->next = NULL;
 	return (cell);
 }

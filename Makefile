@@ -2,20 +2,24 @@ CX = cc
 CXFLAGS = -Wall -Werror -Wextra -I includes -I/opt/homebrew/opt/readline/include
 LDFLAGS = -L/opt/homebrew/opt/readline/lib -lreadline
 SRCS = main.c \
-		envp_utils.c \
-		cmds/cd.c \
-		cmds/echo.c \
-		cmds/env.c \
-		cmds/export.c \
-		cmds/pwd.c \
-		cmds/unset.c \
-		cmds/check_cmds.c \
-		executor/cmd_searcher.c \
-		cmds_paths_utils.c \
-		line_reader.c \
-		history_utils.c
+	envp_utils.c \
+	cmds/cd.c \
+	cmds/echo.c \
+	cmds/env.c \
+	cmds/export.c \
+	cmds/pwd.c \
+	cmds/unset.c \
+	cmds/exit.c \
+	cmds/check_cmds.c \
+	executor/cmd_searcher.c \
+	cmds_paths_utils.c \
+	line_reader.c \
+	history_utils.c
+
 OBJDIR = objs
-OBJS = $(addprefix $(OBJDIR)/, $(SRCS:.c=.o))
+OBJS = $(SRCS:.c=.o)
+OBJS := $(addprefix $(OBJDIR)/, $(OBJS))
+
 NAME = minishell
 LIBFT_DIR = libft
 LIBFT = $(LIBFT_DIR)/libft.a
@@ -28,12 +32,13 @@ $(NAME): $(OBJS)
 $(LIBFT):
 	make -C $(LIBFT_DIR)
 
+# Compile .c to .o in the objs/ directory, recreating subdirs as needed
 $(OBJDIR)/%.o: %.c
 	@mkdir -p $(dir $@)
 	$(CX) $(CXFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(OBJS)
+	rm -rf $(OBJDIR)
 	make clean -C $(LIBFT_DIR)
 
 fclean: clean

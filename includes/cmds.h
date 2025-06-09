@@ -35,6 +35,7 @@ int		echo(int argc, const char **argv);
 void	export(int argc, char **argv, t_envp **datas);
 void	unset(int argc, char **argv, t_envp **datas);
 void	env(t_envp *datas);
+void	ft_exit(void);
 int		check_cmds(char *user_input, t_envp **datas, t_history *history);
 
 #endif

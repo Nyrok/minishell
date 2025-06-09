@@ -14,19 +14,18 @@
 
 t_cmds_paths	*cmds_paths_maker(void)
 {
-	t_cmds_paths	*cmds_paths;
+	static t_cmds_paths	cmds_paths;
+	static char			*paths[] = {
+		"/bin",
+		"/sbin",
+		"/usr/bin",
+		"/usr/sbin",
+		"/usr/local/bin",
+		"/usr/local/sbin",
+		"/snap/bin",
+		NULL
+	};
 
-	cmds_paths = malloc(sizeof(t_cmds_paths));
-	cmds_paths->paths = malloc(8 * sizeof(char *));
-	if (cmds_paths->paths == NULL)
-		return (NULL);
-	cmds_paths->paths[0] = ft_strdup("/bin");
-	cmds_paths->paths[1] = ft_strdup("/sbin");
-	cmds_paths->paths[2] = ft_strdup("/usr/bin");
-	cmds_paths->paths[3] = ft_strdup("/usr/sbin");
-	cmds_paths->paths[4] = ft_strdup("/usr/local/bin");
-	cmds_paths->paths[5] = ft_strdup("/usr/local/sbin");
-	cmds_paths->paths[6] = ft_strdup("/snap/bin");
-	cmds_paths->paths[7] = NULL;
-	return (cmds_paths);
+	cmds_paths.paths = paths;
+	return (&cmds_paths);
 }
