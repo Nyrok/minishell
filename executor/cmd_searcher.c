@@ -43,17 +43,11 @@ int	cmd_executor(char *cmd_path, char *const *args, t_envp *datas)
 {
 	int		pipe_fd[2];
 	pid_t	pid;
-	char	buffer[100000];
 	int		status;
-	ssize_t	bytes_read;
 
-	pipe(pipe_fd);
 	pid = fork();
 	if (pid == 0)
 	{
-		close(pipe_fd[0]);
-		dup2(pipe_fd[1], STDOUT_FILENO);
-		close(pipe_fd[1]);
 		if (execve(cmd_path, (char *const *)args, envp_str(datas)) == -1)
 		{
 			perror("execve failed");
@@ -62,15 +56,6 @@ int	cmd_executor(char *cmd_path, char *const *args, t_envp *datas)
 	}
 	else
 	{
-		close(pipe_fd[1]);
-		bytes_read = read(pipe_fd[0], buffer, sizeof(buffer) - 1);
-		while (bytes_read > 0)
-		{
-			if (bytes_read >= 0)
-				buffer[bytes_read] = '\0';
-			printf("%s", buffer);
-			bytes_read = read(pipe_fd[0], buffer, sizeof(buffer) - 1);
-		}
 		waitpid(pid, &status, 0);
 		close(pipe_fd[0]);
 	}
