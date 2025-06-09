@@ -17,6 +17,7 @@ int	g_signal = 0;
 void	anti_leaks(t_main **main_struct)
 {
 	t_envp			*tmp;
+	t_history		*tmp2;
 	int				i;
 
 	i = 0;
@@ -32,6 +33,18 @@ void	anti_leaks(t_main **main_struct)
 		printf("CLEARING %s\n", (*main_struct)->cmds_paths->paths[i]);
 		i++;
 	}
+	printf("MAIS NAN\n");
+	while ((*main_struct)->history != NULL)
+	{
+		tmp2 = (*main_struct)->history;
+		(*main_struct)->history = (*main_struct)->history->next;
+		free(tmp2->cmd);
+		free(tmp2);
+	}
+	//printf("CLEARING %s\n", (*main_struct)->cmds_paths->paths[i]);
+	//free((*main_struct)->cmds_paths->paths[i]);
+	free((*main_struct)->cmds_paths->paths);
+	free((*main_struct)->cmds_paths);
 	free((*main_struct));
 	exit(0);
 }
