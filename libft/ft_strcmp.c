@@ -1,19 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                             :+:      :+:    :+:   */
+/*   ft_strncmp.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cduquair <cduquair@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hkonte <hkonte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/02 13:41:35 by hkonte            #+#    #+#             */
-/*   Updated: 2025/06/02 13:41:42 by hkonte           ###   ########.fr       */
+/*   Created: 2024/07/03 14:07:59 by hkonte            #+#    #+#             */
+/*   Updated: 2024/07/11 14:50:47 by hkonte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "./libft.h"
 
-int	pwd(void)
+int	ft_strcmp(char *s1, char *s2)
 {
-	printf("%s\n", getenv("PWD"));
-	return (1);
+	int	i;
+
+	i = 0;
+	while (s1[i] || s2[i])
+	{
+		if (s1[i] > s2[i])
+		{
+			return (s1[i] - s2[i]);
+		}
+		else if (s1[i] < s2[i])
+		{
+			return (s1[i] - s2[i]);
+		}
+		i++;
+	}
+	return (0);
 }

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                             :+:      :+:    :+:   */
+/*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cduquair <cduquair@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,10 +10,24 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+
 #include "../minishell.h"
 
-int	pwd(void)
+void	export(int argc, char **argv, t_envp **datas)
 {
-	printf("%s\n", getenv("PWD"));
-	return (1);
+	t_envp	*actual;
+	int			i;
+
+	actual = *datas;
+	i = 0;
+	if (datas == NULL || argc == 1)
+		return ;
+	while (actual->next != NULL)
+		actual = actual->next;
+	while (i < argc - 1)
+	{
+		actual->next = add_cell(argv[i + 1]); // AMELIORER EXPORT : KEY NE COMMENCE PAS PAR UN CHIFFRE ET SI YA PAS DE = ON AJOUTE PAS MAIS ON MET PAS DERREUR
+		actual = actual->next;
+		i++;
+	}
 }
