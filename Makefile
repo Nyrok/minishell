@@ -17,8 +17,7 @@ SRCS = main.c \
 	history_utils.c
 
 OBJDIR = objs
-OBJS = $(SRCS:.c=.o)
-OBJS := $(addprefix $(OBJDIR)/, $(OBJS))
+OBJS = $(addprefix $(OBJDIR)/, $(SRCS:.c=.o))
 
 NAME = minishell
 LIBFT_DIR = libft
@@ -32,7 +31,6 @@ $(NAME): $(OBJS)
 $(LIBFT):
 	make -C $(LIBFT_DIR)
 
-# Compile .c to .o in the objs/ directory, recreating subdirs as needed
 $(OBJDIR)/%.o: %.c
 	@mkdir -p $(dir $@)
 	$(CX) $(CXFLAGS) -c $< -o $@

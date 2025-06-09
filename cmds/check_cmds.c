@@ -32,7 +32,7 @@ int	check_cmds(char *user_input, t_envp **datas, t_history *history)
 	if (ft_strncmp(user_input, "cd", 2) == 0)
 		cd(total_args, args[1]);
 	else if (ft_strncmp(user_input, "echo", 4) == 0)
-		return (echo(total_args, (const char **)args));
+		echo(total_args, (const char **)args);
 	else if (ft_strncmp(user_input, "env", 3) == 0)
 		env(*datas);
 	else if (ft_strncmp(user_input, "export", 6) == 0)
