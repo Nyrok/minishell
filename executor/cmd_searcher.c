@@ -39,7 +39,7 @@ char	**envp_str(t_envp *datas)
 	return (res);
 }
 
-int	commande_executor(char *cmd_path, const char **args, t_envp *datas)
+int	commande_executor(char *cmd_path, char *const *args, t_envp *datas)
 {
 	int		pipe_fd[2];
 	pid_t	pid;
