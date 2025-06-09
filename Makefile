@@ -14,7 +14,8 @@ SRCS = main.c \
 		cmds_paths_utils.c \
 		line_reader.c \
 		history_utils.c
-OBJS = $(SRCS:.c=.o)
+OBJDIR = objs
+OBJS = $(addprefix $(OBJDIR)/, $(SRCS:.c=.o))
 NAME = minishell
 LIBFT_DIR = libft
 LIBFT = $(LIBFT_DIR)/libft.a
@@ -27,7 +28,8 @@ $(NAME): $(OBJS)
 $(LIBFT):
 	make -C $(LIBFT_DIR)
 
-%.o: %.c
+$(OBJDIR)/%.o: %.c
+	@mkdir -p $(dir $@)
 	$(CX) $(CXFLAGS) -c $< -o $@
 
 clean:
