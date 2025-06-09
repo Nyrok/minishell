@@ -39,12 +39,13 @@ char	**envp_str(t_envp *datas)
 	return (res);
 }
 
-int	commande_executor(char *cmd_path, char* const* args, t_envp *datas)
+int	commande_executor(char *cmd_path, const char **args, t_envp *datas)
 {
-	int pipe_fd[2];
+	int		pipe_fd[2];
 	pid_t	pid;
 	char	buffer[1000000];
 	int		status;
+	ssize_t	bytes_read;
 
 	pipe(pipe_fd);
 	pid = fork();
@@ -62,7 +63,7 @@ int	commande_executor(char *cmd_path, char* const* args, t_envp *datas)
 	else
 	{
 		close(pipe_fd[1]);
-		ssize_t bytes_read = read(pipe_fd[0], buffer, sizeof(buffer) - 1);
+		bytes_read = read(pipe_fd[0], buffer, sizeof(buffer) - 1);
 		if (bytes_read >= 0)
 			buffer[bytes_read] = '\0';
 		printf("%s", buffer);
@@ -77,7 +78,7 @@ void	cmd_searcher(char *cmd, char **paths, t_envp *datas)
 	int		i;
 	char	*cmd_path;
 	char	**args;
-	
+
 	i = 0;
 	args = ft_split(cmd, ' ');
 	if (cmd[0] == '.' && cmd[1] == '/')
@@ -87,7 +88,7 @@ void	cmd_searcher(char *cmd, char **paths, t_envp *datas)
 	}
 	while (paths[i])
 	{
-		cmd_path = ft_strjoin(paths[i], "/");		
+		cmd_path = ft_strjoin(paths[i], "/");
 		cmd_path = ft_strjoin(cmd_path, cmd);
 		cmd_path = ft_split(cmd_path, ' ')[0];
 		if (open(cmd_path, O_RDONLY) != -1)

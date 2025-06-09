@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int signalll = 0;
+int	g_signal = 0;
 
 void	anti_leaks(t_main **main_struct)
 {
@@ -45,7 +45,7 @@ void	handle_signal(int signal)
 {
 	if (signal == SIGINT)
 	{
-		signalll = SIGINT;
+		g_signal = SIGINT;
 		write(1, "\n", 1);
 		rl_replace_line("", 0);
 		rl_on_new_line();
@@ -56,6 +56,7 @@ void	handle_signal(int signal)
 int	main(int argc, char **argv, char **envp)
 {
 	t_main		*main_struct;
+	int			i;
 
 	signal(SIGINT, handle_signal);
 	main_struct = malloc(sizeof(t_main));
@@ -63,7 +64,6 @@ int	main(int argc, char **argv, char **envp)
 		return (0);
 	main_struct->datas = list_maker(envp);
 	main_struct->cmds_paths = cmds_paths_maker();
-	int	i;
 	i = 0;
 	while (main_struct->cmds_paths->paths[i])
 	{

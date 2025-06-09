@@ -13,9 +13,10 @@
 #ifndef CMDS_H
 # define CMDS_H
 
-#include "minishell.h"
+# include "minishell.h"
 
-typedef struct s_envp {
+typedef struct s_envp
+{
 	char			*data;
 	struct s_envp	*next;
 }	t_envp;
@@ -28,7 +29,7 @@ typedef struct s_history
 
 t_envp	*add_cell(char *str);
 t_envp	*list_maker(char **envp);
-char	*data_spliter(char	*str);
+char	*data_spliter(char *str);
 int		cd(int total_args, const char *path);
 int		echo(int argc, const char **argv);
 void	export(int argc, char **argv, t_envp **datas);
