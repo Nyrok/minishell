@@ -1,5 +1,5 @@
 CX = cc
-CXFLAGS = -Wall -Werror -Wextra -I includes -I/opt/homebrew/opt/readline/include
+CXFLAGS = -Wall -Werror -Wextra -I includes -I/opt/homebrew/opt/readline/include -g3
 LDFLAGS = -L/opt/homebrew/opt/readline/lib -lreadline
 SRCS = main.c \
 	envp_utils.c \
