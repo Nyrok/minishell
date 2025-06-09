@@ -32,14 +32,14 @@ char	**envp_str(t_envp *datas)
 	i = 0;
 	while (actual != NULL)
 	{
-		res[i] = ft_strdup(actual->data);
+		res[i] = actual->data;
 		actual = actual->next;
 	}
 	res[i] = NULL;
 	return (res);
 }
 
-int	commande_executor(char *cmd_path, char *const *args, t_envp *datas)
+int	cmd_executor(char *cmd_path, char *const *args, t_envp *datas)
 {
 	int		pipe_fd[2];
 	pid_t	pid;
@@ -84,7 +84,7 @@ void	cmd_searcher(char *cmd, char **paths, t_envp *datas)
 	if (cmd[0] == '.' && cmd[1] == '/')
 	{
 		cmd_path = ft_split(cmd, ' ')[0];
-		commande_executor(cmd_path, args, datas);
+		cmd_executor(cmd_path, args, datas);
 	}
 	while (paths[i])
 	{
@@ -93,7 +93,7 @@ void	cmd_searcher(char *cmd, char **paths, t_envp *datas)
 		cmd_path = ft_split(cmd_path, ' ')[0];
 		if (open(cmd_path, O_RDONLY) != -1)
 		{
-			commande_executor(cmd_path, args, datas);
+			cmd_executor(cmd_path, args, datas);
 			free(cmd_path);
 			break ;
 		}

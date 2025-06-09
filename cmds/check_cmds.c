@@ -41,6 +41,8 @@ int	check_cmds(char *user_input, t_envp **datas, t_history *history)
 		unset(total_args, args, datas);
 	else if (ft_strncmp(user_input, "history", 7) == 0)
 		print_history(history);
+	else if (ft_strncmp(user_input, "exit", 4) == 0)
+		ft_exit(); 
 	else
 		return (0);
 	return (1);

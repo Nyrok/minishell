@@ -10,10 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cmds.h"
+#include "minishell.h"
 
-int	ft_exit(void)
+void	ft_exit(void)
 {
 	exit(EXIT_SUCCESS);
-	return (1);
 }

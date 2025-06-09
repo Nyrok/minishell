@@ -29,14 +29,9 @@ void	anti_leaks(t_main **main_struct)
 	}
 	while ((*main_struct)->cmds_paths->paths[i] != NULL)
 	{
-		printf("CLEARING %s\n", (*main_struct)->cmds_paths->paths[i]); // Penser à free l'historique aussi
-		free((*main_struct)->cmds_paths->paths[i]);
+		printf("CLEARING %s\n", (*main_struct)->cmds_paths->paths[i]);
 		i++;
 	}
-	//printf("CLEARING %s\n", (*main_struct)->cmds_paths->paths[i]);
-	//free((*main_struct)->cmds_paths->paths[i]);
-	free((*main_struct)->cmds_paths->paths);
-	free((*main_struct)->cmds_paths);
 	free((*main_struct));
 	exit(0);
 }
@@ -56,7 +51,6 @@ void	handle_signal(int signal)
 int	main(int argc, char **argv, char **envp)
 {
 	t_main		*main_struct;
-	int			i;
 
 	signal(SIGINT, handle_signal);
 	main_struct = malloc(sizeof(t_main));
@@ -64,12 +58,6 @@ int	main(int argc, char **argv, char **envp)
 		return (0);
 	main_struct->datas = list_maker(envp);
 	main_struct->cmds_paths = cmds_paths_maker();
-	i = 0;
-	while (main_struct->cmds_paths->paths[i])
-	{
-		printf("%s\n", main_struct->cmds_paths->paths[i]);
-		i++;
-	}
 	(void)argc;
 	(void)argv;
 	line_reader(main_struct);
