@@ -34,6 +34,7 @@ char	**envp_str(t_envp *datas)
 	{
 		res[i] = actual->data;
 		actual = actual->next;
+		i++;
 	}
 	res[i] = NULL;
 	return (res);
