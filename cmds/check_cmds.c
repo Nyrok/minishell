@@ -22,6 +22,16 @@ int	args_counter(char **args)
 	return (i);
 }
 
+void	free_args(char **args)
+{
+	int	i;
+
+	i = 0;
+	while (args[i])
+		free(args[i++]);
+	free(args);
+}
+
 int	check_cmds(char *user_input, t_envp **datas, t_history *history)
 {
 	char	**args;
@@ -42,8 +52,9 @@ int	check_cmds(char *user_input, t_envp **datas, t_history *history)
 	else if (ft_strncmp(user_input, "history", 7) == 0)
 		print_history(history);
 	else if (ft_strncmp(user_input, "exit", 4) == 0)
-		ft_exit(); 
+		ft_exit();
 	else
 		return (0);
+	free_args(args);
 	return (1);
 }

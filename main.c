@@ -34,6 +34,7 @@ void	anti_leaks(t_main **main_struct)
 		free(tmp2->cmd);
 		free(tmp2);
 	}
+	rl_clear_history();
 	free((*main_struct));
 	exit(0);
 }
