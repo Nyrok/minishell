@@ -42,27 +42,20 @@ static void	append_token(t_token **head, t_token *new)
 static char	*get_word(const char *str, size_t *i)
 {
 	size_t	start;
+	size_t	quotes_count;
 	int		has_quote;
-	char	*result;
 
 	start = *i;
 	has_quote = 0;
+	quotes_count = 0;
 	while (str[*i] && !ft_strchr("|<>", str[*i]) \
 		&& (!ft_isspace(str[*i]) || has_quote))
 	{
-		if (str[*i] == '\'' || str[*i] == '"')
+		if ((str[*i] == '\'' || str[*i] == '"') && ++quotes_count)
 			has_quote = !has_quote;
 		(*i)++;
 	}
-	result = ft_substr(str, start, *i - start);
-	start = 0;
-	while (result[start])
-	{
-		if (result[start] == '\'' || result[start] == '"')
-			result[start] = 127;
-		start++;
-	}
-	return (result);
+	return (rm_quotes(str, start, *i - start));
 }
 
 static char	*get_quoted(const char *str, size_t *i)
