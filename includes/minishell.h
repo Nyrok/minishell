@@ -25,6 +25,8 @@
 # include "libft.h"
 # include "cmds.h"
 # include "executor.h"
+# include "tokenizer.h"
+# include "parser.h"
 
 # define PURPLE  "\033[0;35m"
 # define RESET   "\033[0m"

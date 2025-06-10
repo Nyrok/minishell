@@ -39,7 +39,8 @@ FILES = ft_atoi.c \
 		ft_tolower.c \
 		ft_toupper.c \
 		ft_strcmp.c \
-		ft_strjoin.c
+		ft_strjoin.c \
+		ft_isspace.c
 
 OBJS = ${FILES:.c=.o}
 

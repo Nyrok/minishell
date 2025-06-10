@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cmds.h                                             :+:      :+:    :+:   */
+/*   tokenizer.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hkonte <hkonte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,32 +10,30 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef CMDS_H
-# define CMDS_H
+#ifndef TOKENIZER_H
+#define TOKENIZER_H
 
-# include "minishell.h"
+#include "minishell.h"
 
-typedef struct s_envp
+typedef enum e_type
 {
-	char			*data;
-	struct s_envp	*next;
-}	t_envp;
+    INVALID = 0,
+    WORD,    // ls
+    PIPE,    // |
+    REDIN,   // < input
+    HEREDOC, // << SQL ... SQL
+    REDOUT,  // > output
+    APPEND,  // >> output
+    END
+}	t_token_type;
 
-typedef struct s_history
+typedef struct s_token
 {
-	char				*cmd;
-	struct s_history	*next;
-}	t_history;
+    char			*word;
+    t_token_type	type;
+	struct s_token	*next;
+}	t_token;
 
-t_envp	*add_cell(char *str);
-t_envp	*list_maker(char **envp);
-char	*data_spliter(char *str);
-int		cd(int total_args, const char *path);
-int		echo(int argc, const char **argv);
-void	export(int argc, char **argv, t_envp **datas);
-void	unset(int argc, char **argv, t_envp **datas);
-void	env(t_envp *datas);
-void	ft_exit(void);
-int		builtin_exec(char *user_input, t_envp **datas, t_history *history);
+t_token	*tokenize_input(const char *input);
 
 #endif
