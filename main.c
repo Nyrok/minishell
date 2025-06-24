@@ -17,6 +17,7 @@ int	g_signal = 0;
 void	anti_leaks(t_main **main_struct)
 {
 	t_envp			*tmp;
+	t_history		*tmp2;
 	int				i;
 
 	i = 0;
@@ -24,14 +25,16 @@ void	anti_leaks(t_main **main_struct)
 	{
 		tmp = (*main_struct)->datas;
 		(*main_struct)->datas = (*main_struct)->datas->next;
-		free(tmp->data);
 		free(tmp);
 	}
-	while ((*main_struct)->cmds_paths->paths[i] != NULL)
+	while ((*main_struct)->history != NULL)
 	{
-		printf("CLEARING %s\n", (*main_struct)->cmds_paths->paths[i]);
-		i++;
+		tmp2 = (*main_struct)->history;
+		(*main_struct)->history = (*main_struct)->history->next;
+		free(tmp2->cmd);
+		free(tmp2);
 	}
+	rl_clear_history();
 	free((*main_struct));
 	exit(0);
 }
@@ -53,7 +56,7 @@ int	main(int argc, char **argv, char **envp)
 	t_main		*main_struct;
 
 	signal(SIGINT, handle_signal);
-	main_struct = malloc(sizeof(t_main));
+	main_struct = ft_calloc(1, sizeof(t_main));
 	if (main_struct == NULL)
 		return (0);
 	main_struct->datas = list_maker(envp);

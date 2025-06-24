@@ -21,9 +21,9 @@ void	line_reader(t_main *main)
 	{
 		user_input = readline(PURPLE "minishell>" RESET);
 		main->tokens = tokenize_input(user_input);
-		if (main->history == NULL)
+		if (main->history == NULL && user_input)
 			main->history = list_history_init(user_input);
-		else
+		else if (user_input)
 			list_history_add(&main->history, user_input);
 		if (user_input && *user_input)
 			add_history(user_input);

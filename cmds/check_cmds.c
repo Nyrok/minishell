@@ -22,6 +22,16 @@ int	args_counter(char **args)
 	return (i);
 }
 
+void	free_args(char **args)
+{
+	int	i;
+
+	i = 0;
+	while (args[i])
+		free(args[i++]);
+	free(args);
+}
+
 int	builtin_exec(char *user_input, t_envp **datas, t_history *history)
 {
 	char	**args;
@@ -45,5 +55,6 @@ int	builtin_exec(char *user_input, t_envp **datas, t_history *history)
 		ft_exit();
 	else
 		return (0);
+	free_args(args);
 	return (1);
 }
