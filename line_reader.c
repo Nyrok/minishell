@@ -20,12 +20,7 @@ void	line_reader(t_main *main)
 	while (1)
 	{
 		user_input = readline(PURPLE "minishell>" RESET);
-		tokens = tokenize_input(user_input);
-		while (tokens)
-		{
-			printf("%s : %u\n", tokens->word, tokens->type);
-			tokens = tokens->next;
-		}
+		main->tokens = tokenize_input(user_input);
 		if (main->history == NULL)
 			main->history = list_history_init(user_input);
 		else
