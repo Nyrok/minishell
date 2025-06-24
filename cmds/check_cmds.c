@@ -32,7 +32,7 @@ void	free_args(char **args)
 	free(args);
 }
 
-int	check_cmds(char *user_input, t_envp **datas, t_history *history)
+int	builtin_exec(char *user_input, t_envp **datas, t_history *history)
 {
 	char	**args;
 	int		total_args;

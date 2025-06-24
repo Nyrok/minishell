@@ -25,6 +25,8 @@
 # include "libft.h"
 # include "cmds.h"
 # include "executor.h"
+# include "tokenizer.h"
+# include "parser.h"
 
 # define PURPLE  "\033[0;35m"
 # define RESET   "\033[0m"
@@ -34,6 +36,7 @@ typedef struct s_main
 	t_envp			*datas;
 	t_cmds_paths	*cmds_paths;
 	t_history		*history;
+	t_token			*tokens;
 }	t_main;
 
 void		line_reader(t_main *main_struct);
