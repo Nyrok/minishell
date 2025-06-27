@@ -18,7 +18,8 @@ typedef struct s_cmds_paths
 	char	**paths;	
 }	t_cmds_paths;
 
-void			cmd_searcher(char *cmd, char **paths, t_envp *datas);
+//void			cmd_searcher(char *cmd, char **paths, t_envp *datas);
+int				executor(char *cmd, char **paths, t_envp *envp_list);
 t_cmds_paths	*cmds_paths_maker(void);
 
 #endif
