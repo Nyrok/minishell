@@ -26,8 +26,6 @@ typedef struct s_redir
 typedef struct s_cmd_info
 {
 	t_redir				*redirs;
-	int					infile_fd;
-	int					outfile_fd;
 	char				*cmd;
 	int					argc;
 	char				**argv;

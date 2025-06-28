@@ -22,10 +22,11 @@ t_cmd_info *create_cmd_info(char *infile, char *cmd, char *outfile, int argc)
 	cmd_info->cmd = cmd;
 	(void)infile;
 	(void)outfile;
-	cmd_info->argc = 0;
-	cmd_info->argv = ft_calloc(argc + 1, sizeof(char *));
+	cmd_info->argc = 1;
+	cmd_info->argv = ft_calloc(argc + 2, sizeof(char *));
 	if (!cmd_info->argv)
 		return (NULL);
+	cmd_info->argv[0] = cmd;
 	cmd_info->argv[argc] = NULL;
 	return (cmd_info);
 }

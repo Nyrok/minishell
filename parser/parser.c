@@ -27,7 +27,6 @@ static t_token *parse_other(t_token *tokens)
 	return (tokens);
 }
 
-
 t_cmd_info *parse_tokens(t_token *tokens)
 {
 	t_cmd_info *cmd_infos;

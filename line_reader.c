@@ -21,13 +21,6 @@ void	line_reader(t_main *main)
 		user_input = readline(PURPLE "minishell>" RESET);
 		main->tokens = tokenize_input(user_input);
 		parse_tokens(main->tokens);
-		/*
-		while (main->tokens)
-		{
-			printf("%s : %i\n", main->tokens->word, main->tokens->type);
-			main->tokens = main->tokens->next;
-		}
-		*/
 		if (main->history == NULL && user_input)
 			main->history = list_history_init(user_input);
 		else if (user_input)
