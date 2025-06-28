@@ -12,28 +12,47 @@
 
 #include "minishell.h"
 
-char	*rm_quotes(const char *str, size_t start, size_t n)
+t_cmd_info *create_cmd_info(char *infile, char *cmd, char *outfile, int argc)
 {
-	size_t	i;
-	size_t	j;
-	size_t	size;
-	int		quotes;
-	char	*result;
+	t_cmd_info *cmd_info;
 
-	quotes = 0;
-	i = -1;
-	while (++i < n)
-		if (str[start + i] == '\'' || str[start + i] == '"')
-			quotes++;
-	size = n - quotes;
-	result = malloc((size + 1) * sizeof(char));
-	if (!result)
+	cmd_info = ft_calloc(1, sizeof(cmd_info));
+	if (!cmd_info)
 		return (NULL);
-	i = -1;
-	j = 0;
-	while (++i < n)
-		if (str[start + i] != '\'' && str[start + i] != '"')
-			result[j++] = str[start + i];
-	result[i] = '\0';
-	return (result);
+	cmd_info->cmd = cmd;
+	(void)infile;
+	(void)outfile;
+	cmd_info->argc = 0;
+	cmd_info->argv = ft_calloc(argc + 1, sizeof(char *));
+	if (!cmd_info->argv)
+		return (NULL);
+	return (cmd_info);
+}
+
+void append_cmd_info(t_cmd_info **head, t_cmd_info *new)
+{
+	t_cmd_info *tmp;
+
+	if (!*head)
+		*head = new;
+	else
+	{
+		tmp = *head;
+		while (tmp->next)
+			tmp = tmp->next;
+		tmp->next = new;
+	}
+}
+
+int count_cmd_args(t_token *tokens)
+{
+	int i;
+
+	i = 0;
+	while (tokens && tokens->type == WORD)
+	{
+		tokens = tokens->next;
+		i++;
+	}
+	return (i);
 }

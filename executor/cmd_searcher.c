@@ -247,6 +247,7 @@ int	cmd_searcher(char *cmd, char **paths, char **envp, int file, char **args, pi
 	return (tube);
 }
 
+/*
 int	executor(char *cmd, char **paths, char **envp)
 {
 	pid_t		pids;
@@ -275,3 +276,4 @@ int	executor(char *cmd, char **paths, char **envp)
 	}
 	return (1);
 }
+*/
