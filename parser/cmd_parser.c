@@ -16,7 +16,7 @@ t_cmd_info *create_cmd_info(char *infile, char *cmd, char *outfile, int argc)
 {
 	t_cmd_info *cmd_info;
 
-	cmd_info = ft_calloc(1, sizeof(cmd_info));
+	cmd_info = ft_calloc(1, sizeof(t_cmd_info));
 	if (!cmd_info)
 		return (NULL);
 	cmd_info->cmd = cmd;
@@ -26,6 +26,7 @@ t_cmd_info *create_cmd_info(char *infile, char *cmd, char *outfile, int argc)
 	cmd_info->argv = ft_calloc(argc + 1, sizeof(char *));
 	if (!cmd_info->argv)
 		return (NULL);
+	cmd_info->argv[argc] = NULL;
 	return (cmd_info);
 }
 

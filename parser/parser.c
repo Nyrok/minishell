@@ -27,16 +27,6 @@ static t_token *parse_other(t_token *tokens)
 	return (tokens);
 }
 
-static void parse_word(t_token *tokens, t_cmd_info *cmd_infos, t_cmd_info *cmd_info)
-{
-	if (!cmd_info)
-	{
-		cmd_info = create_cmd_info(NULL, tokens->word, NULL, count_cmd_args(tokens->next));
-		append_cmd_info(&cmd_infos, cmd_info);
-	}
-	else
-		cmd_info->argv[cmd_info->argc++] = tokens->word;
-}
 
 t_cmd_info *parse_tokens(t_token *tokens)
 {
@@ -55,7 +45,18 @@ t_cmd_info *parse_tokens(t_token *tokens)
 			tokens = parse_other(tokens);
 		}
 		else if (tokens->type == WORD)
-			parse_word(tokens, cmd_infos, cmd_info);
+		{
+			if (!cmd_info)
+			{
+				cmd_info = create_cmd_info(NULL, tokens->word, NULL, count_cmd_args(tokens->next));
+				if (!cmd_infos)
+					cmd_infos = cmd_info;
+				else
+					append_cmd_info(&cmd_infos, cmd_info);
+			}
+			else
+				cmd_info->argv[cmd_info->argc++] = tokens->word;
+		}
 		tokens = tokens->next;
 	}
 	return (cmd_infos);
