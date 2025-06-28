@@ -360,4 +360,3 @@ int	executor(char *cmd, char **paths, t_envp *envp_list)
 	free(cmd_info);
 	return (1);
 }
-*/

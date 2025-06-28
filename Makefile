@@ -11,6 +11,7 @@ SRCS = main.c \
 	cmds/unset.c \
 	cmds/exit.c \
 	cmds/check_cmds.c \
+	executor/cmd_searcher.c \
 	cmds_paths_utils.c \
 	line_reader.c \
 	history_utils.c \

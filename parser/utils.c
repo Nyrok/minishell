@@ -12,13 +12,13 @@
 
 #include "minishell.h"
 
-char *rm_quotes(const char *str, size_t start, size_t n)
+char	*rm_quotes(const char *str, size_t start, size_t n)
 {
-	size_t i;
-	size_t j;
-	size_t size;
-	int quotes;
-	char *result;
+	size_t	i;
+	size_t	j;
+	size_t	size;
+	int		quotes;
+	char	*result;
 
 	quotes = 0;
 	i = -1;
