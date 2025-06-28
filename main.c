@@ -18,9 +18,7 @@ void	anti_leaks(t_main **main_struct)
 {
 	t_envp			*tmp;
 	t_history		*tmp2;
-	int				i;
 
-	i = 0;
 	while ((*main_struct)->datas != NULL)
 	{
 		tmp = (*main_struct)->datas;
@@ -64,6 +62,7 @@ int	main(int argc, char **argv, char **envp)
 	(void)argc;
 	(void)argv;
 	line_reader(main_struct);
+	free(main_struct);
 	return (1);
 }
 

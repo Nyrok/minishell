@@ -45,5 +45,6 @@ t_history	*list_history_init(char *cmd);
 void		list_history_add(t_history **history, char *cmd);
 void		history_cleaner(t_history **history);
 void		print_history(t_history *history);
+char		**envp_to_str(t_envp *envp);
 
 #endif
