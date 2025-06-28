@@ -34,6 +34,17 @@ typedef struct s_token
 	struct s_token	*next;
 }	t_token;
 
+typedef struct s_info_cmd
+{
+    char				*infile;
+	int					fd_infile;
+    char				*outfile;
+	int					fd_outfile;
+	char				**args;
+	struct s_info_cmd	*next;
+}	t_info_cmd;
+
+
 t_token	*tokenize_input(const char *input);
 
 #endif

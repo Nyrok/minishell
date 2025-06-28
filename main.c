@@ -62,6 +62,7 @@ int	main(int argc, char **argv, char **envp)
 	(void)argc;
 	(void)argv;
 	line_reader(main_struct);
+	free(main_struct);
 	return (1);
 }
 
