@@ -15,8 +15,6 @@
 void	line_reader(t_main *main)
 {
 	char		*user_input;
-	// t_token		*tokens;
-	// t_cmd_info	*cmd_info;
 
 	while (1)
 	{
@@ -24,7 +22,6 @@ void	line_reader(t_main *main)
 		user_input = readline(PURPLE "minishell>" RESET);
 		main->tokens = tokenize_input(user_input);
 		main->cmd_info = parse_tokens(main->tokens);
-		parse_tokens(main->tokens);
 		if (main->history == NULL && user_input)
 			main->history = list_history_init(user_input);
 		else if (user_input)
