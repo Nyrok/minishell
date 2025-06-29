@@ -50,7 +50,7 @@ int count_cmd_args(t_token *tokens)
 {
 	int i;
 
-	i = 0;
+	i = 1;
 	while (tokens && tokens->type == WORD)
 	{
 		tokens = tokens->next;
