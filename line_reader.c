@@ -15,13 +15,16 @@
 void	line_reader(t_main *main)
 {
 	char		*user_input;
-	t_token		*tokens;
-	(void)tokens;
+	// t_token		*tokens;
+	// t_cmd_info	*cmd_info;
+
 	while (1)
 	{
 		printf("exec\n");
 		user_input = readline(PURPLE "minishell>" RESET);
-		//main->tokens = tokenize_input(user_input);
+		main->tokens = tokenize_input(user_input);
+		main->cmd_info = parse_tokens(main->tokens);
+		parse_tokens(main->tokens);
 		if (main->history == NULL && user_input)
 			main->history = list_history_init(user_input);
 		else if (user_input)
@@ -31,7 +34,7 @@ void	line_reader(t_main *main)
 		if (!user_input)
 			anti_leaks(&main);
 		if (builtin_exec(user_input, &main->datas, main->history) == 0)
-			executor(user_input, main->cmds_paths->paths, main->datas);
+			executor(user_input, main->cmds_paths->paths, main);
 		free(user_input);
 	}
 }

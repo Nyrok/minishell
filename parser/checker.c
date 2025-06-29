@@ -1,28 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memcpy.c                                        :+:      :+:    :+:   */
+/*   checker.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hkonte <hkonte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/15 14:27:31 by hkonte            #+#    #+#             */
-/*   Updated: 2024/11/15 14:29:24 by hkonte           ###   ########.fr       */
+/*   Created: 2025/06/09 16:51:55 by hkonte            #+#    #+#             */
+/*   Updated: 2025/06/09 16:52:27 by hkonte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "minishell.h"
 
-void	*ft_memcpy(void *dest, const void *src, size_t n)
+int check_tokens(t_token *tokens)
 {
-	size_t	i;
+	t_token *token;
 
-	if (n > 0 && dest == NULL && dest == src)
-		return (NULL);
-	i = 0;
-	while (i < n)
+	token = tokens;
+	while (token)
 	{
-		*(char *)(dest + i) = *(char *)(src + i);
-		i++;
+		if (token->type != WORD && token->type != END)
+		{
+			if (!token->next || token->next->type != WORD)
+			{
+				token->next->type = INVALID;
+				printf("Unexpected token '%s' after '%s'\n", token->next->word, token->word);
+				return (0);
+			}
+		}
+		token = token->next;
 	}
-	return (dest);
+	return (1);
 }

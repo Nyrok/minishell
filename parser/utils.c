@@ -1,41 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_substr.c                                        :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hkonte <hkonte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/07/03 14:25:08 by hkonte            #+#    #+#             */
-/*   Updated: 2024/11/15 14:40:59 by hkonte           ###   ########.fr       */
+/*   Created: 2025/06/09 16:51:55 by hkonte            #+#    #+#             */
+/*   Updated: 2025/06/09 16:52:27 by hkonte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "minishell.h"
 
-char	*ft_substr(char const *s, unsigned int start, size_t len)
+char	*rm_quotes(const char *str, size_t start, size_t n)
 {
-	size_t		len_s;
-	size_t		len_sub;
-	char		*result;
-	size_t		i;
+	size_t	i;
+	size_t	j;
+	size_t	size;
+	int		quotes;
+	char	*result;
 
-	if (!s)
-		return (NULL);
-	len_s = ft_strlen(s);
-	if (start >= len_s)
-		return (ft_strdup(""));
-	len_sub = len_s - start;
-	if (len_sub > len)
-		len_sub = len;
-	result = malloc((len_sub + 1) * sizeof(char));
+	quotes = 0;
+	i = -1;
+	while (++i < n)
+		if (str[start + i] == '\'' || str[start + i] == '"')
+			quotes++;
+	size = n - quotes;
+	result = malloc((size + 1) * sizeof(char));
 	if (!result)
 		return (NULL);
-	i = 0;
-	while (i < len_sub && s[start + i])
-	{
-		result[i] = s[start + i];
-		i++;
-	}
+	i = -1;
+	j = 0;
+	while (++i < n)
+		if (str[start + i] != '\'' && str[start + i] != '"')
+			result[j++] = str[start + i];
 	result[i] = '\0';
 	return (result);
 }
