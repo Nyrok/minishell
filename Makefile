@@ -15,8 +15,11 @@ SRCS = main.c \
 	cmds_paths_utils.c \
 	line_reader.c \
 	history_utils.c \
-	tokenizer.c \
-	parser.c
+	parser/tokenizer.c \
+	parser/parser.c \
+	parser/checker.c \
+	parser/cmd_parser.c \
+	parser/utils.c
 
 OBJDIR = objs
 OBJS = $(addprefix $(OBJDIR)/, $(SRCS:.c=.o))

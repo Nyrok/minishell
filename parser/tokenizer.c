@@ -87,7 +87,7 @@ t_token	*tokenize_input(const char *input)
 			i++;
 		if (input[i] == '\'' || input[i] == '"')
 			append_token(&tokens, create_token(get_quoted(input, &i), WORD));
-		else if (input[i] == '|' && ++i)
+		else if (input[i] == '|')
 			append_token(&tokens, create_token(ft_strdup("|"), PIPE));
 		else if (input[i] == '>' && ++i)
 			append_token(&tokens, create_token(ft_strdup(">"), REDOUT + \
@@ -99,5 +99,6 @@ t_token	*tokenize_input(const char *input)
 			append_token(&tokens, create_token(get_word(input, &i), WORD));
 		i++;
 	}
+	append_token(&tokens, create_token(NULL, END));
 	return (tokens);
 }

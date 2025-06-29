@@ -11,9 +11,9 @@
 /* ************************************************************************** */
 
 #ifndef TOKENIZER_H
-#define TOKENIZER_H
+# define TOKENIZER_H
 
-#include "minishell.h"
+# include "minishell.h"
 
 typedef enum e_type
 {
