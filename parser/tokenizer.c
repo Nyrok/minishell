@@ -42,17 +42,26 @@ static void	append_token(t_token **head, t_token *new)
 static char	*get_word(const char *str, size_t *i)
 {
 	size_t	start;
-	size_t	quotes_count;
 	int		has_quote;
+	char	quote;
 
 	start = *i;
 	has_quote = 0;
-	quotes_count = 0;
-	while (str[*i] && !ft_strchr("|<>", str[*i]) \
-		&& (!ft_isspace(str[*i]) || has_quote))
+	while (str[*i])
 	{
-		if ((str[*i] == '\'' || str[*i] == '"') && ++quotes_count)
-			has_quote = !has_quote;
+		if (!has_quote && (ft_isspace(str[*i]) || ft_strchr("|<>", str[*i])))
+			break ;
+		if ((str[*i] == '\'' || str[*i] == '"'))
+		{
+			quote = str[*i];
+			has_quote = 1;
+			(*i)++;
+			while (str[*i] && str[*i] != quote)
+				(*i)++;
+			if (str[*i] == quote)
+				(*i)++;
+			continue ;
+		}
 		(*i)++;
 	}
 	return (rm_quotes(str, start, *i - start));
@@ -79,10 +88,12 @@ t_token	*tokenize_input(const char *input)
 	size_t	i;
 	t_token	*tokens;
 
+	printf("INPUT: %s\n", input);
 	i = 0;
 	tokens = NULL;
 	while (input[i])
 	{
+		printf("%c", input[i]);
 		while (ft_isspace(input[i]))
 			i++;
 		if (input[i] == '\'' || input[i] == '"')
@@ -100,5 +111,11 @@ t_token	*tokenize_input(const char *input)
 		i++;
 	}
 	append_token(&tokens, create_token(NULL, END));
+	t_token *temp = tokens;
+	while (temp)
+	{
+		printf("TOKEN %i : %s\n", temp->type, temp->word);
+		temp = temp->next;
+	}
 	return (tokens);
 }

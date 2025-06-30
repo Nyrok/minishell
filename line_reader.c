@@ -22,6 +22,7 @@ void	line_reader(t_main *main)
 		user_input = readline(PURPLE "minishell>" RESET);
 		main->tokens = tokenize_input(user_input);
 		main->cmd_info = parse_tokens(main->tokens);
+		free_tokens(main);
 		if (main->cmd_info)
 		{
 			if (main->history == NULL && user_input)
@@ -31,10 +32,11 @@ void	line_reader(t_main *main)
 			if (user_input && *user_input)
 				add_history(user_input);
 			if (!user_input)
-				anti_leaks(&main);
+				break ;
 			if (builtin_exec(user_input, &main->datas, main->history) == 0)
 				executor(user_input, main->cmds_paths->paths, main);
 		}
 		free(user_input);
 	}
+	free_main(main);
 }

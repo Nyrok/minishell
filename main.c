@@ -14,29 +14,6 @@
 
 int	g_signal = 0;
 
-void	anti_leaks(t_main **main_struct)
-{
-	t_envp			*tmp;
-	t_history		*tmp2;
-
-	while ((*main_struct)->datas != NULL)
-	{
-		tmp = (*main_struct)->datas;
-		(*main_struct)->datas = (*main_struct)->datas->next;
-		free(tmp);
-	}
-	while ((*main_struct)->history != NULL)
-	{
-		tmp2 = (*main_struct)->history;
-		(*main_struct)->history = (*main_struct)->history->next;
-		free(tmp2->cmd);
-		free(tmp2);
-	}
-	rl_clear_history();
-	free((*main_struct));
-	exit(0);
-}
-
 void	handle_signal(int signal)
 {
 	if (signal == SIGINT)
@@ -62,25 +39,6 @@ int	main(int argc, char **argv, char **envp)
 	(void)argc;
 	(void)argv;
 	line_reader(main_struct);
-	free(main_struct);
+	free_main(main_struct);
 	return (1);
 }
-
-// int	main(int argc, char **argv, char **envp)
-// {
-// 	t_export	*datas;
-
-// 	datas = list_maker(envp);
-// 	env(datas);
-// 	if (argc == 1 || envp == NULL)
-// 		return (-1);
-// 	printf("\n\n\n===EXPORT===\n\n\n");
-// 	export(argc, argv, &datas);
-// 	env(datas);
-// 	argv[1] = "LOL";
-// 	argv[2] = "LOL2";
-// 	argv[3] = "WSL2_GUI_APPS_ENABLED";
-// 	printf("\n\n\n===UNSET===\n\n\n");
-// 	unset(argc, argv, &datas);
-// 	env(datas);
-// }

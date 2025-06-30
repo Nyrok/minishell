@@ -48,8 +48,9 @@ static void	parse_word(t_token *tokens, t_cmd_info **list, t_cmd_info **obj)
 		if (!(*obj)->cmd)
 		{
 			(*obj)->cmd = tokens->word;
-			(*obj)->argc = count_cmd_args(tokens->next);
-			(*obj)->argv = ft_calloc((*obj)->argc + 2, sizeof(char *));
+			(*obj)->argc++;
+			(*obj)->argv = ft_calloc(count_cmd_args(tokens->next) + 1, \
+				sizeof(char *));
 			if (!(*obj)->argv)
 				return ;
 			(*obj)->argv[0] = tokens->word;
@@ -80,6 +81,23 @@ t_cmd_info	*parse_tokens(t_token *tokens)
 			tokens = tokens->next;
 		}
 		tokens = tokens->next;
+	}
+	cmd_info = cmd_infos;
+	t_redir	*redir;
+	int	i;
+	while (cmd_info)
+	{
+		printf("CMD %s\n", cmd_info->cmd);
+		i = 0;
+		while (i < cmd_info->argc)
+			printf(" ARG %s\n", cmd_info->argv[i++]);
+		redir = cmd_info->redirs;
+		while (redir)
+		{
+			printf(" REDIR %i %s\n", redir->type, redir->filename);
+			redir = redir->next;
+		}
+		cmd_info = cmd_info->next;
 	}
 	return (cmd_infos);
 }

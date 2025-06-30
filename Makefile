@@ -14,6 +14,7 @@ SRCS = main.c \
 	executor/cmd_searcher.c \
 	cmds_paths_utils.c \
 	line_reader.c \
+	free.c \
 	history_utils.c \
 	parser/tokenizer.c \
 	parser/parser.c \
