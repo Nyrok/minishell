@@ -12,25 +12,57 @@
 
 #include "minishell.h"
 
-static t_token *parse_other(t_token *tokens)
+static t_cmd_info	*parse_redir(t_token *tokens, t_cmd_info **l, t_cmd_info *o)
 {
+	t_redir	*redir;
+
+	if (!o)
+	{
+		o = create_cmd_info(NULL, 0);
+		if (!*l)
+			*l = o;
+		else
+			append_cmd_info(l, o);
+	}
+	redir = NULL;
 	if (tokens->type == REDIN)
-	{
-		// parse_data->infile = tokens->next->word;
-		tokens = tokens->next;
-	}
+		redir = create_redir(tokens->next->word, NULL, REDIN);
 	else if (tokens->type == REDOUT || tokens->type == APPEND)
-	{
-		// parse_data->outfile = tokens->next->word;
-		tokens = tokens->next;
-	}
-	return (tokens);
+		redir = create_redir(tokens->next->word, NULL, tokens->type);
+	append_redir(&o->redirs, redir);
+	return (o);
 }
 
-t_cmd_info *parse_tokens(t_token *tokens)
+static void	parse_word(t_token *tokens, t_cmd_info **list, t_cmd_info **obj)
 {
-	t_cmd_info *cmd_infos;
-	t_cmd_info *cmd_info;
+	if (!*obj)
+	{
+		*obj = create_cmd_info(tokens->word, count_cmd_args(tokens->next));
+		if (!*list)
+			*list = *obj;
+		else
+			append_cmd_info(list, *obj);
+	}
+	else
+	{
+		if (!(*obj)->cmd)
+		{
+			(*obj)->cmd = tokens->word;
+			(*obj)->argc = count_cmd_args(tokens->next);
+			(*obj)->argv = ft_calloc((*obj)->argc + 2, sizeof(char *));
+			if (!(*obj)->argv)
+				return ;
+			(*obj)->argv[0] = tokens->word;
+		}
+		else
+			(*obj)->argv[(*obj)->argc++] = tokens->word;
+	}
+}
+
+t_cmd_info	*parse_tokens(t_token *tokens)
+{
+	t_cmd_info	*cmd_infos;
+	t_cmd_info	*cmd_info;
 
 	if (!check_tokens(tokens))
 		return (NULL);
@@ -38,23 +70,14 @@ t_cmd_info *parse_tokens(t_token *tokens)
 	cmd_info = NULL;
 	while (tokens)
 	{
-		if (tokens->type != WORD)
-		{
+		if (tokens->type == WORD)
+			parse_word(tokens, &cmd_infos, &cmd_info);
+		else if (tokens->type == PIPE || tokens->type == END)
 			cmd_info = NULL;
-			tokens = parse_other(tokens);
-		}
-		else if (tokens->type == WORD)
+		else
 		{
-			if (!cmd_info)
-			{
-				cmd_info = create_cmd_info(NULL, tokens->word, NULL, count_cmd_args(tokens->next));
-				if (!cmd_infos)
-					cmd_infos = cmd_info;
-				else
-					append_cmd_info(&cmd_infos, cmd_info);
-			}
-			else
-				cmd_info->argv[cmd_info->argc++] = tokens->word;
+			cmd_info = parse_redir(tokens, &cmd_infos, cmd_info);
+			tokens = tokens->next;
 		}
 		tokens = tokens->next;
 	}
