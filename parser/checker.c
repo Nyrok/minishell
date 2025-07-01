@@ -12,9 +12,9 @@
 
 #include "minishell.h"
 
-int check_tokens(t_token *tokens)
+int	check_tokens(t_token *tokens)
 {
-	t_token *token;
+	t_token	*token;
 
 	token = tokens;
 	while (token)
@@ -24,7 +24,8 @@ int check_tokens(t_token *tokens)
 			if (!token->next || token->next->type != WORD)
 			{
 				token->next->type = INVALID;
-				printf("Unexpected token '%s' after '%s'\n", token->next->word, token->word);
+				printf("Unexpected token '%s' after '%s'\n", \
+					token->next->word, token->word);
 				return (0);
 			}
 		}

@@ -67,7 +67,6 @@ char	**envp_to_str(t_envp *envp)
 	while (datas)
 	{
 		res[i] = ft_strdup(datas->data);
-		//printf("res = %s\n", res[i]);
 		datas = datas->next;
 		i++;
 	}
