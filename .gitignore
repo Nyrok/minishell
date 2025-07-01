@@ -4,5 +4,6 @@
 cmds/*
 !cmds/*.c
 minishell
-*.supp
 philo
+*.supp
+*.txt
