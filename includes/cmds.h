@@ -15,6 +15,8 @@
 
 # include "minishell.h"
 
+typedef struct s_cmd_info	t_cmd_info;
+
 typedef struct s_envp
 {
 	char			*data;
@@ -36,6 +38,6 @@ void	export(int argc, char **argv, t_envp **datas);
 void	unset(int argc, char **argv, t_envp **datas);
 void	env(t_envp *datas);
 void	ft_exit(void);
-int		builtin_exec(char *user_input, t_envp **datas, t_history *history);
+int		builtin_exec(t_cmd_info *cmd_info, t_envp **datas, t_history *history);
 
 #endif
