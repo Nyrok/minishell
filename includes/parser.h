@@ -21,6 +21,7 @@ typedef struct s_redir
 	char				*filename;
 	char				*content;
 	int					fd;
+	int					good;
 	struct s_redir		*next;
 }	t_redir;
 
@@ -44,5 +45,6 @@ t_cmd_info	*parse_tokens(t_token *tokens);
 int			check_tokens(t_token *tokens);
 t_redir		*create_redir(char *filename, char *content, t_token_type type);
 void		append_redir(t_redir **head, t_redir *new);
+void		setup_fd(t_cmd_info **cmd_info);
 
 #endif

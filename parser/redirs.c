@@ -21,6 +21,7 @@ t_redir	*create_redir(char *filename, char *content, t_token_type type)
 	redir->content = content;
 	redir->type = type;
 	redir->fd = -1;
+	redir->good = 1;
 	return (redir);
 }
 
@@ -34,8 +35,14 @@ void	append_redir(t_redir **head, t_redir *new)
 	{
 		tmp = *head;
 		while (tmp->next)
+		{
+			if (new && tmp->type == new->type)
+				tmp->good = 0;
 			tmp = tmp->next;
+		}
 		tmp->next = new;
+		if (new && tmp->type == new->type)
+			tmp->good = 0;
 	}
 }
 
@@ -44,12 +51,14 @@ void	setup_fd(t_cmd_info **cmd_info)
 	t_cmd_info	*actual;
 
 	actual = *cmd_info;
+	actual->infile_fd = -1;
+	actual->outfile_fd = -1;
 	while (actual->redirs != NULL)
 	{
-		if (actual->redirs->type == 3 && actual->redirs->good == 1)
-			actual->infile_fd = actual->redirs;
-		if (actual->redirs->type == 3 && actual->redirs->good == 1)
-			actual->infile_fd = actual->redirs;
+		if (actual->redirs->type == REDIN && actual->redirs->good == 1)
+			actual->infile_fd = actual->redirs->fd;
+		if (actual->redirs->type == REDOUT && actual->redirs->good == 1)
+			actual->outfile_fd = actual->redirs->fd;
 		actual->redirs = actual->redirs->next;
 	}
 }
