@@ -38,3 +38,18 @@ void	append_redir(t_redir **head, t_redir *new)
 		tmp->next = new;
 	}
 }
+
+void	setup_fd(t_cmd_info **cmd_info)
+{
+	t_cmd_info	*actual;
+
+	actual = *cmd_info;
+	while (actual->redirs != NULL)
+	{
+		if (actual->redirs->type == 3 && actual->redirs->good == 1)
+			actual->infile_fd = actual->redirs;
+		if (actual->redirs->type == 3 && actual->redirs->good == 1)
+			actual->infile_fd = actual->redirs;
+		actual->redirs = actual->redirs->next;
+	}
+}
