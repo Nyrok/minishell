@@ -21,6 +21,7 @@ t_redir	*create_redir(char *filename, char *content, t_token_type type)
 	redir->content = content;
 	redir->type = type;
 	redir->fd = -1;
+	redir->good = 1;
 	return (redir);
 }
 
@@ -36,5 +37,7 @@ void	append_redir(t_redir **head, t_redir *new)
 		while (tmp->next)
 			tmp = tmp->next;
 		tmp->next = new;
+		if (new && tmp->type == new->type)
+			tmp->good = 0;
 	}
 }
