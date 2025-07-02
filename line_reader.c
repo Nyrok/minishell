@@ -23,6 +23,7 @@ void	line_reader(t_main *main)
 		main->tokens = tokenize_input(user_input);
 		main->cmd_info = parse_tokens(main->tokens);
 		free_tokens(main);
+		printf("CC\n");
 		if (main->cmd_info)
 		{
 			if (main->history == NULL && user_input)

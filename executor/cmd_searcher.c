@@ -88,15 +88,18 @@ void	last_executor(char *cmd_path, char **args, char **envp, int tube, int file,
 		}
 		i = 0;
 		printf("TEST %s\n", cmd_path);
-		if (tube != 0)
+		if (tube != -1)
 		{
+			printf("PRINTF\n");
 			dup2(tube, STDIN_FILENO);
 			close(tube);
 		}
 		if (file != -1)
 		{
+			printf("PRINTF2\n");
 			dup2(file, STDOUT_FILENO);
-			close(file);
+			printf("PRINTF3\n");
+			//close(file);
 		}
 		if (execve(cmd_path, (char *const *)args, envp) == -1)
 		{
@@ -202,9 +205,12 @@ int	cmd_executor(char *cmd_path, char **args, char **envp, int file, pid_t  **pi
 		close(tube[0]);
 		if (file != -1)
 			dup2(file, STDIN_FILENO);
+		printf("ON RENTRE \n");
+
 		dup2(tube[1], STDOUT_FILENO);
 		close(tube[1]);
 		close(file);
+
 		if (execve(cmd_path, (char *const *)args, envp) == -1)
 		{
 			close(tube[1]);
@@ -289,10 +295,10 @@ int	totalcmds(char *cmd)
 
 // 	(void)cmd;
 // 	actual = *main->cmd_info;
-// 	actual->infile = ft_strdup("infile.txt");
+// 	actual->infile = ft_strdup(next"infile.txt");
 // 	actual->fd_infile = open("infile.txt", O_RDWR);
 // 	actual->outfile = ft_strdup("outfile.txt");
-// 	actual->fd_outfile = open("outfile.txt", O_RDWR);
+// 	actual->fd_outfile = open("outfile.txt", O_RDWR);args
 // 	actual->next = NULL;
 // }
 
@@ -307,6 +313,46 @@ int	totalcmds(char *cmd)
 // 	args[2] = NULL;
 // 	return (args);
 // }
+
+int	hasinfile(struct s_main *main)
+{
+	t_redir	*actual;
+	int		total;
+
+	total = 0;
+	actual = main->cmd_info->redirs;
+	while (actual != NULL)
+	{
+		actual->fd = open(actual->filename, O_RDWR); // Attention il faudra mettre en readonly le
+		printf(">>>\n");
+		printf("FILE = %s\n", actual->filename);
+		if (actual->fd == -1)
+		{
+			printf("Erreur de permissions lors de l'ouverture de %s\n", actual->filename);
+		}
+		if (actual->type == 3)
+			total = 1;
+		actual = actual->next;
+	}
+	return (total);
+}
+
+int	hasoutfile(struct s_main *main)
+{
+	t_redir	*actual;
+	int		total;
+
+	total = 0;
+	actual = main->cmd_info->redirs;
+	while (actual != NULL)
+	{
+		printf("Enter\n");
+		if (actual->type == 5)
+			total = 1;
+		actual = actual->next;			
+	}
+	return (total);
+}
 
 int	executor(char *cmd, char **paths, struct s_main *main)
 {
@@ -325,39 +371,52 @@ int	executor(char *cmd, char **paths, struct s_main *main)
 	tube = -1;
 	if (nbcmds == 1)
 	{
-		//printf("CAS 1, %s %s %d\n", main->cmd_info->infile, main->cmd_info->outfile, main->cmd_info->fd_outfile);
-		lcmd_searcher(main->cmd_info->cmd, paths, envp, -1, -1, &pids, main); // Si il n'y a pas de outfile on met NULL;
+		printf("CC\n");
+		hasinfile(main);
+		lcmd_searcher(main->cmd_info->cmd, paths, envp, main->cmd_info->redirs->fd, main->cmd_info->redirs->next->fd, &pids, main); // Si il n'y a pas de outfile on met NULL;
 	}
 	else
 	{
 		while (nbcmds > 1)
 		{
-			printf("CMD\n");
-			if (tube == -1)
+			if (hasinfile(main) && hasoutfile(main) == 0)
 			{
-				printf("Tube NULL\n");
-				tube = cmd_searcher(main->cmd_info->cmd, paths, envp, -1, main->cmd_info->argv, &pids);
+				printf("1 0\n");
+				tube = cmd_searcher(main->cmd_info->cmd, paths, envp, main->cmd_info->redirs->fd, main->cmd_info->argv, &pids); // Le tube passera toujours en paramètre sauf en cas de infile qui du coup sera prioritaire
+				printf("ENDED\n");
 			}
-			else
+			else if (hasinfile(main) == 0 && hasoutfile(main) == 0)
 			{
-				printf("Tube non NULL\n");
-				tube = cmd_searcher(main->cmd_info->cmd, paths, envp, tube, main->cmd_info->argv, &pids);
+				printf("0 0\n");
+				tube = cmd_searcher(main->cmd_info->cmd, paths, envp, tube, main->cmd_info->argv, &pids); // Pas de infile donc on prend le tube en param
 			}
-			// // main->cmd_info = get_cmd(...); // Si il n'y a pas de infile on met NULL;
-			// if (main->cmd_info->infile != NULL && main->cmd_info->outfile == NULL)
-			// 	tube = cmd_searcher(cmd, paths, envp, main->cmd_info->fd_infile, main->cmd_info->args, &pids); // Le tube passera toujours en paramètre sauf en cas de infile qui du coup sera prioritaire
-			// else if (main->cmd_info->infile == NULL && main->cmd_info->outfile == NULL)
-			// 	tube = cmd_searcher(cmd, paths, envp, main->cmd_info->fd_infile, main->cmd_info->args, &pids); // Pas de infile donc on prend le tube en param
-			// else if (main->cmd_info->infile == NULL && main->cmd_info->outfile != NULL)
-			// 	lcmd_searcher(cmd, paths, envp, tube, main->cmd_info->fd_outfile, &pids); // Si on fait ls | cat -e > outfile.txt | cat -e > outfile2.txt par exemple, le premier cat -e enverra les données vers outfile donc le second sera vide, il faut donc prendre cela en compte et cette fonction gère cela
-			// else if (main->cmd_info->infile != NULL && main->cmd_info->outfile != NULL)
-			// 	lcmd_searcher(cmd, paths, envp, main->cmd_info->fd_infile, main->cmd_info->fd_outfile, &pids); // mettre infile au lieu de tube
+			else if (hasinfile(main) == 0 && hasoutfile(main))
+			{
+				printf("0 1\n");
+				lcmd_searcher(main->cmd_info->cmd, paths, envp, tube, main->cmd_info->redirs->fd, &pids, main); // Si on fait ls | cat -e > outfile.txt | cat -e > outfile2.txt par exemple, le premier cat -e enverra les données vers outfile donc le second sera vide, il faut donc prendre cela en compte et cette fonction gère cela
+				tube = -1;
+			}
+			else if (hasinfile(main) && hasoutfile(main))
+			{
+				printf("1 1\n");
+				lcmd_searcher(main->cmd_info->cmd, paths, envp, main->cmd_info->redirs->fd, main->cmd_info->redirs->next->fd, &pids, main); // mettre infile au lieu de tube
+				tube = -1;
+			}
 			nbcmds--;
 			main->cmd_info = main->cmd_info->next; // Faire un temp pour free main->cmd_info
 		}
-		if (nbcmds == 1 && tube != -1)
+		if (main->cmd_info == NULL)
+			printf("MMMOPMONO\n");
+		printf("NB = %d, %d\n", nbcmds, hasinfile(main));
+		if (nbcmds == 1 && /*tube != -1*/ hasinfile(main) == 0)
 		{
+			printf("LOL2\n");
 			lcmd_searcher(main->cmd_info->cmd, paths, envp, tube, -1, &pids, main); // Si il n'y a pas de outfile on met NULL;
+		}
+		else if (nbcmds == 1 && hasinfile(main) == 1)
+		{
+			printf("LOL3\n");
+			lcmd_searcher(main->cmd_info->cmd, paths, envp, main->cmd_info->redirs->fd, main->cmd_info->redirs->next->fd, &pids, main); 
 		}
 	}
 	i = 0;
