@@ -49,11 +49,9 @@ static char	*get_word(const char *str, size_t *i)
 	has_quote = 0;
 	while (str[*i])
 	{
-		if (!has_quote && (ft_isspace(str[*i]) || ft_strchr("|<>", str[*i])))
-		{
-			(*i)--;
+		if (!has_quote && (ft_isspace(str[*i]) || ft_strchr("|<>", str[*i])) \
+		&& (*i)--)
 			break ;
-		}
 		if ((str[*i] == '\'' || str[*i] == '"'))
 		{
 			quote = str[*i];
