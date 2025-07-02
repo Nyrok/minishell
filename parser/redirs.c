@@ -36,12 +36,12 @@ void	append_redir(t_redir **head, t_redir *new)
 		tmp = *head;
 		while (tmp->next)
 		{
-			if (new && tmp && tmp->type == new->type)
+			if (new && tmp->type == new->type)
 				tmp->good = 0;
 			tmp = tmp->next;
 		}
 		tmp->next = new;
-		if (new && tmp && tmp->type == new->type)
+		if (new && tmp->type == new->type)
 			tmp->good = 0;
 	}
 }
