@@ -49,7 +49,8 @@ static char	*get_word(const char *str, size_t *i)
 	has_quote = 0;
 	while (str[*i])
 	{
-		if (!has_quote && (ft_isspace(str[*i]) || ft_strchr("|<>", str[*i])))
+		if (!has_quote && (ft_isspace(str[*i]) || ft_strchr("|<>", str[*i])) \
+		&& (*i)--)
 			break ;
 		if ((str[*i] == '\'' || str[*i] == '"'))
 		{
@@ -64,7 +65,7 @@ static char	*get_word(const char *str, size_t *i)
 		}
 		(*i)++;
 	}
-	return (rm_quotes(str, start, *i - start));
+	return (rm_quotes(str, start, *i + 1 - start));
 }
 
 static char	*get_quoted(const char *str, size_t *i)
@@ -93,7 +94,6 @@ t_token	*tokenize_input(const char *input)
 	tokens = NULL;
 	while (input[i])
 	{
-		printf("%c", input[i]);
 		while (ft_isspace(input[i]))
 			i++;
 		if (input[i] == '\'' || input[i] == '"')
