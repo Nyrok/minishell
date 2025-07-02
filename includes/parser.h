@@ -21,6 +21,7 @@ typedef struct s_redir
 	char				*filename;
 	char				*content;
 	int					fd;
+	int					good;
 	struct s_redir		*next;
 }	t_redir;
 
