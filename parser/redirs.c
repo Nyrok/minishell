@@ -58,7 +58,10 @@ void	setup_fd(t_cmd_info **cmd_info)
 		if (actual->redirs->type == REDIN && actual->redirs->good == 1)
 			actual->infile_fd = actual->redirs->fd;
 		if (actual->redirs->type == REDOUT && actual->redirs->good == 1)
+		{
+			printf("IM GFZEF %d\n", actual->redirs->fd);
 			actual->outfile_fd = actual->redirs->fd;
+		}
 		actual->redirs = actual->redirs->next;
 	}
 }
