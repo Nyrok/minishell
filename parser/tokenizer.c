@@ -12,18 +12,6 @@
 
 #include "minishell.h"
 
-static t_token	*create_token(char *word, t_token_type type)
-{
-	t_token	*token;
-
-	token = ft_calloc(1, sizeof(t_token));
-	if (!token)
-		return (NULL);
-	token->word = word;
-	token->type = type;
-	return (token);
-}
-
 static void	append_token(t_token **head, t_token *new)
 {
 	t_token	*tmp;
@@ -39,49 +27,16 @@ static void	append_token(t_token **head, t_token *new)
 	}
 }
 
-static char	*get_word(const char *str, size_t *i)
+t_token	*create_token(char *word, t_token_type type)
 {
-	size_t	start;
-	int		has_quote;
-	char	quote;
+	t_token	*token;
 
-	start = *i;
-	has_quote = 0;
-	while (str[*i])
-	{
-		if (!has_quote && (ft_isspace(str[*i]) || ft_strchr("|<>", str[*i])) \
-		&& (*i)--)
-			break ;
-		if ((str[*i] == '\'' || str[*i] == '"'))
-		{
-			quote = str[*i];
-			has_quote = 1;
-			(*i)++;
-			while (str[*i] && str[*i] != quote)
-				(*i)++;
-			if (str[*i] == quote)
-				(*i)++;
-			continue ;
-		}
-		(*i)++;
-	}
-	return (rm_quotes(str, start, *i + 1 - start));
-}
-
-static char	*get_quoted(const char *str, size_t *i)
-{
-	char	quote;
-	size_t	start;
-	char	*word;
-
-	quote = str[*i];
-	start = ++(*i);
-	while (str[*i] && str[*i] != quote)
-		(*i)++;
-	word = ft_substr(str, start, *i - start);
-	if (str[*i] == quote)
-		(*i)++;
-	return (word);
+	token = ft_calloc(1, sizeof(t_token));
+	if (!token)
+		return (NULL);
+	token->word = word;
+	token->type = type;
+	return (token);
 }
 
 t_token	*tokenize_input(const char *input)
@@ -98,17 +53,12 @@ t_token	*tokenize_input(const char *input)
 			i++;
 		if (input[i] == '\'' || input[i] == '"')
 			append_token(&tokens, create_token(get_quoted(input, &i), WORD));
-		else if (input[i] == '|')
+		else if (input[i] == '|' && i++)
 			append_token(&tokens, create_token(ft_strdup("|"), PIPE));
-		else if (input[i] == '>' && ++i)
-			append_token(&tokens, create_token(ft_strdup(">"), REDOUT + \
-			(input[i] == '>' && ++i)));
-		else if (input[i] == '<' && ++i)
-			append_token(&tokens, create_token(ft_strdup("<"), REDIN + \
-			(input[i] == '<' && ++i)));
+		else if (input[i] == '>' || input[i] == '<')
+			append_token(&tokens, get_redir_token(input, &i));
 		else
 			append_token(&tokens, create_token(get_word(input, &i), WORD));
-		i++;
 	}
 	append_token(&tokens, create_token(NULL, END));
 	t_token *temp = tokens;
