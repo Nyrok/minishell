@@ -20,6 +20,7 @@ t_redir	*create_redir(char *filename, char *content, t_token_type type)
 	redir->filename = filename;
 	redir->content = content;
 	redir->type = type;
+	redir->fd = -1;
 	redir->io = -1;
 	if (type == REDIN || type == HEREDOC)
 		redir->io = STDIN_FILENO;

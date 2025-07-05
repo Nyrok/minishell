@@ -63,7 +63,7 @@ char	*get_word(const char *str, size_t *i)
 		}
 		(*i)++;
 	}
-	str[*i] && (*i)++;
+	(void)(str[*i] && (*i)++);
 	return (rm_quotes(str, start, *i - start));
 }
 
