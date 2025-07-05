@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-t_redir	*create_redir(char *filename, char *content, t_token_type type, int io)
+t_redir	*create_redir(char *filename, char *content, t_token_type type)
 {
 	t_redir	*redir;
 
