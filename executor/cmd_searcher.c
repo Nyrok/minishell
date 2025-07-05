@@ -345,53 +345,53 @@ int	executor(char *cmd, struct s_main *main)
 	hasinfile(main);
 	if (nbcmds == 1)
 	{
-		setup_fd(&main->cmd_info);
-		printf("EEE = %d\n", main->cmd_info->infile_fd);
-		lcmd_searcher(main, envp, main->cmd_info->infile_fd, &pids);
+		setup_cmd_redirs(main->cmd_info);
+		printf("EEE = %d\n", main->cmd_info->infile->fd);
+		lcmd_searcher(main, envp, main->cmd_info->infile->fd, &pids);
 	}
 	else
 	{
 		while (nbcmds > 1)
 		{
-			setup_fd(&main->cmd_info);
-			if (main->cmd_info->infile_fd != -1 && main->cmd_info->outfile_fd == -1)
+			setup_cmd_redirs(main->cmd_info);
+			if (main->cmd_info->infile->fd != -1 && main->cmd_info->outfile->fd == -1)
 			{
-				printf("1 0 %s %d\n", main->cmd_info->cmd, main->cmd_info->infile_fd);
-				tube = cmd_searcher(main, envp, main->cmd_info->infile_fd, main->cmd_info->argv, &pids);
+				printf("1 0 %s %d\n", main->cmd_info->cmd, main->cmd_info->infile->fd);
+				tube = cmd_searcher(main, envp, main->cmd_info->infile->fd, main->cmd_info->argv, &pids);
 				printf("ENDED\n");
 			}
-			else if (main->cmd_info->infile_fd == -1 && main->cmd_info->outfile_fd == -1)
+			else if (main->cmd_info->infile->fd == -1 && main->cmd_info->outfile->fd == -1)
 			{
 				printf("0 0\n");
 				tube = cmd_searcher(main, envp, tube, main->cmd_info->argv, &pids);
 			}
-			else if (main->cmd_info->infile_fd == -1 && main->cmd_info->outfile_fd != -1)
+			else if (main->cmd_info->infile->fd == -1 && main->cmd_info->outfile->fd != -1)
 			{
 				printf("0 1\n");
 				lcmd_searcher(main, envp, tube, &pids);
 				tube = -1;
 			}
-			else if (main->cmd_info->infile_fd != -1 && main->cmd_info->outfile_fd != -1)
+			else if (main->cmd_info->infile->fd != -1 && main->cmd_info->outfile->fd != -1)
 			{
 				printf("1 1\n");
-				lcmd_searcher(main, envp, main->cmd_info->infile_fd, &pids);
+				lcmd_searcher(main, envp, main->cmd_info->infile->fd, &pids);
 				tube = -1;
 			}
 			nbcmds--;
 			main->cmd_info = main->cmd_info->next;
 		}
-		setup_fd(&main->cmd_info);
+		setup_cmd_redirs(main->cmd_info);
 		if (main->cmd_info == NULL)
 			printf("MMMOPMONO\n");
-		if (nbcmds == 1 && /*tube != -1*/ main->cmd_info->infile_fd == -1)
+		if (nbcmds == 1 && /*tube != -1*/ main->cmd_info->infile->fd == -1)
 		{
 			printf("LOL2\n");
 			lcmd_searcher(main, envp, tube, &pids);
 		}
-		else if (nbcmds == 1 && main->cmd_info->infile_fd != -1)
+		else if (nbcmds == 1 && main->cmd_info->infile->fd != -1)
 		{
-			printf("LOL3 %d\n", main->cmd_info->infile_fd);
-			lcmd_searcher(main, envp, main->cmd_info->infile_fd, &pids); 
+			printf("LOL3 %d\n", main->cmd_info->infile->fd);
+			lcmd_searcher(main, envp, main->cmd_info->infile->fd, &pids); 
 		}
 	}
 	end_pids(&pids);

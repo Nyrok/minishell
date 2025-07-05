@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-char	*rm_quotes(const char *str, size_t start, size_t n)
+static char	*rm_quotes(const char *str, size_t start, size_t n)
 {
 	size_t	i;
 	size_t	j;
@@ -36,4 +36,71 @@ char	*rm_quotes(const char *str, size_t start, size_t n)
 			result[j++] = str[start + i];
 	result[i] = '\0';
 	return (result);
+}
+
+char	*get_word(const char *str, size_t *i)
+{
+	size_t	start;
+	int		has_quote;
+	char	quote;
+
+	start = *i;
+	has_quote = 0;
+	while (str[*i])
+	{
+		if (!has_quote && (ft_isspace(str[*i]) || ft_strchr("|<>", str[*i])) \
+		&& (*i)--)
+			break ;
+		if ((str[*i] == '\'' || str[*i] == '"'))
+		{
+			quote = str[*i];
+			has_quote = 1;
+			(*i)++;
+			while (str[*i] && str[*i] != quote)
+				(*i)++;
+			if (str[*i] == quote)
+				(*i)++;
+		}
+		(*i)++;
+	}
+	str[*i] && (*i)++;
+	return (rm_quotes(str, start, *i - start));
+}
+
+char	*get_quoted(const char *str, size_t *i)
+{
+	char	quote;
+	size_t	start;
+	char	*word;
+
+	quote = str[*i];
+	start = ++(*i);
+	while (str[*i] && str[*i] != quote)
+		(*i)++;
+	word = ft_substr(str, start, *i - start);
+	if (str[*i] == quote)
+		(*i)++;
+	return (word);
+}
+
+t_token	*get_redir_token(const char *str, size_t *i)
+{
+	t_token	*token;
+
+	token = NULL;
+	if (str[*i] == '>' && ++(*i))
+	{
+		if (str[*i] == '>' && ++(*i))
+			token = create_token(ft_strdup(">>"), APPEND);
+		else
+			token = create_token(ft_strdup(">"), REDOUT);
+	}
+	else if (str[*i] == '<' && ++(*i))
+	{
+		if (str[*i] == '<' && ++(*i))
+			token = create_token(ft_strdup("<<"), HEREDOC);
+		else
+			token = create_token(ft_strdup("<"), REDIN);
+	}
+	return (token);
 }
