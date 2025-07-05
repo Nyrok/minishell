@@ -49,5 +49,6 @@ int			check_tokens(t_token *tokens);
 t_redir		*create_redir(char *filename, char *content, t_token_type type);
 void		append_redir(t_redir **head, t_redir *new);
 t_token		*create_token(char *word, t_token_type type);
+void		setup_cmd_redirs(t_cmd_info *cmd_info);
 
 #endif
