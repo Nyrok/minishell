@@ -87,23 +87,23 @@ void	last_executor(char *cmd_path, t_main *main, char **envp, int tube, pid_t **
 			i++;
 		}
 		i = 0;
-		printf("TEST %s %d\n", cmd_path, main->cmd_info->outfile_fd);
+		printf("TEST %s %d\n", cmd_path, main->cmd_info->outfile->fd);
 		if (tube != -1)
 		{
 			printf("PRINTF\n");
 			dup2(tube, STDIN_FILENO);
 			close(tube);
 		}
-		if (main->cmd_info->outfile_fd != -1)
+		if (main->cmd_info->outfile->fd != -1)
 		{
 			printf("PRINTF2\n");
-			dup2(main->cmd_info->outfile_fd, STDOUT_FILENO);
+			dup2(main->cmd_info->outfile->fd, STDOUT_FILENO);
 			printf("PRINTF3\n");
-			//close(main->cmd_info->outfile_fd);
+			//close(main->cmd_info->outfile->fd);
 		}
 		if (execve(cmd_path, (char *const *)main->cmd_info->argv, envp) == -1)
 		{
-			close(main->cmd_info->outfile_fd);
+			close(main->cmd_info->outfile->fd);
 			perror("execve failed");
 			exit(EXIT_FAILURE);
 		}
