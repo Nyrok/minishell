@@ -39,6 +39,7 @@ typedef struct s_main
 	t_history		*history;
 	t_token			*tokens;
 	t_cmd_info		*cmd_info;
+	t_redir			*tube;
 }	t_main;
 
 void		line_reader(t_main *main_struct);
