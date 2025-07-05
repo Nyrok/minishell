@@ -364,54 +364,54 @@ int	executor(char *cmd, char **paths, struct s_main *main)
 	hasinfile(main);
 	if (nbcmds == 1)
 	{
-		setup_fd(&main->cmd_info);
-		printf("EEE = %d\n", main->cmd_info->infile_fd);
-		lcmd_searcher(main->cmd_info->cmd, paths, envp, main->cmd_info->infile_fd, main->cmd_info->outfile_fd, &pids, main); // Si il n'y a pas de outfile on met NULL;
+		setup_cmd_redirs(main->cmd_info);
+		printf("EEE = %d\n", main->cmd_info->infile->fd);
+		lcmd_searcher(main->cmd_info->cmd, paths, envp, main->cmd_info->infile->fd, main->cmd_info->outfile->fd, &pids, main); // Si il n'y a pas de outfile on met NULL;
 	}
 	else
 	{
 		while (nbcmds > 1)
 		{
-			setup_fd(&main->cmd_info);
-			if (main->cmd_info->infile_fd != -1 && main->cmd_info->outfile_fd == -1)
+			setup_cmd_redirs(main->cmd_info);
+			if (main->cmd_info->infile->fd != -1 && main->cmd_info->outfile->fd == -1)
 			{
-				printf("1 0 %s %d\n", main->cmd_info->cmd, main->cmd_info->infile_fd);
-				tube = cmd_searcher(main->cmd_info->cmd, paths, envp, main->cmd_info->infile_fd, main->cmd_info->argv, &pids); // Le tube passera toujours en paramètre sauf en cas de infile qui du coup sera prioritaire
+				printf("1 0 %s %d\n", main->cmd_info->cmd, main->cmd_info->infile->fd);
+				tube = cmd_searcher(main->cmd_info->cmd, paths, envp, main->cmd_info->infile->fd, main->cmd_info->argv, &pids); // Le tube passera toujours en paramètre sauf en cas de infile qui du coup sera prioritaire
 				printf("ENDED\n");
 			}
-			else if (main->cmd_info->infile_fd == -1 && main->cmd_info->outfile_fd == -1)
+			else if (main->cmd_info->infile->fd == -1 && main->cmd_info->outfile->fd == -1)
 			{
 				printf("0 0\n");
 				tube = cmd_searcher(main->cmd_info->cmd, paths, envp, tube, main->cmd_info->argv, &pids); // Pas de infile donc on prend le tube en param
 			}
-			else if (main->cmd_info->infile_fd == -1 && main->cmd_info->outfile_fd != -1)
+			else if (main->cmd_info->infile->fd == -1 && main->cmd_info->outfile->fd != -1)
 			{
 				printf("0 1\n");
-				lcmd_searcher(main->cmd_info->cmd, paths, envp, tube, main->cmd_info->outfile_fd, &pids, main); // Si on fait ls | cat -e > outfile.txt | cat -e > outfile2.txt par exemple, le premier cat -e enverra les données vers outfile donc le second sera vide, il faut donc prendre cela en compte et cette fonction gère cela
+				lcmd_searcher(main->cmd_info->cmd, paths, envp, tube, main->cmd_info->outfile->fd, &pids, main); // Si on fait ls | cat -e > outfile.txt | cat -e > outfile2.txt par exemple, le premier cat -e enverra les données vers outfile donc le second sera vide, il faut donc prendre cela en compte et cette fonction gère cela
 				tube = -1;
 			}
-			else if (main->cmd_info->infile_fd != -1 && main->cmd_info->outfile_fd != -1)
+			else if (main->cmd_info->infile->fd != -1 && main->cmd_info->outfile->fd != -1)
 			{
 				printf("1 1\n");
-				lcmd_searcher(main->cmd_info->cmd, paths, envp, main->cmd_info->infile_fd, main->cmd_info->outfile_fd, &pids, main); // mettre infile au lieu de tube
+				lcmd_searcher(main->cmd_info->cmd, paths, envp, main->cmd_info->infile->fd, main->cmd_info->outfile->fd, &pids, main); // mettre infile au lieu de tube
 				tube = -1;
 			}
 			nbcmds--;
 			main->cmd_info = main->cmd_info->next; // Faire un temp pour free main->cmd_info
 		}
-		setup_fd(&main->cmd_info);
+		setup_cmd_redirs(main->cmd_info);
 		if (main->cmd_info == NULL)
 			printf("MMMOPMONO\n");
 		//printf("NB = %d, %d\n", nbcmds, hasinfile(main));
-		if (nbcmds == 1 && /*tube != -1*/ main->cmd_info->infile_fd == -1)
+		if (nbcmds == 1 && /*tube != -1*/ main->cmd_info->infile->fd == -1)
 		{
 			printf("LOL2\n");
-			lcmd_searcher(main->cmd_info->cmd, paths, envp, tube, main->cmd_info->outfile_fd, &pids, main); // Si il n'y a pas de outfile on met NULL;
+			lcmd_searcher(main->cmd_info->cmd, paths, envp, tube, main->cmd_info->outfile->fd, &pids, main); // Si il n'y a pas de outfile on met NULL;
 		}
-		else if (nbcmds == 1 && main->cmd_info->infile_fd != -1)
+		else if (nbcmds == 1 && main->cmd_info->infile->fd != -1)
 		{
-			printf("LOL3 %d\n", main->cmd_info->infile_fd);
-			lcmd_searcher(main->cmd_info->cmd, paths, envp, main->cmd_info->infile_fd, main->cmd_info->outfile_fd, &pids, main); 
+			printf("LOL3 %d\n", main->cmd_info->infile->fd);
+			lcmd_searcher(main->cmd_info->cmd, paths, envp, main->cmd_info->infile->fd, main->cmd_info->outfile->fd, &pids, main); 
 		}
 	}
 	end_pids(&pids);

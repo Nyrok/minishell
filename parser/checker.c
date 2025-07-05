@@ -14,22 +14,27 @@
 
 int	check_tokens(t_token *tokens)
 {
-	t_token	*token;
-
-	token = tokens;
-	while (token)
+	while (tokens)
 	{
-		if (token->type != WORD && token->type != END)
+		if (tokens->type != WORD && tokens->type != END)
 		{
-			if (!token->next || token->next->type != WORD)
+			if (tokens->type == PIPE && tokens->next)
 			{
-				token->next->type = INVALID;
-				printf("Unexpected token '%s' after '%s'\n", \
-					token->next->word, token->word);
+				if (tokens->next->type != END && tokens->next->type != PIPE)
+				{
+					tokens = tokens->next;
+					continue ;
+				}
+			}
+			if (!tokens->next || tokens->next->type != WORD)
+			{
+				tokens->next->type = INVALID;
+				printf("Unexpected tokens '%s' after '%s'\n", \
+					tokens->next->word, tokens->word);
 				return (0);
 			}
 		}
-		token = token->next;
+		tokens = tokens->next;
 	}
 	return (1);
 }
