@@ -113,7 +113,7 @@ void	last_executor(char *cmd_path, t_main *main, char **envp, int tube, pid_t **
 	}
 	else
 	{
-		while (main->cmd_info->argv[i])
+    while (main->cmd_info->argv[i])
 			free(main->cmd_info->argv[i++]);
 		free(main->cmd_info->argv);
 		// if (tube != -1)

@@ -94,7 +94,7 @@ t_cmd_info	*parse_tokens(t_token *tokens)
 		redir = cmd_info->redirs;
 		while (redir)
 		{
-			printf(" REDIR %i %s\n", redir->type, redir->filename);
+			printf(" REDIR %i %s %i\n", redir->type, redir->filename, redir->good);
 			redir = redir->next;
 		}
 		cmd_info = cmd_info->next;

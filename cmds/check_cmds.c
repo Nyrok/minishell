@@ -12,26 +12,6 @@
 
 #include "minishell.h"
 
-int	args_counter(char **args)
-{
-	int	i;
-
-	i = 0;
-	while (args[i])
-		i++;
-	return (i);
-}
-
-void	free_args(char **args)
-{
-	int	i;
-
-	i = 0;
-	while (args[i])
-		free(args[i++]);
-	free(args);
-}
-
 int	builtin_exec(t_cmd_info *cmd_info, t_envp **datas, t_history *history)
 {
 	if (ft_strncmp(cmd_info->cmd, "cd", 2) == 0)
