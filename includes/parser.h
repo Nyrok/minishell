@@ -18,6 +18,7 @@
 typedef struct s_redir
 {
 	t_token_type		type;
+	int					io;
 	char				*filename;
 	char				*content;
 	int					fd;

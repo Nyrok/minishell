@@ -12,22 +12,26 @@
 
 #include "minishell.h"
 
-t_redir	*create_redir(char *filename, char *content, t_token_type type)
+t_redir *create_redir(char *filename, char *content, t_token_type type)
 {
-	t_redir	*redir;
+	t_redir *redir;
 
 	redir = ft_calloc(1, sizeof(t_redir));
 	redir->filename = filename;
 	redir->content = content;
 	redir->type = type;
-	redir->fd = -1;
+	redir->io = -1;
+	if (type == REDIN || type == HEREDOC)
+		redir->io = STDIN_FILENO;
+	else if (type == REDOUT || type == APPEND)
+		redir->io = STDOUT_FILENO;
 	redir->good = 1;
 	return (redir);
 }
 
-void	append_redir(t_redir **head, t_redir *new)
+void append_redir(t_redir **head, t_redir *new)
 {
-	t_redir	*tmp;
+	t_redir *tmp;
 
 	if (!*head)
 		*head = new;
@@ -36,28 +40,28 @@ void	append_redir(t_redir **head, t_redir *new)
 		tmp = *head;
 		while (tmp->next)
 		{
-			if (new && tmp->type == new->type)
+			if (new && tmp->io == new->io)
 				tmp->good = 0;
 			tmp = tmp->next;
 		}
 		tmp->next = new;
-		if (new && tmp->type == new->type)
+		if (new && tmp->io == new->io)
 			tmp->good = 0;
 	}
 }
 
-void	setup_fd(t_cmd_info **cmd_info)
+void setup_cmd_redirs(t_cmd_info *cmd_info)
 {
-	t_cmd_info	*actual;
+	t_cmd_info *actual;
 
-	actual = *cmd_info;
+	actual = cmd_info;
 	while (actual->redirs != NULL)
 	{
 		if (actual->redirs->good)
 		{
-			if (actual->redirs->type == REDIN || actual->redirs->type == HEREDOC)
+			if (actual->redirs->io == STDIN_FILENO)
 				actual->infile_redir = actual->redirs;
-			else if (actual->redirs->type == REDOUT || actual->redirs->type == APPEND)
+			else if (actual->redirs->io == STDOUT_FILENO)
 				actual->outfile_redir = actual->redirs;
 		}
 		actual->redirs = actual->redirs->next;
