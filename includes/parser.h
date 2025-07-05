@@ -31,8 +31,8 @@ typedef struct s_cmd_info
 	char				*cmd;
 	int					argc;
 	char				**argv;
-	int					infile_fd;
-	int					outfile_fd;
+	t_redir				*infile_redir;
+	t_redir				*outfile_redir;
 	struct s_cmd_info	*next;
 }	t_cmd_info;
 
