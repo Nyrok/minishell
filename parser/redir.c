@@ -12,9 +12,9 @@
 
 #include "minishell.h"
 
-t_redir *create_redir(char *filename, char *content, t_token_type type)
+t_redir	*create_redir(char *filename, char *content, t_token_type type, int io)
 {
-	t_redir *redir;
+	t_redir	*redir;
 
 	redir = ft_calloc(1, sizeof(t_redir));
 	redir->filename = filename;
@@ -29,9 +29,9 @@ t_redir *create_redir(char *filename, char *content, t_token_type type)
 	return (redir);
 }
 
-void append_redir(t_redir **head, t_redir *new)
+void	append_redir(t_redir **head, t_redir *new)
 {
-	t_redir *tmp;
+	t_redir	*tmp;
 
 	if (!*head)
 		*head = new;
@@ -50,9 +50,9 @@ void append_redir(t_redir **head, t_redir *new)
 	}
 }
 
-void setup_cmd_redirs(t_cmd_info *cmd_info)
+void	setup_cmd_redirs(t_cmd_info *cmd_info)
 {
-	t_cmd_info *actual;
+	t_cmd_info	*actual;
 
 	actual = cmd_info;
 	while (actual->redirs != NULL)
