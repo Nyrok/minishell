@@ -60,9 +60,9 @@ void	setup_cmd_redirs(t_cmd_info *cmd_info)
 		if (actual->redirs->good)
 		{
 			if (actual->redirs->io == STDIN_FILENO)
-				actual->infile_redir = actual->redirs;
+				actual->infile = actual->redirs;
 			else if (actual->redirs->io == STDOUT_FILENO)
-				actual->outfile_redir = actual->redirs;
+				actual->outfile = actual->redirs;
 		}
 		actual->redirs = actual->redirs->next;
 	}
