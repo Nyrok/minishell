@@ -53,10 +53,10 @@ void	setup_fd(t_cmd_info **cmd_info)
 	actual = *cmd_info;
 	while (actual->redirs != NULL)
 	{
-		if (actual->redirs->type == 3 && actual->redirs->good == 1)
-			actual->infile_fd = actual->redirs;
-		if (actual->redirs->type == 3 && actual->redirs->good == 1)
-			actual->infile_fd = actual->redirs;
+		if (actual->redirs->type == REDIN && actual->redirs->good)
+			actual->infile_fd = actual->redirs->fd;
+		else if (actual->redirs->type == REDOUT && actual->redirs->good)
+			actual->outfile_fd = actual->redirs->fd;
 		actual->redirs = actual->redirs->next;
 	}
 }
