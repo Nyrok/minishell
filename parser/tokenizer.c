@@ -57,7 +57,7 @@ t_token	*tokenize_input(const char *input)
 			append_token(&tokens, create_token(ft_strdup("|"), PIPE));
 		else if (input[i] == '>' || input[i] == '<')
 			append_token(&tokens, get_redir_token(input, &i));
-		else
+		else if (input[i] != '\0')
 			append_token(&tokens, create_token(get_word(input, &i), WORD));
 	}
 	append_token(&tokens, create_token(NULL, END));
