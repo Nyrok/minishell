@@ -7,3 +7,5 @@ minishell
 philo
 *.supp
 *.txt
+in*
+out*

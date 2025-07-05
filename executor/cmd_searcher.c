@@ -71,7 +71,7 @@ void	end_pids(pid_t **pids)
 	free(actual);
 }
 
-void	last_executor(char *cmd_path, char **args, char **envp, int tube, int file, pid_t **pids)
+void	last_executor(char *cmd_path, t_main *main, char **envp, int tube, pid_t **pids)
 {
 	pid_t	pid;
 	//int		status;
@@ -81,41 +81,41 @@ void	last_executor(char *cmd_path, char **args, char **envp, int tube, int file,
 	pid = fork();
 	if (pid == 0)
 	{
-		while (args[i])
+		while (main->cmd_info->argv[i])
 		{
-			printf("ARG %s\n", args[i]);
+			printf("ARG %s\n", main->cmd_info->argv[i]);
 			i++;
 		}
 		i = 0;
-		printf("TEST %s\n", cmd_path);
+		printf("TEST %s %d\n", cmd_path, main->cmd_info->outfile->fd);
 		if (tube != -1)
 		{
 			printf("PRINTF\n");
 			dup2(tube, STDIN_FILENO);
 			close(tube);
 		}
-		if (file != -1)
+		if (main->cmd_info->outfile->fd != -1)
 		{
 			printf("PRINTF2\n");
-			dup2(file, STDOUT_FILENO);
+			dup2(main->cmd_info->outfile->fd, STDOUT_FILENO);
 			printf("PRINTF3\n");
-			//close(file);
+			//close(main->cmd_info->outfile->fd);
 		}
-		if (execve(cmd_path, (char *const *)args, envp) == -1)
+		if (execve(cmd_path, (char *const *)main->cmd_info->argv, envp) == -1)
 		{
-			close(file);
+			close(main->cmd_info->outfile->fd);
 			perror("execve failed");
 			exit(EXIT_FAILURE);
 		}
-		// while (args[i])
-		// 	free(args[i++]);
-		// free(args);
+		// while (main->cmd_info->argv[i])
+		// 	free(main->cmd_info->argv[i++]);
+		// free(main->cmd_info->argv);
 	}
 	else
 	{
-		while (args[i])
-			free(args[i++]);
-		free(args);
+    while (main->cmd_info->argv[i])
+			free(main->cmd_info->argv[i++]);
+		free(main->cmd_info->argv);
 		// if (tube != -1)
 		// 	close(tube);
 		// if (file != -1)
@@ -147,7 +147,7 @@ char	*paths_searcher(char *cmd, char *cmd_path, char *paths)
 	return (cmd_path);
 }
 
-void	lcmd_searcher(char *cmd, char **paths, char **envp, int tube, int file, pid_t **pids, t_main *main)
+void	lcmd_searcher(t_main *main, char **envp, int tube, pid_t **pids)
 {
 	int		i;
 	char	*cmd_path;
@@ -155,25 +155,25 @@ void	lcmd_searcher(char *cmd, char **paths, char **envp, int tube, int file, pid
 	char	**tmp;
 
 	i = 0;
-	if (cmd[0] == '.' && cmd[1] == '/')
+	if (main->cmd_info->cmd[0] == '.' && main->cmd_info->cmd[1] == '/')
 	{
-		tmp = ft_split(cmd, ' ');
+		tmp = ft_split(main->cmd_info->cmd, ' ');
 		cmd_path = ft_strdup(tmp[0]);
 		while (tmp[i])
 			free(tmp[i++]);
 		free(tmp);
-		last_executor(cmd_path, main->cmd_info->argv, envp, tube, file, pids);
+		last_executor(cmd_path, main, envp, tube, pids);
 		free(cmd_path);
 	}
 	i = 0;
-	while (paths[i])
+	while (main->cmds_paths->paths[i])
 	{
-		cmd_path = paths_searcher(cmd, cmd_path, paths[i]);
+		cmd_path = paths_searcher(main->cmd_info->cmd, cmd_path, main->cmds_paths->paths[i]);
 		cmdopener = open(cmd_path, O_RDONLY);
 		if (cmdopener != -1)
 		{
 			close(cmdopener);
-			last_executor(cmd_path, main->cmd_info->argv, envp, tube, file, pids);
+			last_executor(cmd_path, main, envp, tube, pids);
 			free(cmd_path);
 			break ;
 		}
@@ -183,7 +183,7 @@ void	lcmd_searcher(char *cmd, char **paths, char **envp, int tube, int file, pid
 	}
 }
 
-int	cmd_executor(char *cmd_path, char **args, char **envp, int file, pid_t  **pids)
+int	cmd_executor(char *cmd_path, char **args, char **envp, int file, pid_t **pids)
 {
 	pid_t	pid;
 	//int		status;
@@ -227,7 +227,7 @@ int	cmd_executor(char *cmd_path, char **args, char **envp, int file, pid_t  **pi
 	return (tube[0]);
 }
 
-int	cmd_searcher(char *cmd, char **paths, char **envp, int file, char **args, pid_t **pids)
+int	cmd_searcher(t_main *main, char **envp, int file, char **args, pid_t **pids)
 {
 	int		i;
 	char	*cmd_path;
@@ -236,9 +236,9 @@ int	cmd_searcher(char *cmd, char **paths, char **envp, int file, char **args, pi
 	char	**tmp;
 
 	i = 0;
-	if (cmd[0] == '.' && cmd[1] == '/')
+	if (main->cmd_info->cmd[0] == '.' && main->cmd_info->cmd[1] == '/')
 	{
-		tmp = ft_split(cmd, ' ');
+		tmp = ft_split(main->cmd_info->cmd, ' ');
 		cmd_path = ft_strdup(tmp[0]);
 		while (tmp[i])
 			free(tmp[i++]);
@@ -247,9 +247,9 @@ int	cmd_searcher(char *cmd, char **paths, char **envp, int file, char **args, pi
 		free(cmd_path);
 	}
 	i = 0;
-	while (paths[i])
+	while (main->cmds_paths->paths[i])
 	{
-		cmd_path = paths_searcher(cmd, cmd_path, paths[i]);
+		cmd_path = paths_searcher(main->cmd_info->cmd, cmd_path, main->cmds_paths->paths[i]);
 		cmdopener = open(cmd_path, O_RDONLY);
 		if (cmdopener != -1)
 		{
@@ -281,51 +281,34 @@ int	totalcmds(char *cmd)
 	return (total);
 }
 
-// void	get_cmd(t_main->cmd_info **main->cmd_info, char *cmd)
-// {
-// 	t_main->cmd_info	*actual;
-
-// 	(void)cmd;
-// 	actual = *main->cmd_info;
-// 	actual->infile = ft_strdup(next"infile.txt");
-// 	actual->fd_infile = open("infile.txt", O_RDWR);
-// 	actual->outfile = ft_strdup("outfile.txt");
-// 	actual->fd_outfile = open("outfile.txt", O_RDWR);args
-// 	actual->next = NULL;
-// }
-
-// char	**get_args(char *cmd)
-// {
-// 	char	**args;
-
-// 	(void)cmd;
-// 	args = malloc(3 * sizeof(char *));
-// 	args[0] = ft_strdup("ls");
-// 	args[1] = ft_strdup("-a");
-// 	args[2] = NULL;
-// 	return (args);
-// }
-
 int	hasinfile(struct s_main *main)
 {
-	t_redir	*actual;
-	int		total;
+	t_cmd_info	*actual_cmd;
+	t_redir		*actual_redir;
+	int			total;
 
 	total = 0;
-	actual = main->cmd_info->redirs;
-	while (actual != NULL)
+	actual_cmd = main->cmd_info;
+	printf("AV\n");
+	while (actual_cmd != NULL)
 	{
-		actual->fd = open(actual->filename, O_RDWR); // Attention il faudra mettre en readonly le
-		printf(">>>\n");
-		printf("FILE = %s\n", actual->filename);
-		if (actual->fd == -1)
+		actual_redir = actual_cmd->redirs;
+		while (actual_redir != NULL)
 		{
-			printf("Erreur de permissions lors de l'ouverture de %s\n", actual->filename);
+			actual_redir->fd = open(actual_redir->filename, O_RDWR);
+			printf(">>>\n");
+			printf("FILE = %s\n", actual_redir->filename);
+			if (actual_redir->fd == -1)
+			{
+				printf("Erreur de permissions lors de l'ouverture de %s\n", actual_redir->filename);
+			}
+			if (actual_redir->type == 3)
+				total = 1;
+			actual_redir = actual_redir->next;
 		}
-		if (actual->type == 3)
-			total = 1;
-		actual = actual->next;
+		actual_cmd = actual_cmd->next;
 	}
+	printf("AP\n");
 	return (total);
 }
 
@@ -346,7 +329,7 @@ int	hasoutfile(struct s_main *main)
 	return (total);
 }
 
-int	executor(char *cmd, char **paths, struct s_main *main)
+int	executor(char *cmd, struct s_main *main)
 {
 	pid_t		*pids;
 	int			nbcmds;
@@ -354,9 +337,7 @@ int	executor(char *cmd, char **paths, struct s_main *main)
 	char		**envp;
 	int			i;
 
-	// main->cmd_info = malloc(sizeof(t_main->cmd_info));
 	envp = envp_to_str(main->datas);
-	// get_cmd(&main->cmd_info, cmd);
 	nbcmds = totalcmds(cmd);
 	pids = malloc((totalcmds(cmd) + 1) * sizeof(pid_t));
 	pids[0] = 0;
@@ -366,7 +347,7 @@ int	executor(char *cmd, char **paths, struct s_main *main)
 	{
 		setup_cmd_redirs(main->cmd_info);
 		printf("EEE = %d\n", main->cmd_info->infile->fd);
-		lcmd_searcher(main->cmd_info->cmd, paths, envp, main->cmd_info->infile->fd, main->cmd_info->outfile->fd, &pids, main); // Si il n'y a pas de outfile on met NULL;
+		lcmd_searcher(main, envp, main->cmd_info->infile->fd, &pids);
 	}
 	else
 	{
@@ -376,42 +357,41 @@ int	executor(char *cmd, char **paths, struct s_main *main)
 			if (main->cmd_info->infile->fd != -1 && main->cmd_info->outfile->fd == -1)
 			{
 				printf("1 0 %s %d\n", main->cmd_info->cmd, main->cmd_info->infile->fd);
-				tube = cmd_searcher(main->cmd_info->cmd, paths, envp, main->cmd_info->infile->fd, main->cmd_info->argv, &pids); // Le tube passera toujours en paramètre sauf en cas de infile qui du coup sera prioritaire
+				tube = cmd_searcher(main, envp, main->cmd_info->infile->fd, main->cmd_info->argv, &pids);
 				printf("ENDED\n");
 			}
 			else if (main->cmd_info->infile->fd == -1 && main->cmd_info->outfile->fd == -1)
 			{
 				printf("0 0\n");
-				tube = cmd_searcher(main->cmd_info->cmd, paths, envp, tube, main->cmd_info->argv, &pids); // Pas de infile donc on prend le tube en param
+				tube = cmd_searcher(main, envp, tube, main->cmd_info->argv, &pids);
 			}
 			else if (main->cmd_info->infile->fd == -1 && main->cmd_info->outfile->fd != -1)
 			{
 				printf("0 1\n");
-				lcmd_searcher(main->cmd_info->cmd, paths, envp, tube, main->cmd_info->outfile->fd, &pids, main); // Si on fait ls | cat -e > outfile.txt | cat -e > outfile2.txt par exemple, le premier cat -e enverra les données vers outfile donc le second sera vide, il faut donc prendre cela en compte et cette fonction gère cela
+				lcmd_searcher(main, envp, tube, &pids);
 				tube = -1;
 			}
 			else if (main->cmd_info->infile->fd != -1 && main->cmd_info->outfile->fd != -1)
 			{
 				printf("1 1\n");
-				lcmd_searcher(main->cmd_info->cmd, paths, envp, main->cmd_info->infile->fd, main->cmd_info->outfile->fd, &pids, main); // mettre infile au lieu de tube
+				lcmd_searcher(main, envp, main->cmd_info->infile->fd, &pids);
 				tube = -1;
 			}
 			nbcmds--;
-			main->cmd_info = main->cmd_info->next; // Faire un temp pour free main->cmd_info
+			main->cmd_info = main->cmd_info->next;
 		}
 		setup_cmd_redirs(main->cmd_info);
 		if (main->cmd_info == NULL)
 			printf("MMMOPMONO\n");
-		//printf("NB = %d, %d\n", nbcmds, hasinfile(main));
 		if (nbcmds == 1 && /*tube != -1*/ main->cmd_info->infile->fd == -1)
 		{
 			printf("LOL2\n");
-			lcmd_searcher(main->cmd_info->cmd, paths, envp, tube, main->cmd_info->outfile->fd, &pids, main); // Si il n'y a pas de outfile on met NULL;
+			lcmd_searcher(main, envp, tube, &pids);
 		}
 		else if (nbcmds == 1 && main->cmd_info->infile->fd != -1)
 		{
 			printf("LOL3 %d\n", main->cmd_info->infile->fd);
-			lcmd_searcher(main->cmd_info->cmd, paths, envp, main->cmd_info->infile->fd, main->cmd_info->outfile->fd, &pids, main); 
+			lcmd_searcher(main, envp, main->cmd_info->infile->fd, &pids); 
 		}
 	}
 	end_pids(&pids);
