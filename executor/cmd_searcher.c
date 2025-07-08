@@ -298,9 +298,7 @@ int	hasinfile(struct s_main *main)
 			printf(">>>\n");
 			printf("FILE = %s\n", actual_redir->filename);
 			if (actual_redir->fd == -1)
-			{
 				printf("Erreur de permissions lors de l'ouverture de %s\n", actual_redir->filename);
-			}
 			if (actual_redir->type == 3)
 				total = 1;
 			actual_redir = actual_redir->next;
@@ -335,81 +333,57 @@ void	setup_tube(t_main *main)
 	main->tube->fd = -1;
 }
 
-int	executor(char *cmd, struct s_main *main)
+int	onecmdexector(t_main *main, char **envp, pid_t *pids)
 {
-	pid_t		*pids;
-	int			nbcmds;
-	char		**envp;
-	int			i;
+	setup_cmd_redirs(main->cmd_info);
+	if (main->cmd_info->infile != NULL)
+		lcmd_searcher(main, envp, main->cmd_info->infile->fd, &pids);
+	else
+		lcmd_searcher(main, envp, -1, &pids);
+	return (1);
+}
 
-	envp = envp_to_str(main->datas);
-	nbcmds = totalcmds(cmd);
-	pids = malloc((totalcmds(cmd) + 1) * sizeof(pid_t));
+int	multiplecmdexector(t_main *main, char **envp, pid_t *pids, int nbcmds)
+{
+	if (main->cmd_info->infile != NULL && main->cmd_info->outfile == NULL && nbcmds > 1)
+	{
+		printf("1 0 %s %d\n", main->cmd_info->cmd, main->cmd_info->infile->fd);
+		main->tube->fd = cmd_searcher(main, envp, main->cmd_info->infile->fd, main->cmd_info->argv, &pids);
+		printf("ENDED\n");
+	}
+	else if (main->cmd_info->infile == NULL && main->cmd_info->outfile == NULL && nbcmds > 1)
+	{
+		printf("0 0\n");
+		main->tube->fd = cmd_searcher(main, envp, main->tube->fd, main->cmd_info->argv, &pids);
+	}
+	else if (main->cmd_info->infile == NULL)
+	{
+		printf("0 1\n");
+		lcmd_searcher(main, envp, main->tube->fd, &pids);
+		main->tube->fd = -1;
+	}
+	else if (main->cmd_info->infile != NULL)
+	{
+		printf("1 1\n");
+		lcmd_searcher(main, envp, main->cmd_info->infile->fd, &pids);
+		main->tube->fd = -1;
+	}
+	return (1);
+}
+
+int	executor_setup(t_main *main, pid_t *pids, int *nbcmds, char *cmd)
+{
+	*nbcmds = totalcmds(cmd);
 	pids[0] = 0;
 	hasinfile(main);
 	setup_tube(main);
-	printf("tube = %d\n", main->tube->fd);
-	printf("MAIS ZZZ %d\n", nbcmds);
-	if (nbcmds == 1)
-	{
-		printf("MAIS NAN\n");
-		setup_cmd_redirs(main->cmd_info);
-		printf("MAIS NAN\n");
-		//printf("EEE = %d\n", main->cmd_info->infile->fd);
-		if (main->cmd_info->infile != NULL)
-			lcmd_searcher(main, envp, main->cmd_info->infile->fd, &pids);
-		else
-			lcmd_searcher(main, envp, -1, &pids);
-	}
-	else
-	{
-		while (nbcmds > 1)
-		{
-			printf("AV SETUP\n");
-			setup_cmd_redirs(main->cmd_info);
-			printf("AP SETUP\n");
+	return (1);
+}
 
-			if (main->cmd_info->infile != NULL && main->cmd_info->outfile == NULL)
-			{
-				printf("1 0 %s %d\n", main->cmd_info->cmd, main->cmd_info->infile->fd);
-				main->tube->fd = cmd_searcher(main, envp, main->cmd_info->infile->fd, main->cmd_info->argv, &pids);
-				printf("ENDED\n");
-			}
-			else if (main->cmd_info->infile == NULL && main->cmd_info->outfile == NULL)
-			{
-				printf("0 0\n");
-				main->tube->fd = cmd_searcher(main, envp, main->tube->fd, main->cmd_info->argv, &pids);
-			}
-			else if (main->cmd_info->infile == NULL && main->cmd_info->outfile != NULL)
-			{
-				printf("0 1\n");
-				lcmd_searcher(main, envp, main->tube->fd, &pids);
-				main->tube->fd = -1;
-			}
-			else if (main->cmd_info->infile != NULL && main->cmd_info->outfile != NULL)
-			{
-				printf("1 1\n");
-				lcmd_searcher(main, envp, main->cmd_info->infile->fd, &pids);
-				main->tube->fd = -1;
-			}
-			nbcmds--;
-			main->cmd_info = main->cmd_info->next;
-		}
-		setup_cmd_redirs(main->cmd_info);
-		if (main->cmd_info == NULL)
-			printf("MMMOPMONO\n");
-		if (nbcmds == 1 && /*tube != -1*/ main->cmd_info->infile == NULL)
-		{
-			printf("LOL2\n");
-			lcmd_searcher(main, envp, main->tube->fd, &pids);
-		}
-		else if (nbcmds == 1 && main->cmd_info->infile != NULL)
-		{
-			printf("LOL3 %d\n", main->cmd_info->infile->fd);
-			lcmd_searcher(main, envp, main->cmd_info->infile->fd, &pids);
-		}
-	}
-	end_pids(&pids);
+int	no_leaks(t_main *main, char **envp)
+{
+	int	i;
+
 	i = 0;
 	while (envp[i])
 	{
@@ -418,5 +392,30 @@ int	executor(char *cmd, struct s_main *main)
 	}
 	free(envp);
 	free(main->cmd_info);
+	return (1);
+}
+
+int	executor(char *cmd, struct s_main *main)
+{
+	pid_t		*pids;
+	int			nbcmds;
+	char		**envp;
+
+	pids = malloc((totalcmds(cmd) + 1) * sizeof(pid_t));
+	envp = envp_to_str(main->datas);
+	executor_setup(main, pids, &nbcmds, cmd);
+	if (nbcmds == 1)
+		onecmdexector(main, envp, pids);
+	else
+	{
+		while (nbcmds > 0)
+		{
+			setup_cmd_redirs(main->cmd_info);
+			multiplecmdexector(main, envp, pids, nbcmds--);
+			main->cmd_info = main->cmd_info->next;
+		}
+	}
+	end_pids(&pids);
+	no_leaks(main, envp);
 	return (1);
 }
