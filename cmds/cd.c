@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int	cd(int total_args, const char *path)
+int	cd(t_main *main, int total_args, const char *path)
 {
 	if (total_args > 2)
 	{
@@ -29,5 +29,8 @@ int	cd(int total_args, const char *path)
 		printf("Cannot enter into the folder.\n");
 		return (0);
 	}
+	if (main->tube != NULL && main->tube->fd >= 0)
+		close(main->tube->fd);
+	main->tube = NULL;
 	return (1);
 }

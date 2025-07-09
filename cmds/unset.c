@@ -78,9 +78,12 @@ void	unset_list_maker(int argc, char **argv, t_envp **datas)
 	}
 }
 
-void	unset(int argc, char **argv, t_envp **datas)
+void	unset(t_main *main, int argc, char **argv, t_envp **datas)
 {
 	if (datas == NULL || argc == 0)
 		return ;
 	unset_list_maker(argc, argv, datas);
+	if (main->tube != NULL && main->tube->fd >= 0)
+		close(main->tube->fd);
+	main->tube = NULL;
 }

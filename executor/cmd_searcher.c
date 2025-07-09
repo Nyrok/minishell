@@ -336,6 +336,8 @@ void	setup_tube(t_main *main)
 int	onecmdexector(t_main *main, char **envp, pid_t *pids)
 {
 	setup_cmd_redirs(main->cmd_info);
+	if (builtin_exec(main, main->cmd_info, &main->datas, main->history, 1) == 1)
+		return (1);
 	if (main->cmd_info->infile != NULL)
 		lcmd_searcher(main, envp, main->cmd_info->infile->fd, &pids);
 	else
@@ -345,11 +347,13 @@ int	onecmdexector(t_main *main, char **envp, pid_t *pids)
 
 int	multiplecmdexector(t_main *main, char **envp, pid_t *pids, int nbcmds)
 {
+	if (builtin_exec(main, main->cmd_info, &main->datas, main->history, nbcmds) == 1)
+		return (1);
 	if (main->cmd_info->infile != NULL && main->cmd_info->outfile == NULL && nbcmds > 1)
 	{
 		printf("1 0 %s %d\n", main->cmd_info->cmd, main->cmd_info->infile->fd);
 		main->tube->fd = cmd_searcher(main, envp, main->cmd_info->infile->fd, main->cmd_info->argv, &pids);
-		printf("ENDED\n");
+		printf("89¨@#°2+1/ENDED\n");
 	}
 	else if (main->cmd_info->infile == NULL && main->cmd_info->outfile == NULL && nbcmds > 1)
 	{

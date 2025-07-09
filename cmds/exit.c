@@ -14,5 +14,5 @@
 
 void	ft_exit(void)
 {
-	exit(EXIT_SUCCESS);
+	exit(EXIT_SUCCESS); // RAJOUTER LES FREE
 }

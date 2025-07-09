@@ -50,5 +50,14 @@ void		history_cleaner(t_history **history);
 void		print_history(t_history *history);
 char		**envp_to_str(t_envp *envp);
 int			executor(char *cmd, struct s_main *main);
+int			builtin_exec(t_main *main, t_cmd_info *cmd_info, t_envp **datas, t_history *history, int nbcmds);
+int			cd(t_main *main, int total_args, const char *path);
+int			echo(t_main *main, int argc, const char **argv, int nbcmds);
+void		export(t_main *main, int argc, char **argv, t_envp **datas, int nbcmds);
+void		unset(t_main *main, int argc, char **argv, t_envp **datas);
+int			env(t_main *main, t_envp *datas, int nbcmds);
+int			pwd(t_main *main, int nbcmds);
+void		ft_exit(void);
+int			builtin_exec(t_main *main, t_cmd_info *cmd_info, t_envp **datas, t_history *history, int nbcmds);
 
 #endif
