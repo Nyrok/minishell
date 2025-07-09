@@ -89,7 +89,7 @@ void	last_executor(char *cmd_path, t_main *main, char **envp, int tube, pid_t **
 		i = 0;
 		if (tube != -1)
 		{
-			printf("PRINTF\n");
+			printf("PRINTF %d, %s, %d\n", tube, main->cmd_info->infile->filename, main->cmd_info->infile->fd);
 			dup2(tube, STDIN_FILENO);
 			close(tube);
 		}
@@ -294,7 +294,12 @@ int	hasinfile(struct s_main *main)
 		actual_redir = actual_cmd->redirs;
 		while (actual_redir != NULL)
 		{
-			actual_redir->fd = open(actual_redir->filename, O_RDWR);
+			if (actual_redir->type == APPEND)
+				actual_redir->fd = open(actual_redir->filename, O_CREAT | O_WRONLY | O_APPEND, 0777);
+			else if (actual_redir->type == REDIN)
+				actual_redir->fd = open(actual_redir->filename, O_RDONLY, 0444);
+			else
+				actual_redir->fd = open(actual_redir->filename, O_CREAT | O_WRONLY | O_TRUNC, 0777);
 			printf(">>>\n");
 			printf("FILE = %s\n", actual_redir->filename);
 			if (actual_redir->fd == -1)
