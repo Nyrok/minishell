@@ -34,8 +34,8 @@ void	line_reader(t_main *main)
 				add_history(user_input);
 			if (!user_input)
 				break ;
-			if (builtin_exec(main->cmd_info, &main->datas, main->history) == 0)
-				executor(user_input, main);
+			//if (builtin_exec(main->cmd_info, &main->datas, main->history) == 0)
+			executor(user_input, main);
 		}
 		free(user_input);
 	}

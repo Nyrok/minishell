@@ -13,7 +13,7 @@
 
 #include "minishell.h"
 
-void	export(int argc, char **argv, t_envp **datas)
+void	export(t_main *main, int argc, char **argv, t_envp **datas, int nbcmds)
 {
 	t_envp	*actual;
 	int		i;
@@ -22,9 +22,12 @@ void	export(int argc, char **argv, t_envp **datas)
 	i = 0;
 	if (argc == 1)
 	{
-		env(*datas);
+		env(main, *datas, nbcmds);
 		return ;
 	}
+	if (main->tube != NULL && main->tube->fd >= 0)
+		close(main->tube->fd);
+	main->tube = NULL;
 	if (datas == NULL)
 		return ;
 	while (actual->next != NULL)
