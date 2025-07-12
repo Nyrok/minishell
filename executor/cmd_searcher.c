@@ -89,7 +89,7 @@ void	last_executor(char *cmd_path, t_main *main, char **envp, int tube, pid_t **
 		i = 0;
 		if (tube != -1)
 		{
-			printf("PRINTF %d, %s, %d\n", tube, main->cmd_info->infile->filename, main->cmd_info->infile->fd);
+			//printf("PRINTF %d, %s, %d\n", tube, main->cmd_info->infile->filename, main->cmd_info->infile->fd);
 			dup2(tube, STDIN_FILENO);
 			close(tube);
 		}
