@@ -149,36 +149,45 @@ char	*paths_searcher(char *cmd, char *cmd_path, char *paths)
 void	lcmd_searcher(t_main *main, char **envp, int tube, pid_t **pids)
 {
 	int		i;
-	char	*cmd_path;
+	//char	*cmd_path;
 	int		cmdopener;
 	char	**tmp;
+	int		cmd_found;
 
 	i = 0;
+	cmd_found = 0;
 	if (main->cmd_info->cmd[0] == '.' && main->cmd_info->cmd[1] == '/')
 	{
 		tmp = ft_split(main->cmd_info->cmd, ' ');
-		cmd_path = ft_strdup(tmp[0]);
+		main->cmd_info->cmd_path = ft_strdup(tmp[0]);
 		while (tmp[i])
 			free(tmp[i++]);
 		free(tmp);
-		last_executor(cmd_path, main, envp, tube, pids);
-		free(cmd_path);
+		last_executor(main->cmd_info->cmd_path, main, envp, tube, pids);
+		free(main->cmd_info->cmd_path);
 	}
 	i = 0;
 	while (main->cmds_paths->paths[i])
 	{
-		cmd_path = paths_searcher(main->cmd_info->cmd, cmd_path, main->cmds_paths->paths[i]);
-		cmdopener = open(cmd_path, O_RDONLY);
+		main->cmd_info->cmd_path = paths_searcher(main->cmd_info->cmd, main->cmd_info->cmd_path, main->cmds_paths->paths[i]);
+		cmdopener = open(main->cmd_info->cmd_path, O_RDONLY);
 		if (cmdopener != -1)
 		{
 			close(cmdopener);
-			last_executor(cmd_path, main, envp, tube, pids);
-			free(cmd_path);
+			cmd_found = 1;
+			last_executor(main->cmd_info->cmd_path, main, envp, tube, pids);
+			free(main->cmd_info->cmd_path);
 			break ;
 		}
-		close(cmdopener);
-		free(cmd_path);
+		//close(cmdopener);
+		free(main->cmd_info->cmd_path);
 		i++;
+	}
+	if (cmd_found == 0)
+	{
+		printf("%s: command not found\n", main->cmd_info->cmd);
+		main->tube->fd = -1;
+		//main->tube = NULL;
 	}
 }
 
@@ -190,7 +199,11 @@ int	cmd_executor(char *cmd_path, char **args, char **envp, int file, pid_t **pid
 	int	i;
 
 	i = 0;
-	pipe(tube);
+	if (pipe(tube) == -1)
+	{
+		perror("pipe");
+		return (-1);
+	}
 	pid = fork();
 	if (pid == 0)
 	{
@@ -229,36 +242,45 @@ int	cmd_executor(char *cmd_path, char **args, char **envp, int file, pid_t **pid
 int	cmd_searcher(t_main *main, char **envp, int file, char **args, pid_t **pids)
 {
 	int		i;
-	char	*cmd_path;
+	//char	*cmd_path;
 	int		tube;
 	int		cmdopener;
 	char	**tmp;
+	int		cmd_found;
 
 	i = 0;
+	cmd_found = 0;
 	if (main->cmd_info->cmd[0] == '.' && main->cmd_info->cmd[1] == '/')
 	{
 		tmp = ft_split(main->cmd_info->cmd, ' ');
-		cmd_path = ft_strdup(tmp[0]);
+		main->cmd_info->cmd_path = ft_strdup(tmp[0]);
 		while (tmp[i])
 			free(tmp[i++]);
 		free(tmp);
-		tube = cmd_executor(cmd_path, args, envp, file, pids);
-		free(cmd_path);
+		tube = cmd_executor(main->cmd_info->cmd_path, args, envp, file, pids);
+		free(main->cmd_info->cmd_path);
 	}
 	i = 0;
 	while (main->cmds_paths->paths[i])
 	{
-		cmd_path = paths_searcher(main->cmd_info->cmd, cmd_path, main->cmds_paths->paths[i]);
-		cmdopener = open(cmd_path, O_RDONLY);
+		main->cmd_info->cmd_path = paths_searcher(main->cmd_info->cmd, main->cmd_info->cmd_path, main->cmds_paths->paths[i]);
+		cmdopener = open(main->cmd_info->cmd_path, O_RDONLY);
 		if (cmdopener != -1)
 		{
 			close(cmdopener);
-			tube = cmd_executor(cmd_path, args, envp, file, pids);
-			free(cmd_path);
+			cmd_found = 1;
+			tube = cmd_executor(main->cmd_info->cmd_path, args, envp, file, pids);
+			free(main->cmd_info->cmd_path);
 			break ;
 		}
-		free(cmd_path);
+		free(main->cmd_info->cmd_path);
 		i++;
+	}
+	if (cmd_found == 0)
+	{
+		printf("%s: command not found\n", main->cmd_info->cmd);
+		main->tube->fd = -1;
+		//main->tube = NULL;
 	}
 	return (tube);
 }
@@ -300,6 +322,8 @@ int	hasinfile(struct s_main *main)
 				actual_redir->fd = open(actual_redir->filename, O_RDONLY, 0444);
 			else
 				actual_redir->fd = open(actual_redir->filename, O_CREAT | O_WRONLY | O_TRUNC, 0777);
+			if (actual_redir->fd == -1)
+				return (0);
 			printf(">>>\n");
 			printf("FILE = %s\n", actual_redir->filename);
 			if (actual_redir->fd == -1)
@@ -411,6 +435,8 @@ int	executor(char *cmd, struct s_main *main)
 	char		**envp;
 
 	pids = malloc((totalcmds(cmd) + 1) * sizeof(pid_t));
+	if (!pids)
+		return (0);
 	envp = envp_to_str(main->datas);
 	executor_setup(main, pids, &nbcmds, cmd);
 	if (nbcmds == 1)

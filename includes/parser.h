@@ -32,6 +32,7 @@ typedef struct s_cmd_info
 	char				*cmd;
 	int					argc;
 	char				**argv;
+	char				*cmd_path;
 	t_redir				*infile;
 	t_redir				*outfile;
 	struct s_cmd_info	*next;
