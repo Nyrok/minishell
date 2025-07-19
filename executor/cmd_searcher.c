@@ -314,12 +314,45 @@ int	totalcmds(char *cmd)
 	return (total);
 }
 
+int ft_heredoc(char *end)
+{
+	char *line;
+	int	 tube[2];
+	int  fd;
+	int  fd_return;
+
+	printf("entree\n");
+	line = readline("> ");
+	if (pipe(tube) == -1)
+	{
+		perror("pipe");
+		return (-1);
+	}
+	fd = tube[1];
+	fd_return = tube[0];
+	while (line != NULL && ft_strcmp(line, end) != 0)
+	{
+		write(fd, line, ft_strlen(line)); // check si res est define pour le tout premier join
+		write(fd, "\n", 1);
+		free(line);
+		line = readline("> ");
+	}
+	free(line);
+	close(fd);
+	return (fd_return);
+}
+
 int	fd_opener(t_redir *actual_redir)
 {
 	if (actual_redir->type == APPEND)
 		actual_redir->fd = open(actual_redir->filename, O_CREAT | O_WRONLY | O_APPEND, 0777);
 	else if (actual_redir->type == REDIN)
 		actual_redir->fd = open(actual_redir->filename, O_RDONLY, 0444);
+	else if (actual_redir->type == HEREDOC)
+	{
+		printf("entree\n");
+		actual_redir->fd = ft_heredoc(actual_redir->filename);
+	}
 	else
 		actual_redir->fd = open(actual_redir->filename, O_CREAT | O_WRONLY | O_TRUNC, 0777);
 	if (actual_redir->fd == -1)
@@ -465,6 +498,10 @@ int	executor(char *cmd, struct s_main *main)
 		return (0);
 	envp = envp_to_str(main->datas);
 	executor_setup(main, pids, &nbcmds, cmd);
+	if (main->cmd_info->cmd == NULL)
+	{
+		return (0);
+	}
 	if (nbcmds == 1)
 		onecmdexector(main, envp, pids);
 	else
