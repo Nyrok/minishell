@@ -26,9 +26,9 @@ static t_cmd_info	*parse_redir(t_token *tokens, t_cmd_info **l, t_cmd_info *o)
 	}
 	redir = NULL;
 	if (tokens->type == REDIN || tokens->type == HEREDOC)
-		redir = create_redir(tokens->next->word, NULL, tokens->type);
+		redir = create_redir(tokens->next->word, tokens->type);
 	else if (tokens->type == REDOUT || tokens->type == APPEND)
-		redir = create_redir(tokens->next->word, NULL, tokens->type);
+		redir = create_redir(tokens->next->word, tokens->type);
 	append_redir(&o->redirs, redir);
 	return (o);
 }
@@ -43,21 +43,18 @@ static void	parse_word(t_token *tokens, t_cmd_info **list, t_cmd_info **obj)
 		else
 			append_cmd_info(list, *obj);
 	}
-	else
+	else if (!(*obj)->cmd)
 	{
-		if (!(*obj)->cmd)
-		{
-			(*obj)->cmd = tokens->word;
-			(*obj)->argc++;
-			(*obj)->argv = ft_calloc(count_cmd_args(tokens->next) + 1, \
-				sizeof(char *));
-			if (!(*obj)->argv)
-				return ;
-			(*obj)->argv[0] = tokens->word;
-		}
-		else
-			(*obj)->argv[(*obj)->argc++] = tokens->word;
+		(*obj)->cmd = tokens->word;
+		(*obj)->argc++;
+		(*obj)->argv = ft_calloc(count_cmd_args(tokens->next) + 1, \
+			sizeof(char *));
+		if (!(*obj)->argv)
+			return ;
+		(*obj)->argv[0] = tokens->word;
 	}
+	else
+		(*obj)->argv[(*obj)->argc++] = tokens->word;
 }
 
 t_cmd_info	*parse_tokens(t_token *tokens)
@@ -81,23 +78,6 @@ t_cmd_info	*parse_tokens(t_token *tokens)
 			tokens = tokens->next;
 		}
 		tokens = tokens->next;
-	}
-	cmd_info = cmd_infos;
-	t_redir	*redir;
-	int	i;
-	while (cmd_info)
-	{
-		printf("CMD %s\n", cmd_info->cmd);
-		i = 0;
-		while (i < cmd_info->argc)
-			printf(" ARG %s\n", cmd_info->argv[i++]);
-		redir = cmd_info->redirs;
-		while (redir)
-		{
-			printf(" REDIR %i %s %i\n", redir->type, redir->filename, redir->good);
-			redir = redir->next;
-		}
-		cmd_info = cmd_info->next;
 	}
 	return (cmd_infos);
 }
