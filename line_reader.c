@@ -20,6 +20,8 @@ void	line_reader(t_main *main)
 	{
 		printf("exec\n");
 		user_input = readline(PURPLE "minishell>" RESET);
+		if (user_input == NULL)
+			exit(1); // ajouter les free
 		main->tokens = tokenize_input(user_input);
 		main->cmd_info = parse_tokens(main->tokens);
 		free_tokens(main);
