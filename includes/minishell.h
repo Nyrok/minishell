@@ -32,7 +32,7 @@
 # define PURPLE  "\033[0;35m"
 # define RESET   "\033[0m"
 
-typedef struct s_main
+struct s_main
 {
 	t_envp			*datas;
 	t_cmds_paths	*cmds_paths;
@@ -40,7 +40,7 @@ typedef struct s_main
 	t_token			*tokens;
 	t_cmd_info		*cmd_info;
 	t_redir			*tube;
-}	t_main;
+};
 
 void		line_reader(t_main *main_struct);
 void		anti_leaks(t_main **main_struct);

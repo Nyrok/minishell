@@ -26,7 +26,7 @@ typedef struct s_redir
 	struct s_redir		*next;
 }	t_redir;
 
-typedef struct s_cmd_info
+struct s_cmd_info
 {
 	t_redir				*redirs;
 	char				*cmd;
@@ -36,7 +36,7 @@ typedef struct s_cmd_info
 	t_redir				*infile;
 	t_redir				*outfile;
 	struct s_cmd_info	*next;
-}	t_cmd_info;
+};
 
 char		*get_word(const char *str, size_t *i);
 char		*get_quoted(const char *str, size_t *i);
