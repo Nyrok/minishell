@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int	builtin_exec(t_main *main, t_cmd_info *cmd_info, t_envp **datas, t_history *history, int nbcmds)
+int	builtin_exec(t_main *main, t_cmd_info *cmd_info, t_envp **datas, int nbcmds)
 {
 	if (ft_strncmp(cmd_info->cmd, "cd", 2) == 0)
 		cd(main, cmd_info->argc, cmd_info->argv[1]);
@@ -26,8 +26,10 @@ int	builtin_exec(t_main *main, t_cmd_info *cmd_info, t_envp **datas, t_history *
 		unset(main, cmd_info->argc, cmd_info->argv, datas);
 	else if (ft_strncmp(cmd_info->cmd, "pwd", 3) == 0)
 		pwd(main, nbcmds);
+	else if (ft_strncmp(cmd_info->cmd, "history", 7) == 0 && cmd_info->argc >= 2 && ft_strncmp(cmd_info->argv[1], "-c", 2) == 0)
+		list_history_cleaner(main);
 	else if (ft_strncmp(cmd_info->cmd, "history", 7) == 0)
-		print_history(history);
+		print_history(main->history);
 	else if (ft_strncmp(cmd_info->cmd, "exit", 4) == 0)
 		ft_exit();
 	else
