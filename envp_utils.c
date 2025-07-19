@@ -63,6 +63,8 @@ char	**envp_to_str(t_envp *envp)
 	}
 	datas = envp;
 	res = malloc((i + 1) * sizeof(char *));
+	if (!res)
+		return (NULL);
 	i = 0;
 	while (datas)
 	{
