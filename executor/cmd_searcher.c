@@ -317,23 +317,29 @@ int	totalcmds(char *cmd)
 int ft_heredoc(char *end)
 {
 	char *line;
-	int  fd[2];
+	int	 tube[2];
+	int  fd;
+	int  fd_return;
 
 	printf("entree\n");
 	line = readline("> ");
-	if (pipe(fd) == -1)
+	if (pipe(tube) == -1)
 	{
 		perror("pipe");
 		return (-1);
 	}
+	fd = tube[1];
+	fd_return = tube[0];
 	while (line != NULL && ft_strcmp(line, end) != 0)
 	{
-		write(fd[1], &line, ft_strlen(line)); // check si res est define pour le tout premier join
+		write(fd, line, ft_strlen(line)); // check si res est define pour le tout premier join
+		write(fd, "\n", 1);
 		free(line);
 		line = readline("> ");
 	}
 	free(line);
-	return (fd[0]);
+	close(fd);
+	return (fd_return);
 }
 
 int	fd_opener(t_redir *actual_redir)

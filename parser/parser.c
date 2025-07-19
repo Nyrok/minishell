@@ -25,8 +25,8 @@ static t_cmd_info	*parse_redir(t_token *tokens, t_cmd_info **l, t_cmd_info *o)
 			append_cmd_info(l, o);
 	}
 	redir = NULL;
-	if (tokens->type == REDIN)
-		redir = create_redir(tokens->next->word, NULL, REDIN);
+	if (tokens->type == REDIN || tokens->type == HEREDOC)
+		redir = create_redir(tokens->next->word, NULL, tokens->type);
 	else if (tokens->type == REDOUT || tokens->type == APPEND)
 		redir = create_redir(tokens->next->word, NULL, tokens->type);
 	append_redir(&o->redirs, redir);
