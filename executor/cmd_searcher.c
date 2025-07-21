@@ -185,6 +185,16 @@ int	file_executor(t_main *main, char **envp, int file, pid_t **pids, int last)
 	return (1);
 }
 
+int	ft_access(char *pathname)
+{
+	if (access(pathname, X_OK) != 0)
+	{
+		printf("-minishell: %s: Permission denied", pathname);
+		return (0);
+	}
+	return (1);
+}
+
 void	lcmd_searcher(t_main *main, char **envp, int tube, pid_t **pids)
 {
 	int		i;
@@ -202,6 +212,8 @@ void	lcmd_searcher(t_main *main, char **envp, int tube, pid_t **pids)
 		if (cmdopener != -1)
 		{
 			close(cmdopener);
+			if (ft_access(main->cmd_info->cmd_path) == 0)
+				break ;
 			cmd_found = 1;
 			last_executor(main->cmd_info->cmd_path, main, envp, tube, pids);
 			free(main->cmd_info->cmd_path);
@@ -284,6 +296,8 @@ int	cmd_searcher(t_main *main, char **envp, int file, char **args, pid_t **pids)
 		cmdopener = open(main->cmd_info->cmd_path, O_RDONLY);
 		if (cmdopener != -1)
 		{
+			if (ft_access(main->cmd_info->cmd_path) == 0)
+				break ;
 			close(cmdopener);
 			cmd_found = 1;
 			main->tube->fd = cmd_executor(main->cmd_info->cmd_path, args, envp, file, pids);
@@ -474,7 +488,8 @@ int	executor_setup(t_main *main, pid_t *pids, int *nbcmds, char *cmd)
 
 int	no_leaks(t_main *main, char **envp)
 {
-	int	i;
+	int			i;
+	t_cmd_info  *free_tmp;
 
 	i = 0;
 	while (envp[i])
@@ -483,7 +498,16 @@ int	no_leaks(t_main *main, char **envp)
 		i++;
 	}
 	free(envp);
-	free(main->cmd_info);
+	if (main->tube && main->tube->fd != -1)
+        close(main->tube->fd);
+	if (main->tube)
+		free(main->tube);
+	while (main->cmd_info)
+	{
+		free_tmp = main->cmd_info;
+		main->cmd_info = main->cmd_info->next;
+		free(free_tmp);
+	}
 	return (1);
 }
 
