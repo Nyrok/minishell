@@ -22,6 +22,7 @@ typedef enum e_error
 {
 	NOTFOUND = 0,
 	DEF_PIPE,
+	FILE_NOT_FOUND,
 	ENDED
 }	t_error_code;
 

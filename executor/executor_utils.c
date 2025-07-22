@@ -50,12 +50,8 @@ int	hasinfile(struct s_main *main)
 		actual_redir = actual_cmd->redirs;
 		while (actual_redir != NULL)
 		{
-			if (fd_opener(actual_redir) == 0)
-				return (0);
-			printf("FILE = %s\n", actual_redir->filename);
-			if (actual_redir->fd == -1)
-				printf("Erreur de permissions lors de l'ouverture de %s\n",
-					actual_redir->filename);
+			if (fd_opener(actual_redir) == -1)
+				return (-1);
 			if (actual_redir->type == 3)
 				total = 1;
 			actual_redir = actual_redir->next;
