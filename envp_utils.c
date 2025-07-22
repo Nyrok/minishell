@@ -26,7 +26,7 @@ t_envp	*add_cell(char *str)
 
 t_envp	*list_maker(char **envp)
 {
-	t_envp		*datas;
+	t_envp		*curr_envp;
 	t_envp		*actual;
 	char		*key;
 	int			i;
@@ -34,8 +34,8 @@ t_envp	*list_maker(char **envp)
 	i = 0;
 	if (envp[i] == NULL)
 		return (NULL);
-	datas = add_cell(envp[i]);
-	actual = datas;
+	curr_envp = add_cell(envp[i]);
+	actual = curr_envp;
 	key = data_spliter(envp[i]);
 	while (envp[i] != NULL)
 	{
@@ -45,7 +45,7 @@ t_envp	*list_maker(char **envp)
 	}
 	actual->next = NULL;
 	free(key);
-	return (datas);
+	return (curr_envp);
 }
 
 char	*get_env_value(t_envp *envp, char *key)
@@ -64,26 +64,26 @@ char	*get_env_value(t_envp *envp, char *key)
 
 char	**envp_to_str(t_envp *envp)
 {
-	t_envp		*datas;
+	t_envp		*curr_envp;
 	char		**res;
 	int			i;
 
 	i = 0;
-	datas = envp;
-	while (datas)
+	curr_envp = envp;
+	while (curr_envp)
 	{
 		i++;
-		datas = datas->next;
+		curr_envp = curr_envp->next;
 	}
-	datas = envp;
+	curr_envp = envp;
 	res = malloc((i + 1) * sizeof(char *));
 	if (!res)
 		return (NULL);
 	i = 0;
-	while (datas)
+	while (curr_envp)
 	{
-		res[i] = ft_strdup(datas->data);
-		datas = datas->next;
+		res[i] = ft_strdup(curr_envp->data);
+		curr_envp = curr_envp->next;
 		i++;
 	}
 	res[i] = NULL;

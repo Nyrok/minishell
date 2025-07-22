@@ -22,7 +22,7 @@ void	print_env(int fd, t_envp *actual)
 	}
 }
 
-int	env(t_main *main, t_envp *datas, int nbcmds)
+int	env(t_main *main, t_envp *envp, int nbcmds)
 {
 	t_envp	*actual;
 	int		tube[2];
@@ -42,7 +42,7 @@ int	env(t_main *main, t_envp *datas, int nbcmds)
 	}
 	else
 		fd = STDOUT_FILENO;
-	actual = datas;
+	actual = envp;
 	print_env(fd, actual);
 	if (main->cmd_info->outfile != NULL)
 		close(main->cmd_info->outfile->fd);

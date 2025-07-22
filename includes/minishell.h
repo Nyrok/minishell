@@ -35,7 +35,7 @@
 
 struct s_main
 {
-	t_envp			*datas;
+	t_envp			*envp;
 	t_cmds_paths	*cmds_paths;
 	t_history		*history;
 	t_token			*tokens;

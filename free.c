@@ -33,10 +33,10 @@ void	free_main(t_main *main_struct)
 	t_envp			*tmp;
 	t_history		*tmp2;
 
-	while (main_struct->datas != NULL)
+	while (main_struct->envp != NULL)
 	{
-		tmp = main_struct->datas;
-		main_struct->datas = main_struct->datas->next;
+		tmp = main_struct->envp;
+		main_struct->envp = main_struct->envp->next;
 		free(tmp);
 	}
 	while (main_struct->history != NULL)

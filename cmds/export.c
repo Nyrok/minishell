@@ -16,14 +16,14 @@ int	export(t_main *main, int argc, char **argv, int nbcmds)
 {
 	t_envp	*actual;
 
-	actual = main->datas;
+	actual = main->envp;
 	auto int i = 0;
 	if (argc == 1)
-		env(main, main->datas, nbcmds);
+		env(main, main->envp, nbcmds);
 	if (main->tube != NULL && main->tube->fd >= 0)
 		close(main->tube->fd);
 	main->tube = NULL;
-	if (main->datas == NULL)
+	if (main->envp == NULL)
 		return (-1);
 	while (actual->next != NULL)
 		actual = actual->next;

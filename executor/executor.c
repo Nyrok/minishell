@@ -20,7 +20,7 @@ int	file_executor(t_main *main, int file, pid_t **pids, int last)
 
 	i = 0;
 	tmp = ft_split(main->cmd_info->cmd, ' ');
-	envp = envp_to_str(main->datas);
+	envp = envp_to_str(main->envp);
 	main->cmd_info->cmd_path = ft_strdup(tmp[0]);
 	while (tmp[i])
 		free(tmp[i++]);
@@ -104,7 +104,7 @@ int	executor(char *cmd, struct s_main *main)
 	pids = malloc((totalcmds(cmd) + 1) * sizeof(pid_t));
 	if (!pids)
 		return (0);
-	envp = envp_to_str(main->datas);
+	envp = envp_to_str(main->envp);
 	executor_setup(main, pids, &nbcmds, cmd);
 	if (main->cmd_info->cmd == NULL)
 		return (0);
