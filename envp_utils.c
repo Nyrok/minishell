@@ -48,6 +48,20 @@ t_envp	*list_maker(char **envp)
 	return (datas);
 }
 
+char	*get_env_value(t_envp *envp, char *key)
+{
+	char	**pair;
+
+	while (envp)
+	{
+		pair = ft_split(envp->data, '=');
+		if (pair && ft_strcmp(pair[0], key) == 0)
+			return (pair[1]);
+		envp = envp->next;
+	}
+	return (NULL);
+}
+
 char	**envp_to_str(t_envp *envp)
 {
 	t_envp		*datas;

@@ -57,13 +57,14 @@ static void	parse_word(t_token *tokens, t_cmd_info **list, t_cmd_info **obj)
 		(*obj)->argv[(*obj)->argc++] = tokens->word;
 }
 
-t_cmd_info	*parse_tokens(t_token *tokens)
+t_cmd_info	*parse_tokens(t_main *main, t_token *tokens)
 {
 	t_cmd_info	*cmd_infos;
 	t_cmd_info	*cmd_info;
 
 	if (!check_tokens(tokens))
 		return (NULL);
+	parse_env(main->datas, &tokens);
 	cmd_infos = NULL;
 	cmd_info = NULL;
 	while (tokens)

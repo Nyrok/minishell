@@ -22,7 +22,7 @@ void	line_reader(t_main *main)
 		if (user_input == NULL)
 			exit(1); // ajouter les free
 		main->tokens = tokenize_input(user_input);
-		main->cmd_info = parse_tokens(main->tokens);
+		main->cmd_info = parse_tokens(main, main->tokens);
 		free_tokens(main);
 		if (main->cmd_info)
 		{

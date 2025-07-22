@@ -50,6 +50,7 @@ void		list_history_add(t_history **history, char *cmd);
 void		list_history_cleaner(t_main *main);
 void		print_history(t_history *history);
 char		**envp_to_str(t_envp *envp);
+char		*get_env_value(t_envp *envp, char *key);
 int			executor(char *cmd, struct s_main *main);
 int			builtin_exec(t_main *main,
 				t_cmd_info *cmd_info, t_envp **datas, int nbcmds);

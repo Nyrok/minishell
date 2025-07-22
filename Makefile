@@ -25,7 +25,8 @@ SRCS = main.c \
 	parser/checker.c \
 	parser/cmd_info.c \
 	parser/utils.c \
-	parser/redir.c
+	parser/redir.c \
+	parser/env.c
 
 OBJDIR = objs
 OBJS = $(addprefix $(OBJDIR)/, $(SRCS:.c=.o))
