@@ -28,6 +28,7 @@ void	line_reader(t_main *main)
 		//printf("CC\n");
 		if (main->cmd_info)
 		{
+			printf("sss %p sss", main->history);
 			if (main->history == NULL && user_input)
 				main->history = list_history_init(user_input);
 			else if (user_input)
