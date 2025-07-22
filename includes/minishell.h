@@ -22,6 +22,7 @@
 # include <fcntl.h>
 # include <sys/types.h>
 # include <sys/wait.h>
+# include <signal.h>
 # include "libft.h"
 # include "cmds.h"
 # include "executor.h"
@@ -32,7 +33,7 @@
 # define PURPLE  "\033[0;35m"
 # define RESET   "\033[0m"
 
-typedef struct s_main
+struct s_main
 {
 	t_envp			*datas;
 	t_cmds_paths	*cmds_paths;
@@ -40,7 +41,7 @@ typedef struct s_main
 	t_token			*tokens;
 	t_cmd_info		*cmd_info;
 	t_redir			*tube;
-}	t_main;
+};
 
 void		line_reader(t_main *main_struct);
 void		anti_leaks(t_main **main_struct);
@@ -50,13 +51,31 @@ void		list_history_cleaner(t_main *main);
 void		print_history(t_history *history);
 char		**envp_to_str(t_envp *envp);
 int			executor(char *cmd, struct s_main *main);
-int			builtin_exec(t_main *main, t_cmd_info *cmd_info, t_envp **datas, int nbcmds);
+int			builtin_exec(t_main *main,
+				t_cmd_info *cmd_info, t_envp **datas, int nbcmds);
 int			cd(t_main *main, int total_args, const char *path);
 int			echo(t_main *main, int argc, const char **argv, int nbcmds);
-void		export(t_main *main, int argc, char **argv, t_envp **datas, int nbcmds);
-void		unset(t_main *main, int argc, char **argv, t_envp **datas);
+int			export(t_main *main, int argc, char **argv, int nbcmds);
+int			unset(t_main *main, int argc, t_envp **datas);
 int			env(t_main *main, t_envp *datas, int nbcmds);
 int			pwd(t_main *main, int nbcmds);
 void		ft_exit(void);
+int			file_executor(t_main *main, int file, pid_t **pids, int last);
+void		last_executor(t_main *main, char **envp, int tube, pid_t **pids);
+int			cmd_executor(t_main *main, char **envp, int file, pid_t **pids);
+int			totalcmds(char *cmd);
+int			multiplecmdexector(t_main *main,
+				char **envp, pid_t *pids, int nbcmds);
+int			onecmdexector(t_main *main, char **envp, pid_t *pids);
+void		add_pid(pid_t **pids, pid_t newpid);
+void		end_pids(pid_t **pids);
+int			no_leaks(t_main *main, char **envp);
+int			executor_setup(t_main *main, pid_t *pids, int *nbcmds, char *cmd);
+int			print_error(t_main *main, int error_code, int cmd_found);
+int			cmd_searcher(t_main *main, char **envp, int file, pid_t **pids);
+void		lcmd_searcher(t_main *main, char **envp, int tube, pid_t **pids);
+int			hasinfile(struct s_main *main);
+void		setup_tube(t_main *main);
+int			fd_opener(t_redir *actual_redir);
 
 #endif

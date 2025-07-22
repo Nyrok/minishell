@@ -10,26 +10,21 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "minishell.h"
 
-void	export(t_main *main, int argc, char **argv, t_envp **datas, int nbcmds)
+int	export(t_main *main, int argc, char **argv, int nbcmds)
 {
 	t_envp	*actual;
-	int		i;
 
-	actual = *datas;
-	i = 0;
+	actual = main->datas;
+	auto int i = 0;
 	if (argc == 1)
-	{
-		env(main, *datas, nbcmds);
-		return ;
-	}
+		env(main, main->datas, nbcmds);
 	if (main->tube != NULL && main->tube->fd >= 0)
 		close(main->tube->fd);
 	main->tube = NULL;
-	if (datas == NULL)
-		return ;
+	if (main->datas == NULL)
+		return (-1);
 	while (actual->next != NULL)
 		actual = actual->next;
 	while (i < argc - 1)
@@ -43,4 +38,5 @@ void	export(t_main *main, int argc, char **argv, t_envp **datas, int nbcmds)
 			printf("ERROR\n");
 		i++;
 	}
+	return (1);
 }

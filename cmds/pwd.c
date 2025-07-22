@@ -24,10 +24,7 @@ int	pwd(t_main *main, int nbcmds)
 	else if (nbcmds > 1)
 	{
 		if (pipe(tube) == -1)
-		{
-			perror("pipe");
-			return (-1);
-		}
+			print_error(main, DEF_PIPE, 1);
 		fd = tube[1];
 		main->tube->fd = tube[0];
 	}

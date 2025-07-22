@@ -28,7 +28,7 @@ t_history	*list_history_init(char *cmd)
 void	list_history_add(t_history **history, char *cmd)
 {
 	t_history	*actual;
-	printf("ssss\n");
+
 	actual = *history;
 	while (actual->next != NULL)
 		actual = actual->next;
@@ -45,7 +45,6 @@ void	list_history_cleaner(t_main *main)
 	t_history	*tmp;
 
 	actual = main->history;
-	printf("refrere\n");
 	while (actual != NULL)
 	{
 		tmp = actual;

@@ -12,13 +12,12 @@
 
 #include "minishell.h"
 
-t_redir	*create_redir(char *filename, char *content, t_token_type type)
+t_redir	*create_redir(char *filename, t_token_type type)
 {
 	t_redir	*redir;
 
 	redir = ft_calloc(1, sizeof(t_redir));
 	redir->filename = filename;
-	redir->content = content;
 	redir->type = type;
 	redir->fd = -1;
 	redir->io = -1;

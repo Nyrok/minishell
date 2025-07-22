@@ -1,5 +1,5 @@
 CX = cc
-CXFLAGS = -Wall -Werror -Wextra -I includes -I/opt/homebrew/opt/readline/include -g3
+CXFLAGS = -Wall -Werror -Wextra -I includes -I/opt/homebrew/opt/readline/include -g3 -std=c99
 LDFLAGS = -L/opt/homebrew/opt/readline/lib -lreadline
 SRCS = main.c \
 	envp_utils.c \
@@ -12,6 +12,10 @@ SRCS = main.c \
 	cmds/exit.c \
 	cmds/check_cmds.c \
 	executor/cmd_searcher.c \
+	executor/executor.c \
+	executor/executor2.c \
+	executor/executor_utils.c \
+	executor/executor_utils2.c \
 	cmds_paths_utils.c \
 	line_reader.c \
 	free.c \

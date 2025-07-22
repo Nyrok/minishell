@@ -12,6 +12,16 @@
 
 #include "minishell.h"
 
+void	print_env(int fd, t_envp *actual)
+{
+	while (actual != NULL)
+	{
+		write(fd, actual->data, ft_strlen(actual->data));
+		write(fd, "\n", 1);
+		actual = actual->next;
+	}
+}
+
 int	env(t_main *main, t_envp *datas, int nbcmds)
 {
 	t_envp	*actual;
@@ -33,11 +43,7 @@ int	env(t_main *main, t_envp *datas, int nbcmds)
 	else
 		fd = STDOUT_FILENO;
 	actual = datas;
-	while (actual != NULL)
-	{
-		write(fd, actual->data, ft_strlen(actual->data));
-		actual = actual->next;
-	}
+	print_env(fd, actual);
 	if (main->cmd_info->outfile != NULL)
 		close(main->cmd_info->outfile->fd);
 	else if (nbcmds > 1)
