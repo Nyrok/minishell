@@ -34,11 +34,13 @@ t_envp	*list_maker(char **envp);
 char	*data_spliter(char *str);
 // int		cd(t_main *main, int total_args, const char *path, int is_last);
 // int		echo(t_main *main, int argc, const char **argv, int is_last);
-// void	export(t_main *main, int argc, char **argv, t_envp **datas, int is_last);
+// void		export(t_main *main, int argc,
+//				char **argv, t_envp **datas, int is_last);
 // void	unset(t_main *main, int argc, char **argv, t_envp **datas, int is_last);
 // void	env(t_main *main, t_envp *datas, int is_last);
 // int		pwd(t_main *main, int is_last)
 // void	ft_exit(void);
-// int		builtin_exec(t_main *main, t_cmd_info *cmd_info, t_envp **datas, t_history *history, int nbcmds);
+// int		builtin_exec(t_main *main, t_cmd_info *cmd_info, t_envp **datas,
+//				t_history *history, int nbcmds);
 
 #endif

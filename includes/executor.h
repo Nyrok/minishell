@@ -21,10 +21,12 @@ typedef struct s_cmds_paths
 typedef enum e_error
 {
 	NOTFOUND = 0,
+	DEF_PIPE,
 	ENDED
 }	t_error_code;
 
 //void			cmd_searcher(char *cmd, char **paths, t_envp *datas);
 t_cmds_paths	*cmds_paths_maker(void);
+int				ft_access(char *pathname);
 
 #endif
