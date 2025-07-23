@@ -15,8 +15,8 @@
 
 # include "minishell.h"
 
-typedef struct s_main	t_main;
-typedef struct s_envp	t_envp;
+typedef struct s_main		t_main;
+typedef struct s_envp		t_envp;
 typedef struct s_cmd_info	t_cmd_info;
 
 #endif

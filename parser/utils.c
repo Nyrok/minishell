@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-static char	*rm_quotes(const char *str, size_t start, size_t n)
+char	*rm_quotes(char *str, size_t start, size_t n)
 {
 	size_t	i;
 	size_t	j;
@@ -38,7 +38,7 @@ static char	*rm_quotes(const char *str, size_t start, size_t n)
 	return (result);
 }
 
-char	*get_word(const char *str, size_t *i)
+char	*get_word(char *str, size_t *i)
 {
 	size_t	start;
 	int		has_quote;
@@ -63,23 +63,17 @@ char	*get_word(const char *str, size_t *i)
 		}
 		(*i)++;
 	}
-	return (str[*i] && (*i)++, rm_quotes(str, start, *i - start));
+	return (str[*i] && (*i)++, ft_substr(str, start, *i - start));
 }
 
 char	*get_quoted(const char *str, size_t *i)
 {
-	char	quote;
 	size_t	start;
-	char	*word;
 
-	quote = str[*i];
-	start = ++(*i);
-	while (str[*i] && str[*i] != quote)
+	start = *i;
+	while (str[*i])
 		(*i)++;
-	word = ft_substr(str, start, *i - start);
-	if (str[*i] == quote)
-		(*i)++;
-	return (word);
+	return (ft_substr(str, start, *i - start));
 }
 
 t_token	*get_redir_token(const char *str, size_t *i)

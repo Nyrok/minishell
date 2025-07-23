@@ -19,21 +19,36 @@ static char	*get_key(char *str, size_t *i)
 	start = *i;
 	while (str[*i] && is_valid_env_char(str[*i]))
 		(*i)++;
-	return (ft_substr(str, start, *i - 1));
+	return (ft_substr(str, start, *i - start));
 }
 
 static void	replace_word_env(t_envp *envp, char **word, char *key, size_t *i)
 {
 	char	*env_value;
-	char	*new_word;
+	char	*before_word;
+	char	*after_word;
+	size_t	after_len;
 
 	env_value = get_env_value(envp, key);
 	if (!env_value)
 		return ;
-	new_word = ft_strjoin(env_value, ft_substr(*word, *i, ft_strlen(*word)));
-	free(*word);
+	before_word = ft_strjoin(ft_substr(*word, 0, *i - ft_strlen(key) - 1), \
+		env_value);
+	after_len = ft_strlen(*word) - *i;
+	if (after_len)
+	{
+		after_word = ft_substr(*word, *i, after_len);
+		free(*word);
+		*word = ft_strjoin(before_word, after_word);
+		free(after_word);
+		free(before_word);
+	}
+	else
+	{
+		free(*word);
+		*word = before_word;
+	}
 	*i = ft_strlen(env_value) - 1;
-	*word = new_word;
 }
 
 static void	parse_word(t_envp *envp, char **word)
@@ -48,6 +63,7 @@ static void	parse_word(t_envp *envp, char **word)
 		{
 			i++;
 			key = get_key(*word, &i);
+			printf("%s\n", key);
 			replace_word_env(envp, word, key, &i);
 		}
 		i++;
@@ -57,14 +73,23 @@ static void	parse_word(t_envp *envp, char **word)
 void	parse_env(t_envp *envp, t_token **tokens)
 {
 	t_token	*start;
+	int		has_quote;
 
 	start = *tokens;
+	has_quote = 0;
 	while (*tokens)
 	{
+		if ((*tokens)->word)
+		{
+			has_quote = (*tokens)->word[0] == '"';
+			(*tokens)->word = rm_quotes((*tokens)->word, 0, \
+				ft_strlen((*tokens)->word));
+		}
 		if ((*tokens)->type == WORD && (*tokens)->word \
-			&& (ft_strchr("\"$", (*tokens)->word[0])))
+			&& ((*tokens)->word[0] == '$' || has_quote))
 			parse_word(envp, &(*tokens)->word);
 		*tokens = (*tokens)->next;
+		has_quote = 0;
 	}
 	*tokens = start;
 }

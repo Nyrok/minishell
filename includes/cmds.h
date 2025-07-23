@@ -16,7 +16,6 @@
 # include "minishell.h"
 # include "fwd.h"
 
-
 typedef struct s_history
 {
 	char				*cmd;

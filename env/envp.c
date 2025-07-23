@@ -98,4 +98,3 @@ t_envp	**get_env_addr(t_envp **envp, char *key)
 	}
 	return (NULL);
 }
-
