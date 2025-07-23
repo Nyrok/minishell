@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-static void	add_or_replace(t_main *main, t_envp **actual, char *key, char *value)
+void	add_or_replace(t_main *main, t_envp **actual, char *key, char *value)
 {
 	t_envp	**curr;
 	char	*full;
@@ -40,7 +40,7 @@ static void	add_or_replace(t_main *main, t_envp **actual, char *key, char *value
 
 int	export(t_main *main, int argc, char **argv, int nbcmds)
 {
-	auto t_envp	*actual = main->envp;
+	auto t_envp * actual = main->envp;
 	auto int i = 0;
 	if (argc == 1)
 		env(main, main->envp, nbcmds);
@@ -51,13 +51,13 @@ int	export(t_main *main, int argc, char **argv, int nbcmds)
 		actual = actual->next;
 	while (++i < argc)
 	{
-		auto char	**pair = ft_split(argv[i], '=');
+		auto char **pair = ft_split(argv[i], '=');
 		if (!pair || !is_valid_env_name(pair[0]))
 			printf("-minishell: Invalid env name\n");
 		else if (!ft_strchr(argv[i], '='))
 			printf("-minishell: Missing env value\n");
 		else
-			add_or_replace(main, &actual, pair[0], argv[i]);
+			add_or_replace(main, &actual, pair[0], pair[1]);
 	}
 	return (1);
 }

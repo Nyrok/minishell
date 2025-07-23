@@ -44,7 +44,6 @@ static void	parse_word(t_envp *envp, char **word)
 	i = 0;
 	while (word && (*word) && (*word)[i])
 	{
-		printf("%c", (*word)[i]);
 		if ((*word)[i] == '$')
 		{
 			key = get_key(*word, &i);

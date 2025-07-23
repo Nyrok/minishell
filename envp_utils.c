@@ -39,32 +39,38 @@ t_envp	*add_cell(char *key, char *value)
 	cell->key = key;
 	cell->value = value;
 	cell->full = ft_strjoin(temp, value);
+	free(temp);
 	cell->next = NULL;
 	return (cell);
 }
 
 t_envp	*list_maker(char **envp)
 {
-	t_envp		*curr_envp;
+	t_envp		*head;
 	t_envp		*actual;
 	char		**pair;
-	int			i;
 
-	i = 0;
-	if (envp[i] == NULL)
+	auto int i = -1;
+	if (!envp || !envp[0])
 		return (NULL);
-	pair = ft_split(envp[i], '=');
-	curr_envp = add_cell(pair[0], pair[1]);
-	actual = curr_envp;
-	while (envp != NULL)
+	actual = NULL;
+	head = NULL;
+	while (envp[++i] != NULL)
 	{
-		actual->next = add_cell(pair[0], pair[1]);
-		actual = actual->next;
-		i++;
+		pair = ft_split(envp[i], '=');
+		if (!head)
+		{
+			actual = add_cell(pair[0], pair[1]);
+			head = actual;
+		}
+		else if (actual)
+		{
+			actual->next = add_cell(pair[0], pair[1]);
+			actual = actual->next;
+		}
+		free(pair);
 	}
-	actual->next = NULL;
-	free(pair);
-	return (curr_envp);
+	return (head);
 }
 
 char	*get_env_value(t_envp *envp, char *key)
@@ -83,14 +89,14 @@ char	*get_env_value(t_envp *envp, char *key)
 char	**envp_to_str(t_envp *envp)
 {
 	auto int i = 0;
-	auto t_envp		*curr_envp = envp;
+	auto t_envp * curr_envp = envp;
 	while (curr_envp)
 	{
 		i++;
 		curr_envp = curr_envp->next;
 	}
 	curr_envp = envp;
-	char		**res = malloc((i + 1) * sizeof(char *));
+	auto char **res = malloc((i + 1) * sizeof(char *));
 	if (!res)
 		return (NULL);
 	i = 0;
