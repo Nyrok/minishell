@@ -12,32 +12,6 @@
 
 #include "minishell.h"
 
-char	*data_spliter(char	*str)
-{
-	int		i;
-	int		j;
-	char	*key;
-
-	i = 0;
-	while (str[i])
-	{
-		if (str[i] == '=')
-			break ;
-		i++;
-	}
-	j = 0;
-	key = malloc((i + 1) * sizeof(char));
-	if (key == NULL)
-		return (0);
-	while (j < i && str[i])
-	{
-		key[j] = str[j];
-		j++;
-	}
-	key[j] = '\0';
-	return (key);
-}
-
 void	remove_first(t_envp **envp, t_envp *actual, t_envp *temp)
 {
 	temp = actual->next;

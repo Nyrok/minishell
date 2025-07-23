@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   envp_utils.c                                       :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hkonte <hkonte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,65 +12,22 @@
 
 #include "minishell.h"
 
+int	is_valid_env_char(char c)
+{
+	return (ft_isalpha(c) || c == '_');
+}
+
 int	is_valid_env_name(char *str)
 {
 	if (!str)
 		return (0);
 	while (*str)
 	{
-		if (!ft_isalpha(*str) && *str != '_')
+		if (!is_valid_env_char(*str))
 			return (0);
 		str++;
 	}
 	return (1);
-}
-
-t_envp	*add_cell(char *key, char *value)
-{
-	t_envp	*cell;
-	char	*temp;
-
-	cell = malloc(sizeof(t_envp));
-	if (cell == NULL)
-		return (NULL);
-	temp = ft_strjoin(key, "=");
-	if (!temp)
-		return (NULL);
-	cell->key = key;
-	cell->value = value;
-	cell->full = ft_strjoin(temp, value);
-	free(temp);
-	cell->next = NULL;
-	return (cell);
-}
-
-t_envp	*list_maker(char **envp)
-{
-	t_envp		*head;
-	t_envp		*actual;
-	char		**pair;
-
-	auto int i = -1;
-	if (!envp || !envp[0])
-		return (NULL);
-	actual = NULL;
-	head = NULL;
-	while (envp[++i] != NULL)
-	{
-		pair = ft_split(envp[i], '=');
-		if (!head)
-		{
-			actual = add_cell(pair[0], pair[1]);
-			head = actual;
-		}
-		else if (actual)
-		{
-			actual->next = add_cell(pair[0], pair[1]);
-			actual = actual->next;
-		}
-		free(pair);
-	}
-	return (head);
 }
 
 char	*get_env_value(t_envp *envp, char *key)
@@ -78,9 +35,7 @@ char	*get_env_value(t_envp *envp, char *key)
 	while (envp)
 	{
 		if (ft_strcmp(envp->key, key) == 0)
-		{
 			return (envp->value);
-		}
 		envp = envp->next;
 	}
 	return (NULL);
@@ -102,7 +57,7 @@ char	**envp_to_str(t_envp *envp)
 	i = 0;
 	while (curr_envp)
 	{
-		res[i] = ft_strdup(curr_envp->full);
+		res[i] = curr_envp->full;
 		curr_envp = curr_envp->next;
 		i++;
 	}

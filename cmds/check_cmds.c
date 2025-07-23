@@ -12,13 +12,6 @@
 
 #include "minishell.h"
 
-void	reset_tube(t_main *main)
-{
-	if (main->tube != NULL && main->tube->fd >= 0)
-		close(main->tube->fd);
-	main->tube = NULL;
-}
-
 int	builtin_exec(t_main *main, t_cmd_info *cmd_info, t_envp **envp, int nbcmds)
 {
 	if (ft_strcmp(cmd_info->cmd, "cd") == 0)

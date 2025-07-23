@@ -2,8 +2,8 @@ CX = cc
 CXFLAGS = -Wall -Werror -Wextra -I includes -I/opt/homebrew/opt/readline/include -g3 -std=c99
 LDFLAGS = -L/opt/homebrew/opt/readline/lib -lreadline
 SRCS = main.c \
-	envp_utils.c \
-	envp_utils2.c \
+	env/envp.c \
+	env/utils.c \
 	cmds/cd.c \
 	cmds/echo.c \
 	cmds/env.c \

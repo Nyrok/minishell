@@ -12,32 +12,6 @@
 
 #include "minishell.h"
 
-void	add_or_replace(t_main *main, t_envp **actual, char *key, char *value)
-{
-	t_envp	**curr;
-	char	*full;
-
-	curr = get_env_addr(&main->envp, key);
-	full = ft_strjoin(key, "=");
-	if (!full)
-		return ;
-	if (!curr)
-	{
-		(*actual)->next = add_cell(key, value);
-		*actual = (*actual)->next;
-	}
-	else
-	{
-		free((*curr)->key);
-		free((*curr)->value);
-		free((*curr)->full);
-		(*curr)->key = key;
-		(*curr)->value = value;
-		(*curr)->full = ft_strjoin(full, value);
-	}
-	free(full);
-}
-
 int	export(t_main *main, int argc, char **argv, int nbcmds)
 {
 	auto t_envp * actual = main->envp;
