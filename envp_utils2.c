@@ -18,9 +18,9 @@ t_envp	**get_env_addr(t_envp **envp, char *key)
 	{
 		if (ft_strcmp((*envp)->key, key) == 0)
 		{
-			return envp;
+			return (envp);
 		}
 		envp = &(*envp)->next;
 	}
-	return NULL;
+	return (NULL);
 }

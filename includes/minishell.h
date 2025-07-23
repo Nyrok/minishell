@@ -54,7 +54,7 @@ int			is_valid_env_name(char *str);
 char		*get_env_value(t_envp *envp, char *key);
 t_envp		**get_env_addr(t_envp **envp, char *key);
 int			executor(char *cmd, struct s_main *main);
-void 		reset_tube(t_main *main);
+void		reset_tube(t_main *main);
 int			builtin_exec(t_main *main,
 				t_cmd_info *cmd_info, t_envp **datas, int nbcmds);
 int			cd(t_main *main, int total_args, const char *path);

@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-void reset_tube(t_main *main)
+void	reset_tube(t_main *main)
 {
 	if (main->tube != NULL && main->tube->fd >= 0)
 		close(main->tube->fd);
