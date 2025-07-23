@@ -19,7 +19,9 @@ typedef struct s_cmd_info	t_cmd_info;
 
 typedef struct s_envp
 {
-	char			*data;
+	char			*key;
+	char			*value;
+	char			*full;
 	struct s_envp	*next;
 }	t_envp;
 
@@ -29,7 +31,7 @@ typedef struct s_history
 	struct s_history	*next;
 }	t_history;
 
-t_envp	*add_cell(char *str);
+t_envp	*add_cell(char *key, char *value);
 t_envp	*list_maker(char **envp);
 char	*data_spliter(char *str);
 // int		cd(t_main *main, int total_args, const char *path, int is_last);

@@ -12,31 +12,52 @@
 
 #include "minishell.h"
 
+static void	add_or_replace(t_main *main, t_envp **actual, char *key, char *value)
+{
+	t_envp	**curr;
+	char	*full;
+
+	curr = get_env_addr(&main->envp, key);
+	full = ft_strjoin(key, "=");
+	if (!full)
+		return ;
+	if (!curr)
+	{
+		(*actual)->next = add_cell(key, value);
+		*actual = (*actual)->next;
+	}
+	else
+	{
+		free((*curr)->key);
+		free((*curr)->value);
+		free((*curr)->full);
+		(*curr)->key = key;
+		(*curr)->value = value;
+		(*curr)->full = ft_strjoin(full, value);
+	}
+	free(full);
+}
+
 int	export(t_main *main, int argc, char **argv, int nbcmds)
 {
-	t_envp	*actual;
-
-	actual = main->envp;
+	auto t_envp	*actual = main->envp;
 	auto int i = 0;
 	if (argc == 1)
 		env(main, main->envp, nbcmds);
-	if (main->tube != NULL && main->tube->fd >= 0)
-		close(main->tube->fd);
-	main->tube = NULL;
+	reset_tube(main);
 	if (main->envp == NULL)
 		return (-1);
 	while (actual->next != NULL)
 		actual = actual->next;
-	while (i < argc - 1)
+	while (++i < argc)
 	{
-		if (ft_isalpha(argv[i + 1][0]) == 1 && ft_strchr(argv[i + 1], '='))
-		{
-			actual->next = add_cell(argv[i + 1]);
-			actual = actual->next;
-		}
-		if (ft_isalpha(argv[i + 1][0]) == 0)
-			printf("ERROR\n");
-		i++;
+		auto char	**pair = ft_split(argv[i], '=');
+		if (!pair || !is_valid_env_name(pair[0]))
+			printf("-minishell: Invalid env name\n");
+		else if (!ft_strchr(argv[i], '='))
+			printf("-minishell: Missing env value\n");
+		else
+			add_or_replace(main, &actual, pair[0], argv[i]);
 	}
 	return (1);
 }

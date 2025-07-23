@@ -16,7 +16,7 @@ void	print_env(int fd, t_envp *actual)
 {
 	while (actual != NULL)
 	{
-		write(fd, actual->data, ft_strlen(actual->data));
+		write(fd, actual->full, ft_strlen(actual->full));
 		write(fd, "\n", 1);
 		actual = actual->next;
 	}

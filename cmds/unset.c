@@ -47,26 +47,23 @@ void	remove_first(t_envp **envp, t_envp *actual, t_envp *temp)
 void	unset_list_loop(t_main *main, t_envp *actual, t_envp *previous, int i)
 {
 	t_envp	*temp;
-	char	*key;
 
 	while (actual != NULL)
 	{
-		key = data_spliter(actual->data);
-		if (previous == NULL && ft_strcmp(key,
+		if (previous == NULL && ft_strcmp(actual->key,
 				main->cmd_info->argv[i + 1]) == 0)
 			remove_first(&main->envp, actual, temp);
-		else if (actual->next != NULL && ft_strcmp(key,
+		else if (actual->next != NULL && ft_strcmp(actual->key,
 				main->cmd_info->argv[i + 1]) == 0)
 		{
 			temp = actual->next;
 			actual = previous;
 			actual->next = temp;
 		}
-		else if (ft_strcmp(key, main->cmd_info->argv[i + 1]) == 0)
+		else if (ft_strcmp(actual->key, main->cmd_info->argv[i + 1]) == 0)
 			previous->next = NULL;
 		previous = actual;
 		actual = actual->next;
-		free(key);
 	}
 }
 

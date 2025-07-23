@@ -12,14 +12,33 @@
 
 #include "minishell.h"
 
-t_envp	*add_cell(char *str)
+int	is_valid_env_name(char *str)
+{
+	if (!str)
+		return (0);
+	while (*str)
+	{
+		if (!ft_isalpha(*str) && *str != '_')
+			return (0);
+		str++;
+	}
+	return (1);
+}
+
+t_envp	*add_cell(char *key, char *value)
 {
 	t_envp	*cell;
+	char	*temp;
 
 	cell = malloc(sizeof(t_envp));
 	if (cell == NULL)
 		return (NULL);
-	cell->data = str;
+	temp = ft_strjoin(key, "=");
+	if (!temp)
+		return (NULL);
+	cell->key = key;
+	cell->value = value;
+	cell->full = ft_strjoin(temp, value);
 	cell->next = NULL;
 	return (cell);
 }
@@ -28,35 +47,34 @@ t_envp	*list_maker(char **envp)
 {
 	t_envp		*curr_envp;
 	t_envp		*actual;
-	char		*key;
+	char		**pair;
 	int			i;
 
 	i = 0;
 	if (envp[i] == NULL)
 		return (NULL);
-	curr_envp = add_cell(envp[i]);
+	pair = ft_split(envp[i], '=');
+	curr_envp = add_cell(pair[0], pair[1]);
 	actual = curr_envp;
-	key = data_spliter(envp[i]);
-	while (envp[i] != NULL)
+	while (envp != NULL)
 	{
-		actual->next = add_cell(envp[i]);
+		actual->next = add_cell(pair[0], pair[1]);
 		actual = actual->next;
 		i++;
 	}
 	actual->next = NULL;
-	free(key);
+	free(pair);
 	return (curr_envp);
 }
 
 char	*get_env_value(t_envp *envp, char *key)
 {
-	char	**pair;
-
 	while (envp)
 	{
-		pair = ft_split(envp->data, '=');
-		if (pair && ft_strcmp(pair[0], key) == 0)
-			return (pair[1]);
+		if (ft_strcmp(envp->key, key) == 0)
+		{
+			return (envp->value);
+		}
 		envp = envp->next;
 	}
 	return (NULL);
@@ -64,25 +82,21 @@ char	*get_env_value(t_envp *envp, char *key)
 
 char	**envp_to_str(t_envp *envp)
 {
-	t_envp		*curr_envp;
-	char		**res;
-	int			i;
-
-	i = 0;
-	curr_envp = envp;
+	auto int i = 0;
+	auto t_envp		*curr_envp = envp;
 	while (curr_envp)
 	{
 		i++;
 		curr_envp = curr_envp->next;
 	}
 	curr_envp = envp;
-	res = malloc((i + 1) * sizeof(char *));
+	char		**res = malloc((i + 1) * sizeof(char *));
 	if (!res)
 		return (NULL);
 	i = 0;
 	while (curr_envp)
 	{
-		res[i] = ft_strdup(curr_envp->data);
+		res[i] = ft_strdup(curr_envp->full);
 		curr_envp = curr_envp->next;
 		i++;
 	}
