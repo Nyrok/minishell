@@ -16,7 +16,6 @@ t_history	*list_history_init(char *cmd)
 {
 	t_history	*list_history;
 
-	printf("zzzzz\n");
 	list_history = malloc(sizeof(t_history));
 	if (!list_history)
 		return (NULL);

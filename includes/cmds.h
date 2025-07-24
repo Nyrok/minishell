@@ -14,14 +14,7 @@
 # define CMDS_H
 
 # include "minishell.h"
-
-typedef struct s_cmd_info	t_cmd_info;
-
-typedef struct s_envp
-{
-	char			*data;
-	struct s_envp	*next;
-}	t_envp;
+# include "fwd.h"
 
 typedef struct s_history
 {
@@ -29,18 +22,14 @@ typedef struct s_history
 	struct s_history	*next;
 }	t_history;
 
-t_envp	*add_cell(char *str);
-t_envp	*list_maker(char **envp);
-char	*data_spliter(char *str);
-// int		cd(t_main *main, int total_args, const char *path, int is_last);
-// int		echo(t_main *main, int argc, const char **argv, int is_last);
-// void		export(t_main *main, int argc,
-//				char **argv, t_envp **envp, int is_last);
-// void	unset(t_main *main, int argc, char **argv, t_envp **envp, int is_last);
-// void	env(t_main *main, t_envp *envp, int is_last);
-// int		pwd(t_main *main, int is_last)
-// void	ft_exit(void);
-// int		builtin_exec(t_main *main, t_cmd_info *cmd_info, t_envp **envp,
-//				t_history *history, int nbcmds);
+int		cd(t_main *main, int total_args, const char *path);
+int		echo(t_main *main, int argc, const char **argv, int nbcmds);
+int		export(t_main *main, int argc, char **argv, int nbcmds);
+int		unset(t_main *main, int argc, t_envp **datas);
+int		env(t_main *main, t_envp *datas, int nbcmds);
+int		pwd(t_main *main, int nbcmds);
+void	ft_exit(void);
+int		builtin_exec(t_main *main,
+			t_cmd_info *cmd_info, t_envp **datas, int nbcmds);
 
 #endif

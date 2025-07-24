@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   envp_utils.c                                       :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hkonte <hkonte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,51 +12,32 @@
 
 #include "minishell.h"
 
-t_envp	*add_cell(char *str)
+int	is_valid_env_char(char c)
 {
-	t_envp	*cell;
-
-	cell = malloc(sizeof(t_envp));
-	if (cell == NULL)
-		return (NULL);
-	cell->data = str;
-	cell->next = NULL;
-	return (cell);
+	return (ft_isalpha(c) || c == '_');
 }
 
-t_envp	*list_maker(char **envp)
+int	is_valid_env_name(char *str)
 {
-	t_envp		*curr_envp;
-	t_envp		*actual;
-	char		*key;
-	int			i;
-
-	i = 0;
-	if (envp[i] == NULL)
-		return (NULL);
-	curr_envp = add_cell(envp[i]);
-	actual = curr_envp;
-	key = data_spliter(envp[i]);
-	while (envp[i] != NULL)
+	if (!str)
+		return (0);
+	if (ft_isdigit(*str))
+		return (0);
+	while (*str)
 	{
-		actual->next = add_cell(envp[i]);
-		actual = actual->next;
-		i++;
+		if (!is_valid_env_char(*str))
+			return (0);
+		str++;
 	}
-	actual->next = NULL;
-	free(key);
-	return (curr_envp);
+	return (1);
 }
 
 char	*get_env_value(t_envp *envp, char *key)
 {
-	char	**pair;
-
 	while (envp)
 	{
-		pair = ft_split(envp->data, '=');
-		if (pair && ft_strcmp(pair[0], key) == 0)
-			return (pair[1]);
+		if (ft_strcmp(envp->key, key) == 0)
+			return (envp->value);
 		envp = envp->next;
 	}
 	return (NULL);
@@ -64,25 +45,21 @@ char	*get_env_value(t_envp *envp, char *key)
 
 char	**envp_to_str(t_envp *envp)
 {
-	t_envp		*curr_envp;
-	char		**res;
-	int			i;
-
-	i = 0;
-	curr_envp = envp;
+	auto int i = 0;
+	auto t_envp * curr_envp = envp;
 	while (curr_envp)
 	{
 		i++;
 		curr_envp = curr_envp->next;
 	}
 	curr_envp = envp;
-	res = malloc((i + 1) * sizeof(char *));
+	auto char **res = malloc((i + 1) * sizeof(char *));
 	if (!res)
 		return (NULL);
 	i = 0;
 	while (curr_envp)
 	{
-		res[i] = ft_strdup(curr_envp->data);
+		res[i] = curr_envp->full;
 		curr_envp = curr_envp->next;
 		i++;
 	}

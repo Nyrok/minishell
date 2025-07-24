@@ -18,11 +18,6 @@ int	no_leaks(t_main *main, char **envp)
 	t_cmd_info		*free_tmp;
 
 	i = 0;
-	while (envp[i])
-	{
-		free(envp[i]);
-		i++;
-	}
 	free(envp);
 	if (main->tube && main->tube->fd != -1)
 		close(main->tube->fd);
@@ -83,4 +78,11 @@ void	setup_tube(t_main *main)
 	main->tube = ft_calloc(1, sizeof(t_redir));
 	main->tube->next = NULL;
 	main->tube->fd = -1;
+}
+
+void	reset_tube(t_main *main)
+{
+	if (main->tube != NULL && main->tube->fd >= 0)
+		close(main->tube->fd);
+	main->tube = NULL;
 }

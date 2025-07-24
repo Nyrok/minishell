@@ -18,7 +18,7 @@ int	pwd(t_main *main, int nbcmds)
 	int		fd;
 	char	*str;
 
-	str = getenv("PWD");
+	str = get_env_value(main->envp, "PWD");
 	if (main->cmd_info->outfile != NULL)
 		fd = main->cmd_info->outfile->fd;
 	else if (nbcmds > 1)

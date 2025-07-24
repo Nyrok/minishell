@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   free.h                                             :+:      :+:    :+:   */
+/*   env.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hkonte <hkonte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,12 +10,27 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FREE_H
-# define FREE_H
+#ifndef ENV_H
+# define ENV_H
 
 # include "minishell.h"
+# include "fwd.h"
 
-void	free_tokens(t_main *main_struct);
-void	free_main(t_main *main_struct);
+struct s_envp
+{
+	char			*key;
+	char			*value;
+	char			*full;
+	struct s_envp	*next;
+};
+
+t_envp	*create_envp(char *key, char *value);
+t_envp	*init_env(char **envp);
+void	add_or_replace(t_main *main, t_envp **actual, char *key, char *value);
+char	**envp_to_str(t_envp *envp);
+int		is_valid_env_char(char c);
+int		is_valid_env_name(char *str);
+char	*get_env_value(t_envp *envp, char *key);
+t_envp	**get_env_addr(t_envp **envp, char *key);
 
 #endif

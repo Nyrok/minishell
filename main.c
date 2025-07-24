@@ -34,7 +34,7 @@ int	main(int argc, char **argv, char **envp)
 	main_struct = ft_calloc(1, sizeof(t_main));
 	if (main_struct == NULL)
 		return (0);
-	main_struct->envp = list_maker(envp);
+	main_struct->envp = init_env(envp);
 	main_struct->cmds_paths = cmds_paths_maker();
 	(void)argc;
 	(void)argv;
