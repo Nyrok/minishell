@@ -14,10 +14,8 @@
 
 int	no_leaks(t_main *main, char **envp)
 {
-	int				i;
 	t_cmd_info		*free_tmp;
 
-	i = 0;
 	free(envp);
 	if (main->tube && main->tube->fd != -1)
 		close(main->tube->fd);

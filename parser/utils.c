@@ -38,7 +38,7 @@ char	*rm_quotes(char *str, size_t start, size_t n)
 	return (result);
 }
 
-char	*get_word(char *str, size_t *i)
+char	*get_word(const char *str, size_t *i)
 {
 	size_t	start;
 	int		has_quote;
@@ -63,7 +63,7 @@ char	*get_word(char *str, size_t *i)
 		}
 		(*i)++;
 	}
-	return (str[*i] && (*i)++, ft_substr(str, start, *i - start));
+	return ((void)(str[*i] && (*i)++), ft_substr(str, start, *i - start));
 }
 
 char	*get_quoted(const char *str, size_t *i)
