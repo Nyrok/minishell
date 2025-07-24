@@ -38,7 +38,7 @@ struct s_cmd_info
 	struct s_cmd_info	*next;
 };
 
-char		*get_word(char *str, size_t *i);
+char		*get_word(const char *str, size_t *i);
 char		*get_quoted(const char *str, size_t *i);
 t_token		*get_redir_token(const char *str, size_t *i);
 t_cmd_info	*create_cmd_info(char *cmd, int argc);
