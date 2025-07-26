@@ -32,16 +32,14 @@ int	main(int argc, char **argv, char **envp)
 	t_main		*main_struct;
 	struct sigaction	sa;
 
-    // Configuration du signal (UNE SEULE FOIS)
     sa.sa_handler = handle_signal;
     sigemptyset(&sa.sa_mask);
-    sa.sa_flags = 0;  // Sans SA_RESTART pour être safe
+    sa.sa_flags = 0;
     sigaction(SIGINT, &sa, NULL);
 
-    // Configuration plus robuste du signal
     sa.sa_handler = handle_signal;
     sigemptyset(&sa.sa_mask);
-    sa.sa_flags = SA_RESTART;  // <-- Important : redémarre les appels système interrompus
+    sa.sa_flags = SA_RESTART;
     sigaction(SIGINT, &sa, NULL);
 	main_struct = ft_calloc(1, sizeof(t_main));
 	if (main_struct == NULL)
