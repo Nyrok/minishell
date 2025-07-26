@@ -26,6 +26,7 @@ int	no_leaks(t_main *main, char **envp)
 		free_tmp = main->cmd_info;
 		main->cmd_info = main->cmd_info->next;
 		free(free_tmp);
+		free_tmp = NULL;
 	}
 	return (1);
 }

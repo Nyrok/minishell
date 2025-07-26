@@ -12,6 +12,37 @@
 
 #include "minishell.h"
 
+void	ft_ctrld(t_main *main)
+{
+	t_envp		*tmp;
+	t_history	*hist_tmp;
+
+	while (main->envp != NULL)
+	{
+		tmp = main->envp;
+		free(tmp->key);
+		free(tmp->value);
+		free(tmp->full);
+		main->envp = main->envp->next;
+		free(tmp);
+	}
+	while (main->history != NULL)
+	{
+		hist_tmp = main->history;
+		main->history = main->history->next;
+		if (hist_tmp->cmd)
+			free(hist_tmp->cmd);
+		free(hist_tmp);
+	}
+	if (main->cmd_info)
+		free_cmd_info(&main->cmd_info);
+	main->cmd_info = NULL;
+	free(main->history);
+	free(main->envp);
+	free(main);
+	exit(1);
+}
+
 void	line_reader(t_main *main)
 {
 	char		*user_input;
@@ -20,7 +51,7 @@ void	line_reader(t_main *main)
 	{
 		user_input = readline(PURPLE "minishell>" RESET);
 		if (user_input == NULL)
-			exit(1); // ajouter les free
+			ft_ctrld(main); // ajouter les free
 		main->tokens = tokenize_input(user_input);
 		main->cmd_info = parse_tokens(main, main->tokens);
 		free_tokens(main);
@@ -37,6 +68,7 @@ void	line_reader(t_main *main)
 			executor(user_input, main);
 		}
 		free(user_input);
+		free_cmd_info(&main->cmd_info);
 	}
 	free_main(main);
 }

@@ -35,13 +35,10 @@ void	last_child_executor(int tube, t_main *main, char *cmd_path, char **envp)
 void	last_executor(t_main *main, char **envp, int tube, pid_t **pids)
 {
 	pid_t	pid;
-	int		i;
 
-	i = 0;
 	pid = fork();
 	if (pid == 0)
 	{
-		i = 0;
 		last_child_executor(tube, main, main->cmd_info->cmd_path, envp);
 		// while (main->cmd_info->argv[i])
 		// 	free(main->cmd_info->argv[i++]);
@@ -49,9 +46,9 @@ void	last_executor(t_main *main, char **envp, int tube, pid_t **pids)
 	}
 	else
 	{
-		while (main->cmd_info->argv[i])
-			free(main->cmd_info->argv[i++]);
-		free(main->cmd_info->argv);
+		// while (main->cmd_info->argv[i])
+		// 	free(main->cmd_info->argv[i++]);
+		// free(main->cmd_info->argv);
 		if (tube != -1)
 			close(tube);
 		if (main->cmd_info->outfile != NULL)

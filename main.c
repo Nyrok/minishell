@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#define _POSIX_C_SOURCE 200809L
 #include "minishell.h"
 
 int	g_signal = 0;
@@ -29,8 +30,19 @@ void	handle_signal(int signal)
 int	main(int argc, char **argv, char **envp)
 {
 	t_main		*main_struct;
+	struct sigaction	sa;
 
-	signal(SIGINT, handle_signal);
+    // Configuration du signal (UNE SEULE FOIS)
+    sa.sa_handler = handle_signal;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;  // Sans SA_RESTART pour être safe
+    sigaction(SIGINT, &sa, NULL);
+
+    // Configuration plus robuste du signal
+    sa.sa_handler = handle_signal;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = SA_RESTART;  // <-- Important : redémarre les appels système interrompus
+    sigaction(SIGINT, &sa, NULL);
 	main_struct = ft_calloc(1, sizeof(t_main));
 	if (main_struct == NULL)
 		return (0);
