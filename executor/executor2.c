@@ -35,13 +35,10 @@ void	last_child_executor(int tube, t_main *main, char *cmd_path, char **envp)
 void	last_executor(t_main *main, char **envp, int tube, pid_t **pids)
 {
 	pid_t	pid;
-	int		i;
 
-	i = 0;
 	pid = fork();
 	if (pid == 0)
 	{
-		i = 0;
 		last_child_executor(tube, main, main->cmd_info->cmd_path, envp);
 		// while (main->cmd_info->argv[i])
 		// 	free(main->cmd_info->argv[i++]);
@@ -49,9 +46,9 @@ void	last_executor(t_main *main, char **envp, int tube, pid_t **pids)
 	}
 	else
 	{
-		while (main->cmd_info->argv[i])
-			free(main->cmd_info->argv[i++]);
-		free(main->cmd_info->argv);
+		// while (main->cmd_info->argv[i])
+		// 	free(main->cmd_info->argv[i++]);
+		// free(main->cmd_info->argv);
 		if (tube != -1)
 			close(tube);
 		if (main->cmd_info->outfile != NULL)
@@ -72,7 +69,7 @@ int	executor_setup(t_main *main, pid_t *pids, int *nbcmds, char *cmd)
 int	onecmdexector(t_main *main, char **envp, pid_t *pids)
 {
 	setup_cmd_redirs(main->cmd_info);
-	if (builtin_exec(main, main->cmd_info, &main->datas, 1) == 1)
+	if (builtin_exec(main, main->cmd_info, &main->envp, 1) == 1)
 		return (1);
 	if (main->cmd_info->infile != NULL)
 		lcmd_searcher(main, envp, main->cmd_info->infile->fd, &pids);
@@ -83,7 +80,7 @@ int	onecmdexector(t_main *main, char **envp, pid_t *pids)
 
 int	multiplecmdexector(t_main *main, char **envp, pid_t *pids, int nbcmds)
 {
-	if (builtin_exec(main, main->cmd_info, &main->datas, nbcmds) == 1)
+	if (builtin_exec(main, main->cmd_info, &main->envp, nbcmds) == 1)
 		return (1);
 	if (main->cmd_info->infile != NULL && main->cmd_info->outfile == NULL
 		&& nbcmds > 1)

@@ -14,29 +14,24 @@
 
 int	export(t_main *main, int argc, char **argv, int nbcmds)
 {
-	t_envp	*actual;
-
-	actual = main->datas;
+	auto t_envp * actual = main->envp;
 	auto int i = 0;
 	if (argc == 1)
-		env(main, main->datas, nbcmds);
-	if (main->tube != NULL && main->tube->fd >= 0)
-		close(main->tube->fd);
-	main->tube = NULL;
-	if (main->datas == NULL)
+		env(main, main->envp, nbcmds);
+	reset_tube(main);
+	if (main->envp == NULL)
 		return (-1);
 	while (actual->next != NULL)
 		actual = actual->next;
-	while (i < argc - 1)
+	while (++i < argc)
 	{
-		if (ft_isalpha(argv[i + 1][0]) == 1 && ft_strchr(argv[i + 1], '='))
-		{
-			actual->next = add_cell(argv[i + 1]);
-			actual = actual->next;
-		}
-		if (ft_isalpha(argv[i + 1][0]) == 0)
-			printf("ERROR\n");
-		i++;
+		auto char **pair = ft_split(argv[i], '=');
+		if (!pair || !is_valid_env_name(pair[0]))
+			printf("-minishell: Invalid env name\n");
+		else if (!ft_strchr(argv[i], '='))
+			printf("-minishell: Missing env value\n");
+		else
+			add_or_replace(main, &actual, pair[0], pair[1]);
 	}
 	return (1);
 }

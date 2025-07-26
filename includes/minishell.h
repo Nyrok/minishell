@@ -29,13 +29,15 @@
 # include "tokenizer.h"
 # include "parser.h"
 # include "free.h"
+# include "env.h"
+# include "fwd.h"
 
 # define PURPLE  "\033[0;35m"
 # define RESET   "\033[0m"
 
 struct s_main
 {
-	t_envp			*datas;
+	t_envp			*envp;
 	t_cmds_paths	*cmds_paths;
 	t_history		*history;
 	t_token			*tokens;
@@ -49,17 +51,7 @@ t_history	*list_history_init(char *cmd);
 void		list_history_add(t_history **history, char *cmd);
 void		list_history_cleaner(t_main *main);
 void		print_history(t_history *history);
-char		**envp_to_str(t_envp *envp);
 int			executor(char *cmd, struct s_main *main);
-int			builtin_exec(t_main *main,
-				t_cmd_info *cmd_info, t_envp **datas, int nbcmds);
-int			cd(t_main *main, int total_args, const char *path);
-int			echo(t_main *main, int argc, const char **argv, int nbcmds);
-int			export(t_main *main, int argc, char **argv, int nbcmds);
-int			unset(t_main *main, int argc, t_envp **datas);
-int			env(t_main *main, t_envp *datas, int nbcmds);
-int			pwd(t_main *main, int nbcmds);
-void		ft_exit(void);
 int			file_executor(t_main *main, int file, pid_t **pids, int last);
 void		last_executor(t_main *main, char **envp, int tube, pid_t **pids);
 int			cmd_executor(t_main *main, char **envp, int file, pid_t **pids);
@@ -76,6 +68,7 @@ int			cmd_searcher(t_main *main, char **envp, int file, pid_t **pids);
 void		lcmd_searcher(t_main *main, char **envp, int tube, pid_t **pids);
 int			hasinfile(struct s_main *main);
 void		setup_tube(t_main *main);
+void		reset_tube(t_main *main);
 int			fd_opener(t_redir *actual_redir);
 
 #endif

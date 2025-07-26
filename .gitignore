@@ -7,6 +7,3 @@ minishell
 philo
 *.supp
 *.txt
-!includes
-in*
-out*

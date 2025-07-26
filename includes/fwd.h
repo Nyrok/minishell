@@ -10,13 +10,13 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FREE_H
-# define FREE_H
+#ifndef FWD_H
+# define FWD_H
 
 # include "minishell.h"
 
-void	free_tokens(t_main *main_struct);
-void	free_cmd_info(t_cmd_info **commande_info);
-void	free_main(t_main *main_struct);
+typedef struct s_main		t_main;
+typedef struct s_envp		t_envp;
+typedef struct s_cmd_info	t_cmd_info;
 
 #endif

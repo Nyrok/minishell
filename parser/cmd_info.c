@@ -21,12 +21,12 @@ t_cmd_info	*create_cmd_info(char *cmd, int argc)
 		return (NULL);
 	if (!cmd)
 		return (cmd_info);
-	cmd_info->cmd = cmd;
+	cmd_info->cmd = ft_strdup(cmd);
 	cmd_info->argc = cmd != NULL;
 	cmd_info->argv = ft_calloc(argc + 1, sizeof(char *));
 	if (!cmd_info->argv)
 		return (NULL);
-	cmd_info->argv[0] = cmd;
+	cmd_info->argv[0] = ft_strdup(cmd);
 	cmd_info->argv[argc] = NULL;
 	return (cmd_info);
 }

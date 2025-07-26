@@ -22,10 +22,11 @@ typedef enum e_error
 {
 	NOTFOUND = 0,
 	DEF_PIPE,
+	FILE_NOT_FOUND,
 	ENDED
 }	t_error_code;
 
-//void			cmd_searcher(char *cmd, char **paths, t_envp *datas);
+//void			cmd_searcher(char *cmd, char **paths, t_envp *envp);
 t_cmds_paths	*cmds_paths_maker(void);
 int				ft_access(char *pathname);
 

@@ -35,19 +35,20 @@ int	cd(t_main *main, int total_args, const char *path)
 {
 	if (total_args > 2)
 	{
-		printf("-bash: cd: too many arguments");
+		printf("-minishell: Too many arguments");
 		return (0);
 	}
 	if (!path)
 	{
-		printf("Empty path provided.\n");
+		printf("-minishell: Empty path provided.\n");
 		return (0);
 	}
 	if (chdir(path) != 0)
 	{
-		printf("Cannot enter into the folder.\n");
+		printf("-minishell: Cannot enter into the folder.\n");
 		return (0);
 	}
+	changepwd(main);
 	if (main->tube != NULL && main->tube->fd >= 0)
 		close(main->tube->fd);
 	main->tube = NULL;

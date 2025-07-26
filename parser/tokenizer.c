@@ -44,7 +44,6 @@ t_token	*tokenize_input(const char *input)
 	size_t	i;
 	t_token	*tokens;
 
-	printf("INPUT: %s\n", input);
 	i = 0;
 	tokens = NULL;
 	while (input[i])
@@ -53,7 +52,7 @@ t_token	*tokenize_input(const char *input)
 			i++;
 		if (input[i] == '\'' || input[i] == '"')
 			append_token(&tokens, create_token(get_quoted(input, &i), WORD));
-		else if (input[i] == '|' && i++)
+		else if (input[i] == '|' && ++i)
 			append_token(&tokens, create_token(ft_strdup("|"), PIPE));
 		else if (input[i] == '>' || input[i] == '<')
 			append_token(&tokens, get_redir_token(input, &i));
