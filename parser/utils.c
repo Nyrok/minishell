@@ -69,9 +69,14 @@ char	*get_word(const char *str, size_t *i)
 char	*get_quoted(const char *str, size_t *i)
 {
 	size_t	start;
+	char	quote;
 
 	start = *i;
-	while (str[*i])
+	quote = str[start];
+	(*i)++;
+	while (str[*i] && str[*i] != quote)
+		(*i)++;
+	if (str[*i] == quote)
 		(*i)++;
 	return (ft_substr(str, start, *i - start));
 }
