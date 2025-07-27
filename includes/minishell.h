@@ -58,8 +58,8 @@ void		last_executor(t_main *main, char **envp, int tube, pid_t **pids);
 int			cmd_executor(t_main *main, char **envp, int file, pid_t **pids);
 int			totalcmds(char *cmd);
 int			multiplecmdexector(t_main *main,
-				char **envp, pid_t *pids, int nbcmds);
-int			onecmdexector(t_main *main, char **envp, pid_t *pids);
+				char **envp, pid_t **pids, int nbcmds);
+int			onecmdexector(t_main *main, char **envp, pid_t **pids);
 void		add_pid(pid_t **pids, pid_t newpid);
 void		end_pids(pid_t **pids);
 int			no_leaks(t_main *main, char **envp);
@@ -72,6 +72,6 @@ void		setup_tube(t_main *main);
 void		reset_tube(t_main *main);
 int			fd_opener(t_redir *actual_redir);
 void		multiple_cmd_handler(t_main *main,
-				char **envp, pid_t *pids, int nbcmds);
+				char **envp, pid_t **pids, int nbcmds);
 
 #endif

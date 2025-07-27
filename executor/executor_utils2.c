@@ -96,13 +96,19 @@ int	fd_opener(t_redir *actual_redir)
 }
 
 void	multiple_cmd_handler(t_main *main, char **envp,
-			pid_t *pids, int nbcmds)
+			pid_t **pids, int nbcmds)
 {
 	t_cmd_info	*temp_cmd_info;
 
 	while (nbcmds > 0)
 	{
 		setup_cmd_redirs(main->cmd_info);
+		if (main->tube == NULL)
+		{
+			*pids = malloc((count_cmd_info(main->cmd_info) + 1) * sizeof(pid_t));
+			(*pids)[0] = 0;
+			setup_tube(main);
+		}
 		multiplecmdexector(main, envp, pids, nbcmds--);
 		temp_cmd_info = main->cmd_info;
 		main->cmd_info = main->cmd_info->next;

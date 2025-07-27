@@ -46,6 +46,19 @@ void	append_cmd_info(t_cmd_info **head, t_cmd_info *new)
 	}
 }
 
+int	count_cmd_info(t_cmd_info *cmd_info)
+{
+	int	i;
+
+	i = 0;
+	while (cmd_info)
+	{
+		i++;
+		cmd_info = cmd_info->next;
+	}
+	return (i);
+}
+
 int	count_cmd_args(t_token *tokens)
 {
 	int	i;
