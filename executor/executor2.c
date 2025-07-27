@@ -40,15 +40,9 @@ void	last_executor(t_main *main, char **envp, int tube, pid_t **pids)
 	if (pid == 0)
 	{
 		last_child_executor(tube, main, main->cmd_info->cmd_path, envp);
-		// while (main->cmd_info->argv[i])
-		// 	free(main->cmd_info->argv[i++]);
-		// free(main->cmd_info->argv);
 	}
 	else
 	{
-		// while (main->cmd_info->argv[i])
-		// 	free(main->cmd_info->argv[i++]);
-		// free(main->cmd_info->argv);
 		if (tube != -1)
 			close(tube);
 		if (main->cmd_info->outfile != NULL)

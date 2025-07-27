@@ -45,7 +45,7 @@ void	ft_ctrld(t_main *main)
 
 void	line_reader(t_main *main)
 {
-	char		*user_input;
+	char	*user_input;
 
 	while (1)
 	{

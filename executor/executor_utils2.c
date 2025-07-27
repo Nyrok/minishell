@@ -62,7 +62,7 @@ int	ft_heredoc(char *end)
 	fd_return = tube[0];
 	while (line != NULL && ft_strcmp(line, end) != 0)
 	{
-		write(fd, line, ft_strlen(line)); // check si res est define pour le tout premier join
+		write(fd, line, ft_strlen(line));
 		write(fd, "\n", 1);
 		free(line);
 		line = readline("> ");
@@ -94,4 +94,20 @@ int	fd_opener(t_redir *actual_redir)
 	if (actual_redir->good == 0)
 		close(actual_redir->fd);
 	return (1);
+}
+
+void	multiple_cmd_handler(t_main *main, char **envp,
+			pid_t *pids, int nbcmds)
+{
+	t_cmd_info	*temp_cmd_info;
+
+	while (nbcmds > 0)
+	{
+		setup_cmd_redirs(main->cmd_info);
+		multiplecmdexector(main, envp, pids, nbcmds--);
+		temp_cmd_info = main->cmd_info;
+		main->cmd_info = main->cmd_info->next;
+		free_cmd_info(&temp_cmd_info);
+	}
+	main->cmd_info = NULL;
 }
