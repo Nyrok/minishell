@@ -12,19 +12,21 @@
 
 #include "minishell.h"
 
-void	free_tokens(t_main *main_struct)
+void	free_tokens(t_token **tokens)
 {
 	t_token	*last_token;
 	t_token	*current_token;
 
-	last_token = main_struct->tokens;
+	last_token = *tokens;
 	current_token = last_token->next;
 	while (current_token)
 	{
+		free(last_token->word);
 		free(last_token);
 		last_token = current_token;
 		current_token = current_token->next;
 	}
+	free(last_token->word);
 	free(last_token);
 }
 
@@ -66,6 +68,9 @@ void	free_main(t_main *main_struct)
 	{
 		tmp = main_struct->envp;
 		main_struct->envp = main_struct->envp->next;
+		free(tmp->key);
+		free(tmp->value);
+		free(tmp->full);
 		free(tmp);
 	}
 	while (main_struct->history != NULL)

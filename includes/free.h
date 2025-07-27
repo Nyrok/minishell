@@ -15,7 +15,7 @@
 
 # include "minishell.h"
 
-void	free_tokens(t_main *main_struct);
+void	free_tokens(t_token **tokens);
 void	free_cmd_info(t_cmd_info **commande_info);
 void	free_main(t_main *main_struct);
 

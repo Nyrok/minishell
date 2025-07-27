@@ -54,7 +54,7 @@ void	line_reader(t_main *main)
 			ft_ctrld(main); // ajouter les free
 		main->tokens = tokenize_input(user_input);
 		main->cmd_info = parse_tokens(main, main->tokens);
-		free_tokens(main);
+		free_tokens(&main->tokens);
 		if (main->cmd_info)
 		{
 			if (main->history == NULL && user_input)
