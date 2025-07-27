@@ -27,9 +27,9 @@ int	builtin_exec(t_main *main, pid_t **pids, t_envp **envp, int nbcmds)
 		unset(main, main->cmd_info->argc, envp);
 	else if (ft_strcmp(main->cmd_info->cmd, "pwd") == 0)
 		pwd(main, nbcmds);
-	else if (ft_strcmp(main->cmd_info->cmd, "history") == 0
-		&& main->cmd_info->argc >= 2 &&
-		ft_strncmp(main->cmd_info->argv[1], "-c", 2) == 0)
+	else if (ft_strcmp(main->cmd_info->cmd, "history") == 0 \
+		&& main->cmd_info->argc >= 2 \
+		&& ft_strncmp(main->cmd_info->argv[1], "-c", 2) == 0)
 		list_history_cleaner(main);
 	else if (ft_strcmp(main->cmd_info->cmd, "history") == 0)
 		print_history(main->history);

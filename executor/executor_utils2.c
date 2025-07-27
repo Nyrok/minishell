@@ -107,8 +107,8 @@ void	multiple_cmd_handler(t_main *main, char **envp,
 		setup_cmd_redirs(main->cmd_info);
 		if (main->tube == NULL)
 		{
-			*pids = malloc((count_cmd_info(main->cmd_info) + 1) * sizeof(pid_t));
-			(*pids)[0] = 0;
+			*pids = ft_calloc((count_cmd_info(main->cmd_info) + 1), \
+				sizeof(pid_t));
 			setup_tube(main);
 		}
 		multiplecmdexector(main, envp, pids, nbcmds--);
