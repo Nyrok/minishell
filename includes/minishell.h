@@ -13,6 +13,7 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+# define _POSIX_C_SOURCE 200809L
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h> 
@@ -70,5 +71,7 @@ int			hasinfile(struct s_main *main);
 void		setup_tube(t_main *main);
 void		reset_tube(t_main *main);
 int			fd_opener(t_redir *actual_redir);
+void		multiple_cmd_handler(t_main *main,
+				char **envp, pid_t *pids, int nbcmds);
 
 #endif

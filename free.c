@@ -35,7 +35,7 @@ void	free_cmd_info(t_cmd_info **commande_info)
 	int			i;
 
 	if (commande_info == NULL || *commande_info == NULL)
-        return ;
+		return ;
 	cmd_tmp = *commande_info;
 	while (cmd_tmp->redirs)
 	{
@@ -45,16 +45,6 @@ void	free_cmd_info(t_cmd_info **commande_info)
 			free(redirs_tmp->filename);
 		free(redirs_tmp);
 	}
-	// if (cmd_tmp->cmd)
-	// {
-	// 	free(cmd_tmp->cmd);
-	// 	cmd_tmp->cmd = NULL;
-	// }
-	// if (cmd_tmp->cmd_path)
-	// {
-	// 	free(cmd_tmp->cmd_path);
-	// 	cmd_tmp->cmd_path = NULL;
-	// }
 	if (cmd_tmp->argv)
 	{
 		i = 0;

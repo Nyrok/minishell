@@ -64,9 +64,6 @@ void	child_executor(t_main *main, int *tube, int file, char **envp)
 		exit(EXIT_FAILURE);
 	}
 	(void)main->cmd_info->argv;
-	// while (args[i])
-	// 	free(args[i++]);
-	// free(args);
 }
 
 int	cmd_executor(t_main *main, char **envp, int file, pid_t **pids)
@@ -84,9 +81,6 @@ int	cmd_executor(t_main *main, char **envp, int file, pid_t **pids)
 		child_executor(main, tube, file, envp);
 	else
 	{
-		// while (main->cmd_info->argv[i])
-		// 	free(main->cmd_info->argv[i++]);
-		// free(main->cmd_info->argv);
 		close(tube[1]);
 		if (file != -1)
 			close(file);
@@ -117,18 +111,7 @@ int	executor(char *cmd, struct s_main *main)
 		main->cmd_info = NULL;
 	}
 	else
-	{
-		while (nbcmds > 0)
-		{
-			setup_cmd_redirs(main->cmd_info);
-			multiplecmdexector(main, envp, pids, nbcmds--);
-			temp_cmd_info = main->cmd_info;
-			main->cmd_info = main->cmd_info->next;
-			free_cmd_info(&temp_cmd_info);
-;		}
-		main->cmd_info = NULL;
-	}
-	//free_cmd_info(temp_cmd_info);
+		multiple_cmd_handler(main, envp, pids, nbcmds);
 	end_pids(&pids);
 	no_leaks(main, envp);
 	return (1);
