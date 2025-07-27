@@ -52,5 +52,7 @@ int					ft_tolower(int c);
 int					ft_toupper(int c);
 char				*ft_strjoin(char const *s1, char const *s2);
 int					ft_isspace(const char c);
+char				*add_word(char const *s, int i, int k);
+void				free_split(char **res, int j);
 
 #endif

@@ -32,5 +32,6 @@ int		is_valid_env_char(char c);
 int		is_valid_env_name(char *str);
 char	*get_env_value(t_envp *envp, char *key);
 t_envp	**get_env_addr(t_envp **envp, char *key);
+char	**ft_split_env(char const *s);
 
 #endif

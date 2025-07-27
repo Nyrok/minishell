@@ -14,31 +14,10 @@
 
 void	ft_ctrld(t_main *main)
 {
-	t_envp		*tmp;
-	t_history	*hist_tmp;
-
-	while (main->envp != NULL)
-	{
-		tmp = main->envp;
-		free(tmp->key);
-		free(tmp->value);
-		free(tmp->full);
-		main->envp = main->envp->next;
-		free(tmp);
-	}
-	while (main->history != NULL)
-	{
-		hist_tmp = main->history;
-		main->history = main->history->next;
-		if (hist_tmp->cmd)
-			free(hist_tmp->cmd);
-		free(hist_tmp);
-	}
 	if (main->cmd_info)
 		free_cmd_info(&main->cmd_info);
-	main->cmd_info = NULL;
-	free(main->history);
-	free(main->envp);
+	free_main(&main);
+	exit(EXIT_SUCCESS);
 }
 
 void	line_reader(t_main *main)
@@ -49,10 +28,9 @@ void	line_reader(t_main *main)
 	{
 		user_input = readline(PURPLE "minishell>" RESET);
 		if (user_input == NULL)
-			ft_ctrld(main); // ajouter les free
+			ft_ctrld(main);
 		main->tokens = tokenize_input(user_input);
 		main->cmd_info = parse_tokens(main, main->tokens);
-		free_tokens(&main->tokens);
 		if (main->cmd_info)
 		{
 			if (main->history == NULL && user_input)

@@ -12,6 +12,35 @@
 
 #include "minishell.h"
 
+char	**ft_split_env(char const *s)
+{
+	char	**res;
+	int		i;
+	int		j;
+	int		k;
+
+	i = 0;
+	j = 0;
+	res = ft_calloc(sizeof(char *), !!ft_strchr(s, '=') + 2);
+	if (!res)
+		return (NULL);
+	auto int has_found = 0;
+	while (s[i] && j < !!ft_strchr(s, '=') + 1)
+	{
+		k = 0;
+		while ((has_found || s[i + k] != '=') && s[i + k])
+			k++;
+		has_found = 1;
+		res[j] = add_word(s, i, k);
+		if (!res[j])
+			return (free_split(res, j), NULL);
+		i += k;
+		j++;
+	}
+	res[j] = NULL;
+	return (res);
+}
+
 int	is_valid_env_char(char c)
 {
 	return (ft_isalpha(c) || c == '_');
