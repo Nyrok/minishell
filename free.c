@@ -51,15 +51,15 @@ void	free_tokens(t_token **tokens)
 	*tokens = NULL;
 }
 
-void	free_cmd_info(t_cmd_info **commande_info)
+void	free_cmd_info(t_cmd_info **cmd_info)
 {
 	t_cmd_info	*cmd_tmp;
 	t_redir		*redirs_tmp;
 	int			i;
 
-	if (commande_info == NULL || *commande_info == NULL)
+	if (cmd_info == NULL || *cmd_info == NULL)
 		return ;
-	cmd_tmp = *commande_info;
+	cmd_tmp = *cmd_info;
 	while (cmd_tmp->redirs)
 	{
 		redirs_tmp = cmd_tmp->redirs;

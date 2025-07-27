@@ -17,7 +17,7 @@ t_redir	*create_redir(char *filename, t_token_type type)
 	t_redir	*redir;
 
 	redir = ft_calloc(1, sizeof(t_redir));
-	redir->filename = filename;
+	redir->filename = ft_strdup(filename);
 	redir->type = type;
 	redir->fd = -1;
 	redir->io = -1;
@@ -52,18 +52,18 @@ void	append_redir(t_redir **head, t_redir *new)
 
 void	setup_cmd_redirs(t_cmd_info *cmd_info)
 {
-	t_cmd_info	*actual;
+	t_redir		*actual_redir;
 
-	actual = cmd_info;
-	while (actual->redirs != NULL)
+	actual_redir = cmd_info->redirs;
+	while (actual_redir)
 	{
-		if (actual->redirs->good)
+		if (actual_redir->good)
 		{
-			if (actual->redirs->io == STDIN_FILENO)
-				actual->infile = actual->redirs;
-			else if (actual->redirs->io == STDOUT_FILENO)
-				actual->outfile = actual->redirs;
+			if (actual_redir->io == STDIN_FILENO)
+				cmd_info->infile = actual_redir;
+			else if (actual_redir->io == STDOUT_FILENO)
+				cmd_info->outfile = actual_redir;
 		}
-		actual->redirs = actual->redirs->next;
+		actual_redir = actual_redir->next;
 	}
 }

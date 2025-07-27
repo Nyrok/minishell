@@ -33,17 +33,16 @@ void	line_reader(t_main *main)
 		main->cmd_info = parse_tokens(main, main->tokens);
 		if (main->cmd_info)
 		{
-			if (main->history == NULL && user_input)
+			if (main->history == NULL)
 				main->history = list_history_init(user_input);
-			else if (user_input)
+			else
 				list_history_add(&main->history, user_input);
-			if (user_input && *user_input)
+			if (*user_input)
 				add_history(user_input);
-			if (!user_input)
-				break ;
 			executor(user_input, main);
 		}
 		free(user_input);
+		user_input = NULL;
 		free_cmd_info(&main->cmd_info);
 		free_tokens(&main->tokens);
 	}

@@ -19,6 +19,7 @@ int	echo(t_main *main, int argc, const char **argv, int nbcmds)
 	int	tube[2];
 	int	fd;
 
+	nl = 0;
 	fd = STDOUT_FILENO;
 	if (main->cmd_info->outfile != NULL)
 		fd = main->cmd_info->outfile->fd;
