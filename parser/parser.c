@@ -26,9 +26,9 @@ static t_cmd_info	*parse_redir(t_token *tokens, t_cmd_info **l, t_cmd_info *o)
 	}
 	redir = NULL;
 	if (tokens->type == REDIN || tokens->type == HEREDOC)
-		redir = create_redir(tokens->next->word, tokens->type);
+		redir = create_redir(ft_strdup(tokens->next->word), tokens->type);
 	else if (tokens->type == REDOUT || tokens->type == APPEND)
-		redir = create_redir(tokens->next->word, tokens->type);
+		redir = create_redir(ft_strdup(tokens->next->word), tokens->type);
 	append_redir(&o->redirs, redir);
 	return (o);
 }
@@ -45,13 +45,13 @@ static void	parse_word(t_token *tokens, t_cmd_info **list, t_cmd_info **obj)
 	}
 	else if (!(*obj)->cmd)
 	{
-		(*obj)->cmd = tokens->word;
+		(*obj)->cmd = ft_strdup(tokens->word);
 		(*obj)->argc++;
 		(*obj)->argv = ft_calloc(count_cmd_args(tokens->next) + 1, \
 			sizeof(char *));
 		if (!(*obj)->argv)
 			return ;
-		(*obj)->argv[0] = tokens->word;
+		(*obj)->argv[0] = ft_strdup(tokens->word);
 	}
 	else
 		(*obj)->argv[(*obj)->argc++] = tokens->word;

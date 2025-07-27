@@ -35,6 +35,7 @@ char	*rm_quotes(char *str, size_t start, size_t n)
 		if (str[start + i] != '\'' && str[start + i] != '"')
 			result[j++] = str[start + i];
 	result[i] = '\0';
+	free(str);
 	return (result);
 }
 

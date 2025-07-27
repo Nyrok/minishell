@@ -40,7 +40,6 @@ int	totalcmds(char *cmd)
 			total++;
 		i++;
 	}
-	printf("TOTAL = %d\n", total);
 	return (total);
 }
 

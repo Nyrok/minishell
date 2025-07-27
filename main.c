@@ -26,6 +26,18 @@ void	handle_signal(int signal)
 	}
 }
 
+static t_main	*init_main(char **envp)
+{
+	t_main	*main_struct;
+
+	main_struct = ft_calloc(1, sizeof(t_main));
+	if (!main_struct)
+		exit(1);
+	main_struct->envp = init_env(envp);
+	main_struct->cmds_paths = cmds_paths_maker();
+	return (main_struct);
+}
+
 int	main(int argc, char **argv, char **envp)
 {
 	t_main				*main_struct;
@@ -35,14 +47,9 @@ int	main(int argc, char **argv, char **envp)
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = SA_RESTART;
 	sigaction(SIGINT, &sa, NULL);
-	main_struct = ft_calloc(1, sizeof(t_main));
-	if (main_struct == NULL)
-		return (0);
-	main_struct->envp = init_env(envp);
-	main_struct->cmds_paths = cmds_paths_maker();
+	main_struct = init_main(envp);
 	(void)argc;
 	(void)argv;
 	line_reader(main_struct);
-	free_main(main_struct);
-	return (1);
+	free_main(&main_struct);
 }

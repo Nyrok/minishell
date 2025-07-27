@@ -12,7 +12,21 @@
 
 #include "minishell.h"
 
-void	ft_exit(void)
+void	ft_exit(t_main **main)
 {
-	exit(EXIT_SUCCESS); // RAJOUTER LES FREE
+	t_cmd_info	*tmp_cmd_info;
+
+	while ((*main)->cmd_info)
+	{
+		tmp_cmd_info = (*main)->cmd_info;
+		(*main)->cmd_info = (*main)->cmd_info->next;
+		if (tmp_cmd_info->infile && tmp_cmd_info->infile->fd > -1)
+			close(tmp_cmd_info->infile->fd);
+		if (tmp_cmd_info->outfile && tmp_cmd_info->outfile->fd > -1)
+			close(tmp_cmd_info->outfile->fd);
+		free_cmd_info(&tmp_cmd_info);
+	}
+	free_tokens(&(*main)->tokens);
+	free_main(main);
+	exit(EXIT_SUCCESS);
 }

@@ -39,8 +39,6 @@ void	ft_ctrld(t_main *main)
 	main->cmd_info = NULL;
 	free(main->history);
 	free(main->envp);
-	free(main);
-	exit(1);
 }
 
 void	line_reader(t_main *main)
@@ -54,7 +52,7 @@ void	line_reader(t_main *main)
 			ft_ctrld(main); // ajouter les free
 		main->tokens = tokenize_input(user_input);
 		main->cmd_info = parse_tokens(main, main->tokens);
-		free_tokens(main);
+		free_tokens(&main->tokens);
 		if (main->cmd_info)
 		{
 			if (main->history == NULL && user_input)
@@ -70,5 +68,4 @@ void	line_reader(t_main *main)
 		free(user_input);
 		free_cmd_info(&main->cmd_info);
 	}
-	free_main(main);
 }

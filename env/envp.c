@@ -23,10 +23,12 @@ t_envp	*create_envp(char *key, char *value)
 	temp = ft_strjoin(key, "=");
 	if (!temp)
 		return (NULL);
-	cell->key = key;
-	cell->value = value;
+	cell->key = ft_strdup(key);
+	cell->value = ft_strdup(value);
 	cell->full = ft_strjoin(temp, value);
 	free(temp);
+	free(key);
+	free(value);
 	cell->next = NULL;
 	return (cell);
 }
