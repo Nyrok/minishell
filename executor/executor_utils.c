@@ -55,23 +55,6 @@ int	hasinfile(struct s_main *main)
 	return (total);
 }
 
-int	hasoutfile(struct s_main *main)
-{
-	t_redir	*actual;
-	int		total;
-
-	total = 0;
-	actual = main->cmd_info->redirs;
-	while (actual != NULL)
-	{
-		printf("Enter\n");
-		if (actual->type == 5)
-			total = 1;
-		actual = actual->next;
-	}
-	return (total);
-}
-
 void	setup_tube(t_main *main)
 {
 	main->tube = ft_calloc(1, sizeof(t_redir));
