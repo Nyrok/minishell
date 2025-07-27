@@ -12,22 +12,42 @@
 
 #include "minishell.h"
 
+void	free_envp(t_envp **envp)
+{
+	t_envp	*last_envp;
+	t_envp	*current_envp;
+
+	last_envp = *envp;
+	if (last_envp)
+		current_envp = last_envp->next;
+	while (last_envp)
+	{
+		free(last_envp->key);
+		free(last_envp->value);
+		free(last_envp->full);
+		free(last_envp);
+		last_envp = current_envp;
+		if (current_envp)
+			current_envp = current_envp->next;
+	}
+}
+
 void	free_tokens(t_token **tokens)
 {
 	t_token	*last_token;
 	t_token	*current_token;
 
 	last_token = *tokens;
-	current_token = last_token->next;
-	while (current_token)
+	if (last_token)
+		current_token = last_token->next;
+	while (last_token)
 	{
 		free(last_token->word);
 		free(last_token);
 		last_token = current_token;
-		current_token = current_token->next;
+		if (current_token)
+			current_token = current_token->next;
 	}
-	free(last_token->word);
-	free(last_token);
 }
 
 void	free_cmd_info(t_cmd_info **commande_info)
@@ -47,39 +67,26 @@ void	free_cmd_info(t_cmd_info **commande_info)
 			free(redirs_tmp->filename);
 		free(redirs_tmp);
 	}
-	if (cmd_tmp->argv)
-	{
-		i = 0;
-		while (cmd_tmp->argv[i])
-			free(cmd_tmp->argv[i++]);
-		free(cmd_tmp->argv);
-		cmd_tmp->argv = NULL;
-	}
+	i = 0;
+	while (cmd_tmp->argv && cmd_tmp->argv[i])
+		free(cmd_tmp->argv[i++]);
+	free(cmd_tmp->cmd);
+	free(cmd_tmp->argv);
 	free(cmd_tmp);
-	cmd_tmp = NULL;
 }
 
-void	free_main(t_main *main_struct)
+void	free_main(t_main **main_struct)
 {
-	t_envp			*tmp;
-	t_history		*tmp2;
+	t_history		*tmp;
 
-	while (main_struct->envp != NULL)
+	free_envp(&(*main_struct)->envp);
+	while ((*main_struct)->history != NULL)
 	{
-		tmp = main_struct->envp;
-		main_struct->envp = main_struct->envp->next;
-		free(tmp->key);
-		free(tmp->value);
-		free(tmp->full);
+		tmp = (*main_struct)->history;
+		(*main_struct)->history = (*main_struct)->history->next;
+		free(tmp->cmd);
 		free(tmp);
 	}
-	while (main_struct->history != NULL)
-	{
-		tmp2 = main_struct->history;
-		main_struct->history = main_struct->history->next;
-		free(tmp2->cmd);
-		free(tmp2);
-	}
 	rl_clear_history();
-	free(main_struct);
+	free(*main_struct);
 }

@@ -55,7 +55,7 @@ static char	*add_word(char const *s, int i, int k)
 	return (res);
 }
 
-static void	free_all(char	**res, int j)
+static void	free_all(char **res, int j)
 {
 	while (j >= 0)
 	{

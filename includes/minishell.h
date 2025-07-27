@@ -45,6 +45,7 @@ struct s_main
 	t_token			*tokens;
 	t_cmd_info		*cmd_info;
 	t_redir			*tube;
+	int				running;
 };
 
 void		line_reader(t_main *main_struct);

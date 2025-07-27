@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   check_cmds.c                                       :+:      :+:    :+:   */
+/*   builtin_cmds.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cduquair <cduquair@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -32,7 +32,7 @@ int	builtin_exec(t_main *main, t_cmd_info *cmd_info, t_envp **envp, int nbcmds)
 	else if (ft_strcmp(cmd_info->cmd, "history") == 0)
 		print_history(main->history);
 	else if (ft_strcmp(cmd_info->cmd, "exit") == 0)
-		ft_exit();
+		ft_exit(&main);
 	else
 		return (0);
 	return (1);
