@@ -73,10 +73,12 @@ int	ft_heredoc(char *end)
 
 int	fd_opener(t_redir *actual_redir)
 {
-	if (access(actual_redir->filename, F_OK) != 0)
+	if (actual_redir->io == STDIN_FILENO \
+		&& access(actual_redir->filename, F_OK) != 0)
 		printf("-minishell: %s: No such file or directory\n",
 			actual_redir->filename);
-	else if (access(actual_redir->filename, R_OK) != 0)
+	else if (actual_redir->io == STDIN_FILENO \
+		&& access(actual_redir->filename, R_OK) != 0)
 		printf("-minishell: %s: Permission denied\n", actual_redir->filename);
 	if (actual_redir->type == APPEND)
 		actual_redir->fd = open(actual_redir->filename,
@@ -105,8 +107,8 @@ void	multiple_cmd_handler(t_main *main, char **envp,
 		setup_cmd_redirs(main->cmd_info);
 		if (main->tube == NULL)
 		{
-			*pids = malloc((count_cmd_info(main->cmd_info) + 1) * sizeof(pid_t));
-			(*pids)[0] = 0;
+			*pids = ft_calloc((count_cmd_info(main->cmd_info) + 1), \
+				sizeof(pid_t));
 			setup_tube(main);
 		}
 		multiplecmdexector(main, envp, pids, nbcmds--);

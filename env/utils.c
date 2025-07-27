@@ -14,30 +14,27 @@
 
 char	**ft_split_env(char const *s)
 {
-	char	**res;
-	int		i;
-	int		j;
-	int		k;
-
-	i = 0;
-	j = 0;
-	res = ft_calloc(sizeof(char *), !!ft_strchr(s, '=') + 2);
+	auto int i = 0;
+	auto int j = 0;
+	auto char *c = ft_strchr(s, '=');
+	auto char **res = ft_calloc(sizeof(char *), !!c + 2);
 	if (!res)
 		return (NULL);
 	auto int has_found = 0;
-	while (s[i] && j < !!ft_strchr(s, '=') + 1)
+	while (s[i] && j < !!c + 1)
 	{
-		k = 0;
-		while ((has_found || s[i + k] != '=') && s[i + k])
+		auto int k = 0;
+		while ((has_found || s + i + k != c) && s[i + k])
 			k++;
 		has_found = 1;
+		if (has_found && s + i == c)
+			i++;
 		res[j] = add_word(s, i, k);
 		if (!res[j])
 			return (free_split(res, j), NULL);
 		i += k;
 		j++;
 	}
-	res[j] = NULL;
 	return (res);
 }
 

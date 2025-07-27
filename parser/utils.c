@@ -26,7 +26,7 @@ char	*rm_quotes(char *str, size_t start, size_t n)
 		if (str[start + i] == '\'' || str[start + i] == '"')
 			quotes++;
 	size = n - quotes;
-	result = malloc((size + 1) * sizeof(char));
+	result = ft_calloc(size + 1, sizeof(char));
 	if (!result)
 		return (NULL);
 	i = -1;
@@ -34,7 +34,6 @@ char	*rm_quotes(char *str, size_t start, size_t n)
 	while (++i < n)
 		if (str[start + i] != '\'' && str[start + i] != '"')
 			result[j++] = str[start + i];
-	result[i] = '\0';
 	free(str);
 	return (result);
 }

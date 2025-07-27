@@ -41,7 +41,6 @@
 
 void	clear_tube(t_main **main, pid_t **pids)
 {
-	printf("MAIS NAN \n");
 	end_pids(pids);
 	*pids = NULL;
 	if ((*main)->tube->fd != -1)

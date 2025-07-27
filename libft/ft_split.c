@@ -40,7 +40,7 @@ char	*add_word(char const *s, int i, int k)
 	char	*res;
 	int		j;
 
-	res = malloc((k + 1) * sizeof(char));
+	res = ft_calloc(k + 1, sizeof(char));
 	if (!res)
 		return (NULL);
 	j = 0;
