@@ -70,26 +70,23 @@ static void	parse_word(t_envp *envp, char **word)
 	}
 }
 
-void	parse_env(t_envp *envp, t_token **tokens)
+void	parse_env(t_envp *envp, t_token *tokens)
 {
-	t_token	*start;
 	int		has_quote;
 
-	start = *tokens;
 	has_quote = 0;
-	while (*tokens)
+	while (tokens)
 	{
-		if ((*tokens)->word)
+		if (tokens->word)
 		{
-			has_quote = (*tokens)->word[0] == '"';
-			(*tokens)->word = rm_quotes((*tokens)->word, 0, \
-				ft_strlen((*tokens)->word));
+			has_quote = tokens->word[0] == '"';
+			tokens->word = rm_quotes(tokens->word, 0, \
+				ft_strlen(tokens->word));
 		}
-		if ((*tokens)->type == WORD && (*tokens)->word \
-			&& ((*tokens)->word[0] == '$' || has_quote))
-			parse_word(envp, &(*tokens)->word);
-		*tokens = (*tokens)->next;
+		if (tokens->type == WORD && tokens->word \
+			&& (tokens->word[0] == '$' || has_quote))
+			parse_word(envp, &tokens->word);
+		tokens = tokens->next;
 		has_quote = 0;
 	}
-	*tokens = start;
 }

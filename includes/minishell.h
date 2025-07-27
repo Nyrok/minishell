@@ -47,7 +47,6 @@ struct s_main
 };
 
 void		line_reader(t_main *main_struct);
-void		anti_leaks(t_main **main_struct);
 t_history	*list_history_init(char *cmd);
 void		list_history_add(t_history **history, char *cmd);
 void		list_history_cleaner(t_main *main);

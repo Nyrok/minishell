@@ -54,7 +54,7 @@ static void	parse_word(t_token *tokens, t_cmd_info **list, t_cmd_info **obj)
 		(*obj)->argv[0] = ft_strdup(tokens->word);
 	}
 	else
-		(*obj)->argv[(*obj)->argc++] = tokens->word;
+		(*obj)->argv[(*obj)->argc++] = ft_strdup(tokens->word);
 }
 
 t_cmd_info	*parse_tokens(t_main *main, t_token *tokens)
@@ -64,7 +64,7 @@ t_cmd_info	*parse_tokens(t_main *main, t_token *tokens)
 
 	if (!check_tokens(tokens))
 		return (NULL);
-	parse_env(main->envp, &tokens);
+	parse_env(main->envp, tokens);
 	cmd_infos = NULL;
 	cmd_info = NULL;
 	while (tokens)
