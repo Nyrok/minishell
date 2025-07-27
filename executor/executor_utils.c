@@ -28,6 +28,7 @@ int	no_leaks(t_main *main, char **envp)
 		free(free_tmp);
 		free_tmp = NULL;
 	}
+	free_tokens(&main->tokens);
 	return (1);
 }
 
