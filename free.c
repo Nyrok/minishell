@@ -71,7 +71,9 @@ void	free_cmd_info(t_cmd_info **commande_info)
 	while (cmd_tmp->argv && cmd_tmp->argv[i])
 		free(cmd_tmp->argv[i++]);
 	free(cmd_tmp->cmd);
-	free(cmd_tmp->cmd_path);
+	//if (cmd_tmp->cmd_path)
+	//	free(cmd_tmp->cmd_path);
+	//cmd_tmp->cmd_path = NULL;
 	free(cmd_tmp->argv);
 	free(cmd_tmp);
 }

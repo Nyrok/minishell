@@ -105,14 +105,15 @@ int	executor(char *cmd, struct s_main *main)
 		return (0);
 	if (nbcmds == 1)
 	{
-		onecmdexector(main, envp, pids);
+		onecmdexector(main, envp, &pids);
 		temp_cmd_info = main->cmd_info;
 		free_cmd_info(&temp_cmd_info);
 		main->cmd_info = NULL;
 	}
 	else
-		multiple_cmd_handler(main, envp, pids, nbcmds);
-	end_pids(&pids);
+		multiple_cmd_handler(main, envp, &pids, nbcmds);
+	if (pids)
+		end_pids(&pids);
 	no_leaks(main, envp);
 	return (1);
 }

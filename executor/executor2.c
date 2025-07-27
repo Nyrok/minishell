@@ -60,42 +60,42 @@ int	executor_setup(t_main *main, pid_t *pids, int *nbcmds, char *cmd)
 	return (1);
 }
 
-int	onecmdexector(t_main *main, char **envp, pid_t *pids)
+int	onecmdexector(t_main *main, char **envp, pid_t **pids)
 {
 	setup_cmd_redirs(main->cmd_info);
-	if (builtin_exec(main, main->cmd_info, &main->envp, 1) == 1)
+	if (builtin_exec(main, pids, &main->envp, 1) == 1)
 		return (1);
 	if (main->cmd_info->infile != NULL)
-		lcmd_searcher(main, envp, main->cmd_info->infile->fd, &pids);
+		lcmd_searcher(main, envp, main->cmd_info->infile->fd, pids);
 	else
-		lcmd_searcher(main, envp, -1, &pids);
+		lcmd_searcher(main, envp, -1, pids);
 	return (1);
 }
 
-int	multiplecmdexector(t_main *main, char **envp, pid_t *pids, int nbcmds)
+int	multiplecmdexector(t_main *main, char **envp, pid_t **pids, int nbcmds)
 {
-	if (builtin_exec(main, main->cmd_info, &main->envp, nbcmds) == 1)
+	if (builtin_exec(main, pids, &main->envp, nbcmds) == 1)
 		return (1);
 	if (main->cmd_info->infile != NULL && main->cmd_info->outfile == NULL
 		&& nbcmds > 1)
 	{
 		main->tube->fd = cmd_searcher(main, envp,
-				main->cmd_info->infile->fd, &pids);
+				main->cmd_info->infile->fd, pids);
 	}
 	else if (main->cmd_info->infile == NULL && main->cmd_info->outfile == NULL
 		&& nbcmds > 1)
 	{
 		main->tube->fd = cmd_searcher(main, envp,
-				main->tube->fd, &pids);
+				main->tube->fd, pids);
 	}
 	else if (main->cmd_info->infile == NULL)
 	{
-		lcmd_searcher(main, envp, main->tube->fd, &pids);
+		lcmd_searcher(main, envp, main->tube->fd, pids);
 		main->tube->fd = -1;
 	}
 	else if (main->cmd_info->infile != NULL)
 	{
-		lcmd_searcher(main, envp, main->cmd_info->infile->fd, &pids);
+		lcmd_searcher(main, envp, main->cmd_info->infile->fd, pids);
 		main->tube->fd = -1;
 	}
 	return (1);
