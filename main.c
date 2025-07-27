@@ -29,14 +29,13 @@ void	handle_signal(int signal)
 
 int	main(int argc, char **argv, char **envp)
 {
-	t_main		*main_struct;
+	t_main		        *main_struct;
 	struct sigaction	sa;
 
     sa.sa_handler = handle_signal;
     sigemptyset(&sa.sa_mask);
     sa.sa_flags = 0;
     sigaction(SIGINT, &sa, NULL);
-
     sa.sa_handler = handle_signal;
     sigemptyset(&sa.sa_mask);
     sa.sa_flags = SA_RESTART;
