@@ -72,7 +72,7 @@ t_envp	*init_env(char **envp)
 	head = NULL;
 	while (envp[++i] != NULL)
 	{
-		pair = ft_split(envp[i], '=');
+		pair = ft_split_env(envp[i]);
 		if (!head)
 		{
 			actual = create_envp(pair[0], pair[1]);

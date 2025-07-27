@@ -25,7 +25,7 @@ int	export(t_main *main, int argc, char **argv, int nbcmds)
 		actual = actual->next;
 	while (++i < argc)
 	{
-		auto char **pair = ft_split(argv[i], '=');
+		auto char **pair = ft_split_env(argv[i]);
 		if (!pair || !is_valid_env_name(pair[0]))
 			printf("-minishell: Invalid env name\n");
 		else if (!ft_strchr(argv[i], '='))

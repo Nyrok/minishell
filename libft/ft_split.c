@@ -35,7 +35,7 @@ static int	ft_count(char const *s, char c)
 	return (cmpt);
 }
 
-static char	*add_word(char const *s, int i, int k)
+char	*add_word(char const *s, int i, int k)
 {
 	char	*res;
 	int		j;
@@ -55,7 +55,7 @@ static char	*add_word(char const *s, int i, int k)
 	return (res);
 }
 
-static void	free_all(char **res, int j)
+void	free_split(char **res, int j)
 {
 	while (j >= 0)
 	{
@@ -86,7 +86,7 @@ char	**ft_split(char const *s, char c)
 			k++;
 		res[j] = add_word(s, i, k);
 		if (!res[j])
-			return (free_all(res, j), NULL);
+			return (free_split(res, j), NULL);
 		i += k;
 		j++;
 	}
