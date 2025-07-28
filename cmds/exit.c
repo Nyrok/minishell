@@ -69,6 +69,9 @@ void	ft_exit(t_main **main, pid_t **pids)
 			free_cmd_info(&tmp_cmd_info);
 		}
 		clear_tube(main, pids);
+		if ((*main)->str_envp)
+			free((*main)->str_envp);
+		(*main)->str_envp = NULL;
 		free_tokens(&(*main)->tokens);
 		free_main(main);
 		exit(EXIT_SUCCESS);

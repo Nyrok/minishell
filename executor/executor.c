@@ -16,20 +16,18 @@ int	file_executor(t_main *main, int file, pid_t **pids, int last)
 {
 	char	**tmp;
 	int		i;
-	char	**envp;
 
 	i = 0;
 	tmp = ft_split(main->cmd_info->cmd, ' ');
-	envp = envp_to_str(main->envp);
 	main->cmd_info->cmd_path = ft_strdup(tmp[0]);
 	while (tmp[i])
 		free(tmp[i++]);
 	free(tmp);
 	if (last == 0)
-		main->tube->fd = cmd_executor(main, envp, file, pids);
+		main->tube->fd = cmd_executor(main, main->str_envp, file, pids);
 	else
 	{
-		last_executor(main, envp, main->tube->fd, pids);
+		last_executor(main, main->str_envp, main->tube->fd, pids);
 		main->tube->fd = -1;
 	}
 	free(main->cmd_info->cmd_path);
@@ -93,27 +91,25 @@ int	executor(char *cmd, struct s_main *main)
 {
 	pid_t		*pids;
 	int			nbcmds;
-	char		**envp;
-	t_cmd_info	*temp_cmd_info;
 
 	pids = malloc((totalcmds(cmd) + 1) * sizeof(pid_t));
 	if (!pids)
 		return (0);
-	envp = envp_to_str(main->envp);
-	executor_setup(main, pids, &nbcmds, cmd);
+	main->str_envp = envp_to_str(main->envp);
+	if (executor_setup(main, pids, &nbcmds, cmd) == -1)
+		return (free_cmd_info(&main->cmd_info), no_leaks(main),
+			end_pids(&pids), 0);
 	if (main->cmd_info->cmd == NULL)
-		return (0);
+		return (free_cmd_info(&main->cmd_info), end_pids(&pids), 0);
 	if (nbcmds == 1)
 	{
-		onecmdexector(main, envp, &pids);
-		temp_cmd_info = main->cmd_info;
-		free_cmd_info(&temp_cmd_info);
-		main->cmd_info = NULL;
+		onecmdexector(main, main->str_envp, &pids);
+		free_cmd_info(&main->cmd_info);
 	}
 	else
-		multiple_cmd_handler(main, envp, &pids, nbcmds);
+		multiple_cmd_handler(main, main->str_envp, &pids, nbcmds);
 	if (pids)
 		end_pids(&pids);
-	no_leaks(main, envp);
+	no_leaks(main);
 	return (1);
 }

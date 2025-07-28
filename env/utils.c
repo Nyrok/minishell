@@ -21,7 +21,7 @@ char	**ft_split_env(char const *s)
 	if (!res)
 		return (NULL);
 	auto int has_found = 0;
-	while (s[i] && j < !!c + 1)
+	while (s && s[i] && j < !!c + 1)
 	{
 		auto int k = 0;
 		while ((has_found || s + i + k != c) && s[i + k])

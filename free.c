@@ -74,6 +74,7 @@ void	free_cmd_info(t_cmd_info **cmd_info)
 	free(cmd_tmp->cmd);
 	free(cmd_tmp->argv);
 	free(cmd_tmp);
+	*cmd_info = NULL;
 }
 
 void	free_main(t_main **main_struct)
