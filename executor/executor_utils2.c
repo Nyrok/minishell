@@ -71,15 +71,34 @@ int	ft_heredoc(char *end)
 	return (fd_return);
 }
 
+int	no_such_file(t_redir *actual_redir)
+{
+	printf("-minishell: %s: No such file or directory\n",
+		actual_redir->filename);
+	return (-1);
+}
+
+int	permission_denied(t_redir *actual_redir)
+{
+	if (actual_redir->type == REDOUT
+		&& access(actual_redir->filename, F_OK) != 0)
+	{
+		actual_redir->fd = open(actual_redir->filename, O_CREAT | O_WRONLY | O_TRUNC, 0777);
+		return (0);
+	}
+	printf("-minishell: %s: Permission denied\n", actual_redir->filename);
+	return (-1);
+}
+
 int	fd_opener(t_redir *actual_redir)
 {
 	if (actual_redir->io == STDIN_FILENO \
-		&& access(actual_redir->filename, F_OK) != 0)
-		printf("-minishell: %s: No such file or directory\n",
-			actual_redir->filename);
-	else if (actual_redir->io == STDIN_FILENO \
-		&& access(actual_redir->filename, R_OK) != 0)
-		printf("-minishell: %s: Permission denied\n", actual_redir->filename);
+		&& access(actual_redir->filename, F_OK) != 0 \
+			&& actual_redir->type != HEREDOC)
+		return (no_such_file(actual_redir));
+	else if (access(actual_redir->filename, R_OK) != 0 && \
+			actual_redir->type != HEREDOC)
+		return (permission_denied(actual_redir));
 	if (actual_redir->type == APPEND)
 		actual_redir->fd = open(actual_redir->filename,
 				O_CREAT | O_WRONLY | O_APPEND, 0777);
@@ -102,6 +121,8 @@ void	multiple_cmd_handler(t_main *main, char **envp,
 {
 	t_cmd_info	*temp_cmd_info;
 
+	if (nbcmds == 0)
+		free_cmd_info(&main->cmd_info);
 	while (nbcmds > 0)
 	{
 		setup_cmd_redirs(main->cmd_info);

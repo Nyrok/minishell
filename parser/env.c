@@ -63,7 +63,6 @@ static void	parse_word(t_envp *envp, char **word)
 		{
 			i++;
 			key = get_key(*word, &i);
-			printf("%s\n", key);
 			replace_word_env(envp, word, key, &i);
 		}
 		i++;

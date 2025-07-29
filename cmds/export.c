@@ -23,7 +23,7 @@ int	export(t_main *main, int argc, char **argv, int nbcmds)
 		return (-1);
 	while (actual->next != NULL)
 		actual = actual->next;
-	while (++i < argc)
+	while (argv && ++i < argc)
 	{
 		auto char **pair = ft_split_env(argv[i]);
 		if (!pair || !is_valid_env_name(pair[0]))

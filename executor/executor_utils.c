@@ -12,15 +12,20 @@
 
 #include "minishell.h"
 
-int	no_leaks(t_main *main, char **envp)
+int	no_leaks(t_main *main)
 {
 	t_cmd_info		*free_tmp;
 
-	free(envp);
+	//auto int i = 0;
+	//while (envp && envp[i])
+	//	free(envp[i]);
+	free(main->str_envp);
+	main->str_envp = NULL;
 	if (main->tube && main->tube->fd != -1)
 		close(main->tube->fd);
 	if (main->tube)
 		free(main->tube);
+	main->tube = NULL;
 	while (main->cmd_info)
 	{
 		free_tmp = main->cmd_info;
