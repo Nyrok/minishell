@@ -28,6 +28,6 @@ typedef enum e_error
 
 //void			cmd_searcher(char *cmd, char **paths, t_envp *envp);
 t_cmds_paths	*cmds_paths_maker(void);
-int				ft_access(char *pathname);
+int				ft_access(t_main *main, char *pathname);
 
 #endif

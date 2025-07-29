@@ -36,20 +36,20 @@ int	no_leaks(t_main *main)
 	return (1);
 }
 
-int	hasinfile(struct s_main *main)
+int	hasinfile(struct s_main **main)
 {
 	t_cmd_info	*actual_cmd;
 	t_redir		*actual_redir;
 	int			total;
 
 	total = 0;
-	actual_cmd = main->cmd_info;
+	actual_cmd = (*main)->cmd_info;
 	while (actual_cmd != NULL)
 	{
 		actual_redir = actual_cmd->redirs;
 		while (actual_redir != NULL)
 		{
-			if (fd_opener(actual_redir) == -1)
+			if (fd_opener(main, actual_redir) == -1)
 				return (-1);
 			if (actual_redir->type == 3)
 				total = 1;

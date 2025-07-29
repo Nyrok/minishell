@@ -34,11 +34,12 @@ int	file_executor(t_main *main, int file, pid_t **pids, int last)
 	return (1);
 }
 
-int	ft_access(char *pathname)
+int	ft_access(t_main *main, char *pathname)
 {
 	if (access(pathname, X_OK) != 0)
 	{
 		printf("-minishell: %s: Permission denied", pathname);
+		main->last_exit_status = 127;
 		return (0);
 	}
 	return (1);
@@ -96,11 +97,11 @@ int	executor(char *cmd, struct s_main *main)
 	if (!pids)
 		return (0);
 	main->str_envp = envp_to_str(main->envp);
-	if (executor_setup(main, pids, &nbcmds, cmd) == -1)
+	if (executor_setup(&main, pids, &nbcmds, cmd) == -1)
 		return (free_cmd_info(&main->cmd_info), no_leaks(main),
-			end_pids(&pids), 0);
+			end_pids(&main, &pids), 0);
 	if (main->cmd_info->cmd == NULL)
-		return (free_cmd_info(&main->cmd_info), end_pids(&pids), 0);
+		return (free_cmd_info(&main->cmd_info), end_pids(&main, &pids), no_leaks(main), 0);
 	if (nbcmds == 1)
 	{
 		onecmdexector(main, main->str_envp, &pids);
@@ -109,7 +110,8 @@ int	executor(char *cmd, struct s_main *main)
 	else
 		multiple_cmd_handler(main, main->str_envp, &pids, nbcmds);
 	if (pids)
-		end_pids(&pids);
+		end_pids(&main, &pids);
 	no_leaks(main);
+	printf("Exit statussqqss : %d\n", main->last_exit_status);
 	return (1);
 }

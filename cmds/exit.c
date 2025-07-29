@@ -41,8 +41,11 @@
 
 void	clear_tube(t_main **main, pid_t **pids)
 {
-	end_pids(pids);
-	*pids = NULL;
+	if (pids != NULL && *pids != NULL)
+	{
+		end_pids(main, pids);
+		*pids = NULL;
+	}
 	if ((*main)->tube->fd != -1)
 		close((*main)->tube->fd);
 	// free((*main)->tube->filename);
