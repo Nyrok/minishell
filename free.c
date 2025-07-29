@@ -66,6 +66,8 @@ void	free_cmd_info(t_cmd_info **cmd_info)
 		cmd_tmp->redirs = cmd_tmp->redirs->next;
 		if (redirs_tmp->filename)
 			free(redirs_tmp->filename);
+		if (redirs_tmp->fd != -1)
+			close(redirs_tmp->fd);
 		free(redirs_tmp);
 	}
 	i = 0;

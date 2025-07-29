@@ -30,5 +30,6 @@ int		env(t_main *main, t_envp *datas, int nbcmds);
 int		pwd(t_main *main, int nbcmds);
 void	ft_exit(t_main **main, pid_t **pids);
 int		builtin_exec(t_main *main, pid_t **pids, t_envp **envp, int nbcmds);
+void	clear_tube(t_main **main, pid_t **pids);
 
 #endif
