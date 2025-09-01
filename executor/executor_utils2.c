@@ -50,7 +50,6 @@ int	ft_heredoc(char *end)
 	int		fd;
 	int		fd_return;
 
-	printf("entree\n");
 	line = readline("> ");
 	if (pipe(tube) == -1)
 	{
@@ -92,12 +91,11 @@ int	permission_denied(t_redir *actual_redir)
 
 int	fd_opener(t_redir *actual_redir)
 {
-	if (actual_redir->io == STDIN_FILENO \
-		&& access(actual_redir->filename, F_OK) != 0 \
-			&& actual_redir->type != HEREDOC)
+	if (actual_redir->type == REDIN \
+		&& access(actual_redir->filename, F_OK) != 0)
 		return (no_such_file(actual_redir));
-	else if (access(actual_redir->filename, R_OK) != 0 && \
-			actual_redir->type != HEREDOC)
+	else if (actual_redir->type == REDIN \
+		&& access(actual_redir->filename, R_OK) != 0)
 		return (permission_denied(actual_redir));
 	if (actual_redir->type == APPEND)
 		actual_redir->fd = open(actual_redir->filename,
@@ -123,7 +121,7 @@ void	multiple_cmd_handler(t_main *main, char **envp,
 
 	if (nbcmds == 0)
 		free_cmd_info(&main->cmd_info);
-	while (nbcmds > 0)
+	while (nbcmds > 0 && main->cmd_info)
 	{
 		setup_cmd_redirs(main->cmd_info);
 		if (main->tube == NULL)
