@@ -38,7 +38,6 @@ static void	parse_word(t_token *tokens, t_cmd_info **list, t_cmd_info **obj)
 	if (!*obj)
 	{
 		*obj = create_cmd_info(tokens->word, count_cmd_args(tokens->next));
-		printf("%p %s\n", *obj, tokens->word);
 		if (!*list)
 			*list = *obj;
 		else
