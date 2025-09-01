@@ -63,7 +63,7 @@ int			onecmdexector(t_main *main, char **envp, pid_t **pids);
 void		add_pid(pid_t **pids, pid_t newpid);
 void		end_pids(pid_t **pids);
 int			no_leaks(t_main *main);
-int			executor_setup(t_main *main, pid_t *pids, int *nbcmds, char *cmd);
+int			executor_setup(t_main *main, pid_t *pids, int *nbcmds);
 int			print_error(t_main *main, int error_code, int cmd_found);
 int			cmd_searcher(t_main *main, char **envp, int file, pid_t **pids);
 void		lcmd_searcher(t_main *main, char **envp, int tube, pid_t **pids);
