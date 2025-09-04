@@ -135,17 +135,13 @@ void	check_tube(t_main **main, pid_t **pids)
 }
 int	create_out(t_main *main)
 {
-	printf("111s\n");
 	t_redir *redir_tmp;
 
-	printf("zze %p\n", main->cmd_info->redirs);
 	while (main->cmd_info->redirs)
 	{
-		printf("aaa\n");
 		redir_tmp = main->cmd_info->redirs;
 		if (redir_tmp->type == REDOUT)
 		{
-			printf("333\n");
 			redir_tmp->fd = open(redir_tmp->filename,
 					O_CREAT | O_WRONLY | O_APPEND, 0777);
 			if (redir_tmp->fd == -1)
@@ -162,15 +158,15 @@ void	handle_heredoc(t_main *main)
 	t_redir *redir_tmp;
 	int		fd;
 
-	while (main->cmd_info->redirs)
+	redir_tmp = main->cmd_info->redirs;
+	while (redir_tmp)
 	{
-		redir_tmp = main->cmd_info->redirs;
 		if (redir_tmp->type == HEREDOC)
 		{
 			fd = ft_heredoc(redir_tmp->filename);
 			close(fd);
 		}
-		main->cmd_info->redirs = main->cmd_info->redirs->next;
+		redir_tmp = redir_tmp->next;
 	}
 }
 
