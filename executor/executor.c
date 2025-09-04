@@ -97,7 +97,7 @@ int	executor(char *cmd, struct s_main *main)
 	if (!pids)
 		return (0);
 	main->str_envp = envp_to_str(main->envp);
-	if (executor_setup(&main, pids, &nbcmds, cmd) == -1)
+	if (executor_setup(&main, pids, &nbcmds) == -1)
 		return (free_cmd_info(&main->cmd_info), no_leaks(main),
 			end_pids(&main, &pids), 0);
 	if (main->cmd_info->cmd == NULL)
