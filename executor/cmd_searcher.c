@@ -25,7 +25,7 @@ void	add_pid(pid_t **pids, pid_t newpid)
 	actual[i + 1] = 0;
 }
 
-void	end_pids(pid_t **pids)
+void	end_pids(t_main **main, pid_t **pids)
 {
 	int		i;
 	int		status;
@@ -37,6 +37,13 @@ void	end_pids(pid_t **pids)
 	{
 		waitpid(actual[i], &status, 0);
 		i++;
+	}
+	if (i > 0)
+	{
+		if (WIFEXITED(status))
+			(*main)->last_exit_status = WEXITSTATUS(status);
+		else if (WIFSIGNALED(status))
+			(*main)->last_exit_status = 128 + WTERMSIG(status);
 	}
 	free(actual);
 }
@@ -79,7 +86,7 @@ void	lcmd_searcher(t_main *main, char **envp, int tube, pid_t **pids)
 		if (cmdopener != -1)
 		{
 			close(cmdopener);
-			if (ft_access(main->cmd_info->cmd_path) == 0)
+			if (ft_access(main, main->cmd_info->cmd_path) == 0)
 				break ;
 			cmd_found = 1;
 			last_executor(main, envp, tube, pids);
@@ -107,7 +114,7 @@ int	cmd_searcher(t_main *main, char **envp, int file, pid_t **pids)
 		cmdopener = open(main->cmd_info->cmd_path, O_RDONLY);
 		if (cmdopener != -1)
 		{
-			if (ft_access(main->cmd_info->cmd_path) == 0)
+			if (ft_access(main, main->cmd_info->cmd_path) == 0)
 				break ;
 			close(cmdopener);
 			cmd_found = 1;

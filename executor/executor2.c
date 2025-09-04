@@ -51,13 +51,13 @@ void	last_executor(t_main *main, char **envp, int tube, pid_t **pids)
 	}
 }
 
-int	executor_setup(t_main *main, pid_t *pids, int *nbcmds)
+int	executor_setup(t_main **main, pid_t *pids, int *nbcmds)
 {
-	*nbcmds = count_cmd_info(main->cmd_info);
+	*nbcmds = count_cmd_info((*main)->cmd_info);
 	pids[0] = 0;
 	if (hasinfile(main) == -1)
 		return (-1);
-	setup_tube(main);
+	setup_tube(*main);
 	return (1);
 }
 

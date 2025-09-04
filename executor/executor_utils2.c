@@ -17,6 +17,7 @@ int	print_error(t_main *main, int error_code, int cmd_found)
 	if (error_code == NOTFOUND && cmd_found == 0)
 	{
 		printf("%s: command not found\n", main->cmd_info->cmd);
+		main->last_exit_status = 127;
 		main->tube->fd = -1;
 	}
 	else if (error_code == DEF_PIPE && cmd_found == 0)
@@ -77,7 +78,7 @@ int	no_such_file(t_redir *actual_redir)
 	return (-1);
 }
 
-int	permission_denied(t_redir *actual_redir)
+int	permission_denied(t_main **main, t_redir *actual_redir)
 {
 	if (actual_redir->type == REDOUT
 		&& access(actual_redir->filename, F_OK) != 0)
@@ -86,17 +87,18 @@ int	permission_denied(t_redir *actual_redir)
 		return (0);
 	}
 	printf("-minishell: %s: Permission denied\n", actual_redir->filename);
+	(*main)->last_exit_status = 127;
 	return (-1);
 }
 
-int	fd_opener(t_redir *actual_redir)
+int	fd_opener(t_main **main, t_redir *actual_redir)
 {
 	if (actual_redir->type == REDIN \
 		&& access(actual_redir->filename, F_OK) != 0)
 		return (no_such_file(actual_redir));
-	else if (actual_redir->type == REDIN \
-		&& access(actual_redir->filename, R_OK) != 0)
-		return (permission_denied(actual_redir));
+	else if (access(actual_redir->filename, R_OK) != 0 && \
+			actual_redir->type != HEREDOC)
+		return (permission_denied(main, actual_redir));
 	if (actual_redir->type == APPEND)
 		actual_redir->fd = open(actual_redir->filename,
 				O_CREAT | O_WRONLY | O_APPEND, 0777);
