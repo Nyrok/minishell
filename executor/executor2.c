@@ -14,11 +14,15 @@
 
 void	last_child_executor(int tube, t_main *main, char *cmd_path, char **envp)
 {
+	signal(SIGQUIT, SIG_DFL);
 	if (tube != -1)
 	{
 		dup2(tube, STDIN_FILENO);
 		close(tube);
+		tube = -1;
 	}
+	if (main->tube && main->tube->fd != -1)
+		close(main->tube->fd);
 	if (main->cmd_info->outfile != NULL)
 	{
 		dup2(main->cmd_info->outfile->fd, STDOUT_FILENO);
@@ -26,7 +30,8 @@ void	last_child_executor(int tube, t_main *main, char *cmd_path, char **envp)
 	}
 	if (execve(cmd_path, (char *const *)main->cmd_info->argv, envp) == -1)
 	{
-		close(main->cmd_info->outfile->fd);
+		if (main->cmd_info->outfile && main->cmd_info->outfile->fd != -1)
+			close(main->cmd_info->outfile->fd);
 		perror("execve failed");
 		exit(EXIT_FAILURE);
 	}
@@ -51,19 +56,27 @@ void	last_executor(t_main *main, char **envp, int tube, pid_t **pids)
 	}
 }
 
-int	executor_setup(t_main **main, pid_t *pids, int *nbcmds)
+int	executor_setup(t_main **main, pid_t *pids, int *nbcmds, char *cmd)
 {
-	*nbcmds = count_cmd_info((*main)->cmd_info);
+	*nbcmds = totalcmds(cmd);
 	pids[0] = 0;
-	if (hasinfile(main) == -1)
-		return (-1);
+	// if (hasinfile(main) == -1)
+	// 	return (-1);
 	setup_tube(*main);
 	return (1);
 }
 
 int	onecmdexector(t_main *main, char **envp, pid_t **pids)
 {
+	if (main->cmd_info->cmd == NULL)
+		return (handle_heredoc(main), create_out(main), end_pids(&main, pids),
+			free_all_cmd_info(&main), no_leaks(main), -1);
 	setup_cmd_redirs(main->cmd_info);
+	if (hasinfile(&main) == -1)
+	{
+		return (free_cmd_info(&main->cmd_info),
+			end_pids(&main, pids), no_leaks(main), 0);
+	}
 	if (builtin_exec(main, pids, &main->envp, 1) == 1)
 		return (1);
 	if (main->cmd_info->infile != NULL)
@@ -73,8 +86,19 @@ int	onecmdexector(t_main *main, char **envp, pid_t **pids)
 	return (1);
 }
 
+void	tube_hander(t_main **main)
+{
+	if ((*main)->cmd_info->infile != NULL)
+	{
+		fd_opener(main, (*main)->cmd_info->infile);
+		close((*main)->tube->fd);
+		(*main)->tube->fd = -1;
+	}
+}
+
 int	multiplecmdexector(t_main *main, char **envp, pid_t **pids, int nbcmds)
 {
+	tube_hander(&main);
 	if (builtin_exec(main, pids, &main->envp, nbcmds) == 1)
 		return (1);
 	if (main->cmd_info->infile != NULL && main->cmd_info->outfile == NULL
@@ -85,10 +109,8 @@ int	multiplecmdexector(t_main *main, char **envp, pid_t **pids, int nbcmds)
 	}
 	else if (main->cmd_info->infile == NULL && main->cmd_info->outfile == NULL
 		&& nbcmds > 1)
-	{
 		main->tube->fd = cmd_searcher(main, envp,
 				main->tube->fd, pids);
-	}
 	else if (main->cmd_info->infile == NULL)
 	{
 		lcmd_searcher(main, envp, main->tube->fd, pids);

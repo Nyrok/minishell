@@ -12,12 +12,56 @@
 
 #include "minishell.h"
 
+int	check_access(t_main *main, int j)
+{
+	if (j == 0)
+	{
+		printf("minishell: ./: Is a file\n");
+		main->last_exit_status = 127;
+		return (-1);
+	}
+	return (1);
+}
+
+int	isfilevalid(t_main *main)
+{
+	char	*filename;
+
+	auto int i = 0;
+	while (main->cmd_info->cmd[i] && main->cmd_info->cmd[i + 1])
+	{
+		if (main->cmd_info->cmd[i] != '.' || main->cmd_info->cmd[i + 1] != '/')
+			break ;
+		i += 2;
+	}
+	auto int j = 0;
+	while (main->cmd_info->cmd[i + j])
+		j++;
+	if (j == 0)
+		return (check_access(main, j));
+	filename = malloc((j + 1) * sizeof(char));
+	j = 0;
+	while (main->cmd_info->cmd[i + j])
+	{
+		filename[j] = main->cmd_info->cmd[i + j];
+		j++;
+	}
+	filename[j] = '\0';
+	if (access(filename, F_OK | X_OK) == 0)
+		return (-1);
+	return (1);
+}
+
 int	file_executor(t_main *main, int file, pid_t **pids, int last)
 {
 	char	**tmp;
 	int		i;
 
 	i = 0;
+	if (isfilevalid(main) == -1)
+	{
+		return (-1); // Faire le free des redirs avant le return + gerer << EOF sans commande
+	}
 	tmp = ft_split(main->cmd_info->cmd, ' ');
 	main->cmd_info->cmd_path = ft_strdup(tmp[0]);
 	while (tmp[i])
@@ -47,13 +91,15 @@ int	ft_access(t_main *main, char *pathname)
 
 void	child_executor(t_main *main, int *tube, int file, char **envp)
 {
+	signal(SIGQUIT, SIG_DFL);
 	close(tube[0]);
 	if (file != -1)
+	{
 		dup2(file, STDIN_FILENO);
+		close(file);
+	}
 	dup2(tube[1], STDOUT_FILENO);
 	close(tube[1]);
-	if (file != -1)
-		close(file);
 	if (execve(main->cmd_info->cmd_path,
 			(char *const *)main->cmd_info->argv, envp) == -1)
 	{
@@ -85,6 +131,7 @@ int	cmd_executor(t_main *main, char **envp, int file, pid_t **pids)
 			close(file);
 		add_pid(pids, pid);
 	}
+	//close(tube[0]);
 	return (tube[0]);
 }
 
@@ -97,18 +144,20 @@ int	executor(char *cmd, struct s_main *main)
 	if (!pids)
 		return (0);
 	main->str_envp = envp_to_str(main->envp);
-	if (executor_setup(&main, pids, &nbcmds) == -1)
+	if (executor_setup(&main, pids, &nbcmds, cmd) == -1)
 		return (free_cmd_info(&main->cmd_info), no_leaks(main),
 			end_pids(&main, &pids), 0);
-	if (main->cmd_info->cmd == NULL)
-		return (free_cmd_info(&main->cmd_info), end_pids(&main, &pids), no_leaks(main), 0);
 	if (nbcmds == 1)
 	{
-		onecmdexector(main, main->str_envp, &pids);
+		if (onecmdexector(main, main->str_envp, &pids) == -1)
+			return (-1);
 		free_cmd_info(&main->cmd_info);
 	}
 	else
-		multiple_cmd_handler(main, main->str_envp, &pids, nbcmds);
+	{
+		if (multiple_cmd_handler(main, main->str_envp, &pids, nbcmds) == -1)
+			return (-1);
+	}
 	if (pids)
 		end_pids(&main, &pids);
 	no_leaks(main);

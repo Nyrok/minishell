@@ -45,6 +45,9 @@ void	end_pids(t_main **main, pid_t **pids)
 		else if (WIFSIGNALED(status))
 			(*main)->last_exit_status = 128 + WTERMSIG(status);
 	}
+	i = 3;
+	// while (i < 1024)
+	// 	close(i++);
 	free(actual);
 }
 
@@ -72,13 +75,13 @@ char	*paths_searcher(char *cmd, char *cmd_path, char *paths)
 
 void	lcmd_searcher(t_main *main, char **envp, int tube, pid_t **pids)
 {
-	int			cmdopener;
+	int	cmdopener;
 
 	auto int i = 0;
 	auto int cmd_found = 0;
 	if (main->cmd_info->cmd[0] == '.' && main->cmd_info->cmd[1] == '/')
 		cmd_found = file_executor(main, -1, pids, 1);
-	while (main->cmds_paths->paths[i])
+	while (main->cmds_paths->paths[i] && cmd_found != -1)
 	{
 		main->cmd_info->cmd_path = paths_searcher(main->cmd_info->cmd,
 				main->cmd_info->cmd_path, main->cmds_paths->paths[i]);
