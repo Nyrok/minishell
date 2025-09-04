@@ -67,7 +67,7 @@ static void	parse_word(t_envp *envp, char **word, int last_exit_status)
 			replace_word_env(env_value, word, key, &i);
 			free(key);
 		}
-		if ((*word)[i])
+		if ((*word)[i] && (*word)[i] != '$')
 			i++;
 	}
 }
