@@ -109,7 +109,7 @@ void	ft_exit(t_main **main, pid_t **pids)
 	}
 	if ((*main)->cmd_info->argc == 2)
 		ft_isgood(*main);
-	if ((*main)->tube->fd != -1)
+	if ((*main)->tube->fd != -1 || (*main)->cmd_info->infile)
 		clear_tube(main, pids);
 	else
 	{
