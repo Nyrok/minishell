@@ -64,7 +64,7 @@ t_cmd_info	*parse_tokens(t_main *main, t_token *tokens)
 
 	if (!check_tokens(tokens))
 		return (NULL);
-	parse_env(main->envp, tokens);
+	parse_env(main->envp, tokens, main->last_exit_status);
 	cmd_infos = NULL;
 	cmd_info = NULL;
 	while (tokens)
