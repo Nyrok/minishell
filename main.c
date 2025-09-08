@@ -47,6 +47,7 @@ int	main(int argc, char **argv, char **envp)
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = SA_RESTART;
 	sigaction(SIGINT, &sa, NULL);
+	signal(SIGQUIT, SIG_IGN);
 	main_struct = init_main(envp);
 	(void)argc;
 	(void)argv;

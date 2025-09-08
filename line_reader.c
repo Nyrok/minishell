@@ -14,8 +14,6 @@
 
 void	ft_ctrld(t_main *main)
 {
-	if (main->cmd_info)
-		free_cmd_info(&main->cmd_info);
 	if (main->tube)
 	{
 		if (main->tube->fd != -1)
@@ -23,6 +21,8 @@ void	ft_ctrld(t_main *main)
 		free(main->tube);
 		main->tube = NULL;
 	}
+	if (main->cmd_info)
+		free_cmd_info(&main->cmd_info);
 	if (main->str_envp)
 		free(main->str_envp);
 	free_main(&main);
@@ -54,8 +54,6 @@ void	line_reader(t_main *main)
 		}
 		free(user_input);
 		free_cmd_info(&main->cmd_info);
-		if (main->tube)
-			free(main->tube);
 		free_tokens(&main->tokens);
 		printf("Exit status : %d\n", main->last_exit_status);
 	}
