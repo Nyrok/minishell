@@ -24,7 +24,7 @@ char	**ft_split_env(char const *s)
 	while (s && s[i] && j < !!c + 1)
 	{
 		auto int k = 0;
-		while ((has_found || s + i + k != c) && s[i + k])
+		while ((has_found || s + i + k != c) && s[i + k + 1])
 			k++;
 		has_found = 1;
 		if (has_found && s + i == c)
@@ -32,7 +32,7 @@ char	**ft_split_env(char const *s)
 		res[j] = add_word(s, i, k);
 		if (!res[j])
 			return (free_split(res, j), NULL);
-		i += k - has_found;
+		i += k;
 		j++;
 	}
 	return (res);
