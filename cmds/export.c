@@ -31,7 +31,9 @@ int	export(t_main *main, int argc, char **argv, int nbcmds)
 		else if (!ft_strchr(argv[i], '='))
 			printf("-minishell: Missing env value\n");
 		else
-			add_or_replace(main, &actual, pair[0], pair[1]);
+			add_or_replace(main, &actual, \
+				ft_strdup(pair[0]), ft_strdup(pair[1]));
+		free_split(pair, 2);
 	}
 	return (1);
 }
