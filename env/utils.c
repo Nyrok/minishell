@@ -32,7 +32,7 @@ char	**ft_split_env(char const *s)
 		res[j] = add_word(s, i, k);
 		if (!res[j])
 			return (free_split(res, j), NULL);
-		i += k;
+		i += k - has_found;
 		j++;
 	}
 	return (res);
