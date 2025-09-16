@@ -14,31 +14,46 @@
 
 void		free_redir(t_redir **redir);
 
+// void	free_all_cmd_info(t_main **main)
+// {
+// 	t_cmd_info	*cmd_tmp;
+// 	t_cmd_info	*to_free;
+// 	t_redir		*redir_tmp;
+// 	int			i;
+
+// 	cmd_tmp = (*main)->cmd_info;
+// 	while (cmd_tmp)
+// 	{
+// 		redir_tmp = cmd_tmp->redirs;
+// 		while (redir_tmp)
+// 			free_redir(&redir_tmp);
+// 		i = 0;
+// 		if (cmd_tmp->argv)
+// 		{
+// 			while (cmd_tmp->argv[i])
+// 				free(cmd_tmp->argv[i++]);
+// 			free(cmd_tmp->argv);
+// 		}
+// 		if (cmd_tmp->cmd)
+// 			free(cmd_tmp->cmd);
+// 		to_free = cmd_tmp;
+// 		cmd_tmp = cmd_tmp->next;
+// 		free(to_free);
+// 	}
+// 	(*main)->cmd_info = NULL;
+// }
+
 void	free_all_cmd_info(t_main **main)
 {
 	t_cmd_info	*cmd_tmp;
 	t_cmd_info	*to_free;
-	t_redir		*redir_tmp;
-	int			i;
 
 	cmd_tmp = (*main)->cmd_info;
 	while (cmd_tmp)
 	{
-		redir_tmp = cmd_tmp->redirs;
-		while (redir_tmp)
-			free_redir(&redir_tmp);
-		i = 0;
-		if (cmd_tmp->argv)
-		{
-			while (cmd_tmp->argv[i])
-				free(cmd_tmp->argv[i++]);
-			free(cmd_tmp->argv);
-		}
-		if (cmd_tmp->cmd)
-			free(cmd_tmp->cmd);
 		to_free = cmd_tmp;
 		cmd_tmp = cmd_tmp->next;
-		free(to_free);
+		free_cmd_info(&to_free);
 	}
 	(*main)->cmd_info = NULL;
 }

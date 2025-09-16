@@ -68,15 +68,22 @@ int			executor_setup(t_main **main, pid_t *pids, int *nbcmds, char *cmd);
 int			print_error(t_main *main, int error_code, int cmd_found);
 int			cmd_searcher(t_main *main, char **envp, int file, pid_t **pids);
 void		lcmd_searcher(t_main *main, char **envp, int tube, pid_t **pids);
-int			hasinfile(struct s_main **main);
+int			hasinfile(struct s_main **main, int error_check);
 void		setup_tube(t_main *main);
 void		reset_tube(t_main *main);
-int			fd_opener(t_main **main, t_redir *actual_redir);
+int			fd_opener(t_main **main, t_redir *actual_redir, int error_check);
 int			multiple_cmd_handler(t_main *main,
 				char **envp, pid_t **pids, int nbcmds);
 void		free_redir(t_redir **redir);
 int			create_out(t_main *main);
-void		handle_heredoc(t_main *main);
+int			handle_heredoc(t_main *main);
 void		handle_signal(int signal);
+int			check_access(t_main *main, int j);
+int			isfilevalid(t_main *main);
+int			tube_handler(t_main **main);
+int			fdcls(t_main **main, int error);
+int			ft_heredoc(char *end);
+void		free_execve(t_main **main);
+void		free_envp(t_envp **envp);
 
 #endif

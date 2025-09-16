@@ -24,7 +24,7 @@ char	**ft_split_env(char const *s)
 	while (s && s[i] && j < !!c + 1)
 	{
 		auto int k = 0;
-		while ((has_found || s + i + k != c) && s[i + k + 1])
+		while ((has_found || s + i + k != c) && s[i + k])
 			k++;
 		has_found = 1;
 		if (has_found && s + i == c)
@@ -40,7 +40,7 @@ char	**ft_split_env(char const *s)
 
 int	is_valid_env_char(char c)
 {
-	return (ft_isalpha(c) || c == '_' || c == '?');
+	return (ft_isalpha(c) || c == '_');
 }
 
 int	is_valid_env_name(char *str)
@@ -49,8 +49,6 @@ int	is_valid_env_name(char *str)
 		return (0);
 	if (ft_isdigit(*str))
 		return (0);
-	if (ft_strlen(str) == 1 && *str == '?')
-		return (1);
 	while (*str)
 	{
 		if (!is_valid_env_char(*str))

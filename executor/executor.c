@@ -12,46 +12,6 @@
 
 #include "minishell.h"
 
-int	check_access(t_main *main, int j)
-{
-	if (j == 0)
-	{
-		printf("minishell: ./: Is a file\n");
-		main->last_exit_status = 127;
-		return (-1);
-	}
-	return (1);
-}
-
-int	isfilevalid(t_main *main)
-{
-	char	*filename;
-
-	auto int i = 0;
-	while (main->cmd_info->cmd[i] && main->cmd_info->cmd[i + 1])
-	{
-		if (main->cmd_info->cmd[i] != '.' || main->cmd_info->cmd[i + 1] != '/')
-			break ;
-		i += 2;
-	}
-	auto int j = 0;
-	while (main->cmd_info->cmd[i + j])
-		j++;
-	if (j == 0)
-		return (check_access(main, j));
-	filename = malloc((j + 1) * sizeof(char));
-	j = 0;
-	while (main->cmd_info->cmd[i + j])
-	{
-		filename[j] = main->cmd_info->cmd[i + j];
-		j++;
-	}
-	filename[j] = '\0';
-	if (access(filename, F_OK | X_OK) == 0)
-		return (-1);
-	return (1);
-}
-
 int	file_executor(t_main *main, int file, pid_t **pids, int last)
 {
 	char	**tmp;
@@ -98,6 +58,7 @@ void	child_executor(t_main *main, int *tube, int file, char **envp)
 		dup2(file, STDIN_FILENO);
 		close(file);
 	}
+	printf("CC : %s\n", main->cmd_info->cmd_path);
 	dup2(tube[1], STDOUT_FILENO);
 	close(tube[1]);
 	if (execve(main->cmd_info->cmd_path,
@@ -105,6 +66,8 @@ void	child_executor(t_main *main, int *tube, int file, char **envp)
 	{
 		close(tube[1]);
 		close(file);
+		free_all_cmd_info(&main);
+		free_execve(&main);
 		perror("execve failed");
 		exit(EXIT_FAILURE);
 	}
