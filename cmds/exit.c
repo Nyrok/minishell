@@ -95,9 +95,22 @@ void	free_exit(t_main **main)
 			close(tmp_cmd_info->outfile->fd);
 		free_cmd_info(&tmp_cmd_info);
 	}
+	if ((*main)->pids)
+		free((*main)->pids);
 }
 
-void	ft_exit(t_main **main)
+int	exit_checker(t_main **main, int nbcmds, int onlyonecmd)
+{
+	if (nbcmds == 1 && (*main)->tube->fd == -1 && (*main)->cmd_info->infile && onlyonecmd == 1)
+		return (0);
+	if ((*main)->tube->fd != -1 || (*main)->cmd_info->infile || nbcmds > 1 || onlyonecmd == 0) // Pk quand y'a un infile ???
+	{
+		return (1);
+	}
+	return (0);
+}
+
+void	ft_exit(t_main **main, int nbcmds, int onlyonecmd)
 {
 	auto int exit_code = 0;
 	if ((*main)->cmd_info->argc > 2)
@@ -109,7 +122,7 @@ void	ft_exit(t_main **main)
 	}
 	if ((*main)->cmd_info->argc == 2)
 		ft_isgood(*main);
-	if ((*main)->tube->fd != -1 || (*main)->cmd_info->infile)
+	if (exit_checker(main, nbcmds, onlyonecmd) == 1) // Pk quand y'a un infile ???
 		clear_tube(main);
 	else
 	{

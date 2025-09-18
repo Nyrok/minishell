@@ -82,7 +82,7 @@ int	onecmdexector(t_main *main, char **envp)
 	}
 	if (main->cmd_info->outfile && main->cmd_info->outfile->fd != -1)
 		close(main->cmd_info->outfile->fd);
-	if (builtin_exec(main, &main->envp, 1) == 1)
+	if (builtin_exec(main, &main->envp, 1, 1) == 1)
 		return (1);
 	if (main->cmd_info->infile != NULL)
 		lcmd_searcher(main, envp, main->cmd_info->infile->fd);
@@ -95,7 +95,7 @@ int	multiplecmdexector(t_main *main, char **envp, int nbcmds)
 {
 	if (tube_handler(&main) == -1)
 		return (-1);
-	if (builtin_exec(main, &main->envp, nbcmds) == 1)
+	if (builtin_exec(main, &main->envp, nbcmds, 0) == 1)
 		return (1);
 	if (main->cmd_info->infile != NULL && main->cmd_info->outfile == NULL
 		&& nbcmds > 1)
