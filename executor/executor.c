@@ -12,47 +12,7 @@
 
 #include "minishell.h"
 
-int	check_access(t_main *main, int j)
-{
-	if (j == 0)
-	{
-		printf("minishell: ./: Is a file\n");
-		main->last_exit_status = 127;
-		return (-1);
-	}
-	return (1);
-}
-
-int	isfilevalid(t_main *main)
-{
-	char	*filename;
-
-	auto int i = 0;
-	while (main->cmd_info->cmd[i] && main->cmd_info->cmd[i + 1])
-	{
-		if (main->cmd_info->cmd[i] != '.' || main->cmd_info->cmd[i + 1] != '/')
-			break ;
-		i += 2;
-	}
-	auto int j = 0;
-	while (main->cmd_info->cmd[i + j])
-		j++;
-	if (j == 0)
-		return (check_access(main, j));
-	filename = malloc((j + 1) * sizeof(char));
-	j = 0;
-	while (main->cmd_info->cmd[i + j])
-	{
-		filename[j] = main->cmd_info->cmd[i + j];
-		j++;
-	}
-	filename[j] = '\0';
-	if (access(filename, F_OK | X_OK) == 0)
-		return (-1);
-	return (1);
-}
-
-int	file_executor(t_main *main, int file, pid_t **pids, int last)
+int	file_executor(t_main *main, int file, int last)
 {
 	char	**tmp;
 	int		i;
@@ -68,10 +28,10 @@ int	file_executor(t_main *main, int file, pid_t **pids, int last)
 		free(tmp[i++]);
 	free(tmp);
 	if (last == 0)
-		main->tube->fd = cmd_executor(main, main->str_envp, file, pids);
+		main->tube->fd = cmd_executor(main, main->str_envp, file);
 	else
 	{
-		last_executor(main, main->str_envp, main->tube->fd, pids);
+		last_executor(main, main->str_envp, main->tube->fd);
 		main->tube->fd = -1;
 	}
 	free(main->cmd_info->cmd_path);
@@ -98,6 +58,7 @@ void	child_executor(t_main *main, int *tube, int file, char **envp)
 		dup2(file, STDIN_FILENO);
 		close(file);
 	}
+	printf("CC : %s\n", main->cmd_info->cmd_path);
 	dup2(tube[1], STDOUT_FILENO);
 	close(tube[1]);
 	if (execve(main->cmd_info->cmd_path,
@@ -105,13 +66,15 @@ void	child_executor(t_main *main, int *tube, int file, char **envp)
 	{
 		close(tube[1]);
 		close(file);
+		free_all_cmd_info(&main);
+		free_execve(&main);
 		perror("execve failed");
 		exit(EXIT_FAILURE);
 	}
 	(void)main->cmd_info->argv;
 }
 
-int	cmd_executor(t_main *main, char **envp, int file, pid_t **pids)
+int	cmd_executor(t_main *main, char **envp, int file)
 {
 	pid_t	pid;
 	int		tube[2];
@@ -129,7 +92,7 @@ int	cmd_executor(t_main *main, char **envp, int file, pid_t **pids)
 		close(tube[1]);
 		if (file != -1)
 			close(file);
-		add_pid(pids, pid);
+		add_pid(main, pid);
 	}
 	//close(tube[0]);
 	return (tube[0]);
@@ -137,29 +100,28 @@ int	cmd_executor(t_main *main, char **envp, int file, pid_t **pids)
 
 int	executor(char *cmd, struct s_main *main)
 {
-	pid_t		*pids;
-	int			nbcmds;
+	int	nbcmds;
 
-	pids = malloc((totalcmds(cmd) + 1) * sizeof(pid_t));
-	if (!pids)
+	main->pids = malloc((totalcmds(cmd) + 1) * sizeof(pid_t));
+	if (!main->pids)
 		return (0);
 	main->str_envp = envp_to_str(main->envp);
-	if (executor_setup(&main, pids, &nbcmds, cmd) == -1)
+	if (executor_setup(&main, &nbcmds, cmd) == -1)
 		return (free_cmd_info(&main->cmd_info), no_leaks(main),
-			end_pids(&main, &pids), 0);
+			end_pids(&main), 0);
 	if (nbcmds == 1)
 	{
-		if (onecmdexector(main, main->str_envp, &pids) == -1)
+		if (onecmdexector(main, main->str_envp) == -1)
 			return (-1);
 		free_cmd_info(&main->cmd_info);
 	}
 	else
 	{
-		if (multiple_cmd_handler(main, main->str_envp, &pids, nbcmds) == -1)
+		if (multiple_cmd_handler(main, main->str_envp, nbcmds) == -1)
 			return (-1);
 	}
-	if (pids)
-		end_pids(&main, &pids);
+	if (main->pids)
+		end_pids(&main);
 	no_leaks(main);
 	printf("Exit statussqqss : %d\n", main->last_exit_status);
 	return (1);

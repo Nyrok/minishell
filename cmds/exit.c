@@ -65,12 +65,12 @@ int	ft_isgood(t_main *main)
 	return (1);
 }
 
-void	clear_tube(t_main **main, pid_t **pids)
+void	clear_tube(t_main **main)
 {
-	if (pids != NULL && *pids != NULL)
+	if ((*main)->pids != NULL && *(*main)->pids != 0)
 	{
-		end_pids(main, pids);
-		*pids = NULL;
+		end_pids(main);
+		(*main)->pids = NULL;
 	}
 	if ((*main)->tube->fd != -1)
 		close((*main)->tube->fd);
@@ -97,25 +97,25 @@ void	free_exit(t_main **main)
 	}
 }
 
-void	ft_exit(t_main **main, pid_t **pids)
+void	ft_exit(t_main **main)
 {
 	auto int exit_code = 0;
 	if ((*main)->cmd_info->argc > 2)
 	{
 		printf("minishell: exit: too many arguments\n");
 		if ((*main)->tube->fd != -1)
-			clear_tube(main, pids);
+			clear_tube(main);
 		return ;
 	}
 	if ((*main)->cmd_info->argc == 2)
 		ft_isgood(*main);
 	if ((*main)->tube->fd != -1 || (*main)->cmd_info->infile)
-		clear_tube(main, pids);
+		clear_tube(main);
 	else
 	{
 		if ((*main)->cmd_info->argc == 2)
 			exit_code = ft_atoi((*main)->cmd_info->argv[1]);
-		clear_tube(main, pids);
+		clear_tube(main);
 		if ((*main)->str_envp)
 			free((*main)->str_envp);
 		(*main)->str_envp = NULL;

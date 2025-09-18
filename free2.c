@@ -24,3 +24,19 @@ void	free_redir(t_redir **redir)
 		close(redir_to_free->fd);
 	free(redir_to_free);
 }
+
+void	free_execve(t_main **main)
+{
+	free_envp(&(*main)->envp);
+	if ((*main)->cmd_info && (*main)->cmd_info->cmd_path)
+		free((*main)->cmd_info->cmd_path);
+	if ((*main)->pids)
+		free((*main)->pids);
+	free((*main)->tube);
+	free_all_cmd_info(main);
+	free((*main)->str_envp);
+	free_tokens(&(*main)->tokens);
+	list_history_cleaner(*main);
+	rl_clear_history();
+	free(*main);
+}

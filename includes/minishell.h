@@ -46,6 +46,7 @@ struct s_main
 	t_cmd_info		*cmd_info;
 	int				last_exit_status;
 	t_redir			*tube;
+	pid_t			*pids;
 };
 
 void		line_reader(t_main *main_struct);
@@ -54,29 +55,36 @@ void		list_history_add(t_history **history, char *cmd);
 void		list_history_cleaner(t_main *main);
 void		print_history(t_history *history);
 int			executor(char *cmd, struct s_main *main);
-int			file_executor(t_main *main, int file, pid_t **pids, int last);
-void		last_executor(t_main *main, char **envp, int tube, pid_t **pids);
-int			cmd_executor(t_main *main, char **envp, int file, pid_t **pids);
+int			file_executor(t_main *main, int file, int last);
+void		last_executor(t_main *main, char **envp, int tube);
+int			cmd_executor(t_main *main, char **envp, int file);
 int			totalcmds(char *cmd);
 int			multiplecmdexector(t_main *main,
-				char **envp, pid_t **pids, int nbcmds);
-int			onecmdexector(t_main *main, char **envp, pid_t **pids);
-void		add_pid(pid_t **pids, pid_t newpid);
-void		end_pids(t_main **main, pid_t **pids);
+				char **envp, int nbcmds);
+int			onecmdexector(t_main *main, char **envp);
+void		add_pid(t_main *main, pid_t newpid);
+void		end_pids(t_main **main);
 int			no_leaks(t_main *main);
-int			executor_setup(t_main **main, pid_t *pids, int *nbcmds, char *cmd);
+int			executor_setup(t_main **main, int *nbcmds, char *cmd);
 int			print_error(t_main *main, int error_code, int cmd_found);
-int			cmd_searcher(t_main *main, char **envp, int file, pid_t **pids);
-void		lcmd_searcher(t_main *main, char **envp, int tube, pid_t **pids);
-int			hasinfile(struct s_main **main);
+int			cmd_searcher(t_main *main, char **envp, int file);
+void		lcmd_searcher(t_main *main, char **envp, int tube);
+int			hasinfile(struct s_main **main, int error_check);
 void		setup_tube(t_main *main);
 void		reset_tube(t_main *main);
-int			fd_opener(t_main **main, t_redir *actual_redir);
+int			fd_opener(t_main **main, t_redir *actual_redir, int error_check);
 int			multiple_cmd_handler(t_main *main,
-				char **envp, pid_t **pids, int nbcmds);
+				char **envp, int nbcmds);
 void		free_redir(t_redir **redir);
 int			create_out(t_main *main);
-void		handle_heredoc(t_main *main);
+int			handle_heredoc(t_main *main);
 void		handle_signal(int signal);
+int			check_access(t_main *main, int j);
+int			isfilevalid(t_main *main);
+int			tube_handler(t_main **main);
+int			fdcls(t_main **main, int error);
+int			ft_heredoc(char *end);
+void		free_execve(t_main **main);
+void		free_envp(t_envp **envp);
 
 #endif
