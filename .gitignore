@@ -8,3 +8,4 @@ philo
 *.supp
 *.txt
 minishell_tester/
+.idea/
