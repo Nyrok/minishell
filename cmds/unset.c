@@ -37,7 +37,12 @@ void	unset_list_loop(t_main *main, t_envp *actual, t_envp *previous, int i)
 		else if (ft_strcmp(actual->key, main->cmd_info->argv[i + 1]) == 0)
 			previous->next = NULL;
 		previous = actual;
-		actual = actual->next;
+		actual = actual->next;		
+		if (ft_strcmp(previous->key, main->cmd_info->argv[i + 1]) == 0)
+		{
+			free_envp(&previous);
+			break ;
+		}
 	}
 }
 

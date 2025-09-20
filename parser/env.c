@@ -48,7 +48,6 @@ static void	replace_word_env(t_envp *envp, char **word, char *key, size_t *i)
 		*word = before_word;
 	}
 	*i = ft_strlen(env_value) - 1;
-	free(key);
 }
 
 static void	parse_word(t_envp *envp, char **word)
@@ -63,9 +62,11 @@ static void	parse_word(t_envp *envp, char **word)
 		{
 			i++;
 			key = get_key(*word, &i);
-			replace_word_env(envp, word, key, &i);
+			replace_word_env(envp, word, key, &i);	
+			free(key);
 		}
-		i++;
+		if ((*word)[i])
+			i++;
 	}
 }
 
