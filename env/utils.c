@@ -40,7 +40,7 @@ char	**ft_split_env(char const *s)
 
 int	is_valid_env_char(char c)
 {
-	return (ft_isalpha(c) || c == '_');
+	return (ft_isalpha(c) || c == '_' || c == '?');
 }
 
 int	is_valid_env_name(char *str)
@@ -49,6 +49,8 @@ int	is_valid_env_name(char *str)
 		return (0);
 	if (ft_isdigit(*str))
 		return (0);
+	if (ft_strlen(str) == 1 && *str == '?')
+		return (1);
 	while (*str)
 	{
 		if (!is_valid_env_char(*str))
