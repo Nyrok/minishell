@@ -14,20 +14,12 @@
 
 int	changepwd(t_main *main)
 {
-	t_main	*actual;
 	char	*buffer;
 
-	actual = main;
 	buffer = malloc(1024 * sizeof(char));
-	actual->cmd_info->argv = malloc(3 * sizeof(char *));
 	if (getcwd(buffer, 1024) == NULL)
-		return (-1);
-	actual->cmd_info->argv[0] = ft_strdup("cd");
-	actual->cmd_info->argv[1] = ft_strdup("PWD");
-	actual->cmd_info->argv[2] = NULL;
-	unset(actual, 1, &main->envp);
-	actual->cmd_info->argv[1] = ft_strjoin("PWD=", buffer);
-	export(actual, 2, actual->cmd_info->argv, 1);
+		return (free(buffer), -1);
+	add_or_replace(main, &main->envp, ft_strdup("PWD"), buffer);
 	return (1);
 }
 

@@ -36,3 +36,12 @@ void	free_execve(t_main **main)
 	list_history_cleaner(*main);
 	free(*main);
 }
+
+void	delete_tube(t_main *main)
+{
+	if (main->tube && main->tube->fd != -1)
+	{
+		close(main->tube->fd);
+		main->tube->fd = -1;
+	}
+}

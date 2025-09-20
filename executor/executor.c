@@ -58,7 +58,6 @@ void	child_executor(t_main *main, int *tube, int file, char **envp)
 		dup2(file, STDIN_FILENO);
 		close(file);
 	}
-	printf("CC : %s\n", main->cmd_info->cmd_path);
 	dup2(tube[1], STDOUT_FILENO);
 	close(tube[1]);
 	if (execve(main->cmd_info->cmd_path,
@@ -94,7 +93,6 @@ int	cmd_executor(t_main *main, char **envp, int file, pid_t **pids)
 			close(file);
 		add_pid(pids, pid);
 	}
-	//close(tube[0]);
 	return (tube[0]);
 }
 

@@ -13,7 +13,7 @@
 #include "minishell.h"
 #include <sys/ioctl.h>
 
-extern int g_signal;
+extern int	g_signal;
 
 void	handle_signal_heredoc(int signal)
 {
@@ -65,7 +65,6 @@ int	heredoc_interrupt(char **line, int tube[2])
 	}
 	if (!*line)
 	{
-		printf("bash: warning: here-document at line 1 delimited by end-of-file (wanted `e')"); // mettre bon warning
 		return (reset_signal(), close(tube[1]), 0);
 	}
 	return (1);
