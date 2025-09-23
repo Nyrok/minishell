@@ -1,1 +1,0 @@
-echo "test" | cat > out1 | ls -l < /etc/passwd | pwd | echo $PATH | cat << EOF | env | export TEST=hello | echo $TEST | unset TEST | cd /tmp | pwd | cat /etc/hosts | head -5 >> out4 | echo "heredoc test" << END | cat | ls | cat < out1 | echo "final" > out5 | cat << STOP | echo $HOME >> result | echo $PATH | cat > count.txt | pwd | cat << LAST | echo "done"

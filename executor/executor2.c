@@ -89,7 +89,6 @@ int	onecmdexector(t_main *main, char **envp)
 	return (1);
 }
 
-<<<<<<< HEAD
 int	multiplecmdexector(t_main *main, char **envp, int nbcmds)
 {
 	if (tube_handler(&main) == -1)

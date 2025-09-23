@@ -8,3 +8,9 @@ philo
 *.supp
 *.txt
 minishell_tester/
+in
+out
+out1
+EOF
+out2
+out3

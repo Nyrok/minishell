@@ -27,7 +27,6 @@ static void	replace_word_env(char *env_value, char **word, char *key, size_t *i)
 	char	*after_word;
 	size_t	after_len;
 
-	auto char *env_value = get_env_value(envp, key);
 	if (!env_value)
 		return ;
 	auto char *tmp = ft_substr(*word, 0, *i - ft_strlen(key) - 1);

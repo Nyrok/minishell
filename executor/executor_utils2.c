@@ -12,27 +12,6 @@
 
 #include "minishell.h"
 
-int	no_such_file(t_redir *actual_redir)
-{
-	printf("-minishell: %s: No such file or directory\n",
-		actual_redir->filename);
-	return (-1);
-}
-
-int	permission_denied(t_main **main, t_redir *actual_redir)
-{
-	if (actual_redir->type == REDOUT
-		&& access(actual_redir->filename, F_OK) != 0)
-	{
-		actual_redir->fd = open(actual_redir->filename,
-				O_CREAT | O_WRONLY | O_TRUNC, 0777);
-		return (0);
-	}
-	printf("-minishell: %s: Permission denied\n", actual_redir->filename);
-	(*main)->last_exit_status = 127;
-	return (-1);
-}
-
 int	fd_opener(t_main **main, t_redir *actual_redir, int error_check)
 {
 	if (actual_redir->io == STDOUT_FILENO \
@@ -125,7 +104,6 @@ int	multiple_cmd_handler(t_main *main, char **envp, int nbcmds)
 	while (nbcmds > 0)
 	{
 		if (main->cmd_info->cmd == NULL)
-<<<<<<< HEAD
 			return (handle_heredoc(main), create_out(main), free_all_cmd_info(&main),end_pids(&main), no_leaks(main), -1);
 		setup_cmd_redirs(main->cmd_info);
 		check_tube(&main);
@@ -138,10 +116,6 @@ int	multiple_cmd_handler(t_main *main, char **envp, int nbcmds)
 		free_cmd_info(&temp_cmd_info);
 	}
 	main->cmd_info = NULL;
-	if (main->tube && main->tube->fd != -1)
-	{
-		close(main->tube->fd);
-		main->tube->fd = -1;
-	}
+	delete_tube(main);
 	return (1);
 }
