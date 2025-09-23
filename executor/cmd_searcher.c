@@ -46,8 +46,6 @@ void	end_pids(t_main **main)
 			(*main)->last_exit_status = 128 + WTERMSIG(status);
 	}
 	i = 3;
-	// while (i < 1024)
-	// 	close(i++);
 	free(actual);
 }
 

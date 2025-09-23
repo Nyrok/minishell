@@ -24,16 +24,19 @@ static char	*get_key(char *str, size_t *i)
 
 static void	replace_word_env(char *env_value, char **word, char *key, size_t *i)
 {
+	char	*after_word;
+	size_t	after_len;
+
+	auto char *env_value = get_env_value(envp, key);
 	if (!env_value)
 		return ;
-	auto char *initial_word = ft_substr(*word, 0, *i - ft_strlen(key) - 1);
-	auto char *before_word = ft_strjoin(\
-		initial_word, env_value);
-	free(initial_word);
-	auto size_t after_len = ft_strlen(*word) - *i;
+	auto char *tmp = ft_substr(*word, 0, *i - ft_strlen(key) - 1);
+	auto char *before_word = ft_strjoin(tmp, env_value);
+	free(tmp);
+	after_len = ft_strlen(*word) - *i;
 	if (after_len)
 	{
-		auto char *after_word = ft_substr(*word, *i, after_len);
+		after_word = ft_substr(*word, *i, after_len);
 		free(*word);
 		*word = ft_strjoin(before_word, after_word);
 		free(after_word);

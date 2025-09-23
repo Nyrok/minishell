@@ -71,6 +71,7 @@ void	check_tube(t_main **main)
 		setup_tube(*main);
 	}
 }
+
 int	create_out(t_main *main)
 {
 	t_redir	*redir_tmp;
@@ -106,7 +107,6 @@ int	handle_heredoc(t_main *main)
 			fd = ft_heredoc(redir_tmp->filename);
 			if (fd != -1)
 			{
-				//return (fd);
 				close(fd);
 				return (-1);
 			}
@@ -125,6 +125,7 @@ int	multiple_cmd_handler(t_main *main, char **envp, int nbcmds)
 	while (nbcmds > 0)
 	{
 		if (main->cmd_info->cmd == NULL)
+<<<<<<< HEAD
 			return (handle_heredoc(main), create_out(main), free_all_cmd_info(&main),end_pids(&main), no_leaks(main), -1);
 		setup_cmd_redirs(main->cmd_info);
 		check_tube(&main);

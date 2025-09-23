@@ -12,33 +12,6 @@
 
 #include "minishell.h"
 
-//void	ft_exit(t_main **main, pid_t *pids)
-//{
-//	t_cmd_info	*tmp_cmd_info;
-
-//	free(pids);
-//	while ((*main)->cmd_info)
-//	{
-//		tmp_cmd_info = (*main)->cmd_info;
-//		(*main)->cmd_info = (*main)->cmd_info->next;
-//		if (tmp_cmd_info->infile && tmp_cmd_info->infile->fd > -1)
-//			close(tmp_cmd_info->infile->fd);
-//		if (tmp_cmd_info->outfile && tmp_cmd_info->outfile->fd > -1)
-//			close(tmp_cmd_info->outfile->fd);
-//		free_cmd_info(&tmp_cmd_info);
-//		if ((*main)->tube)
-//		{
-//			if ((*main)->tube->fd != -1)
-//				close((*main)->tube->fd);
-//			free((*main)->tube->filename);
-//			free((*main)->tube);
-//		}
-//	}
-//	free_tokens(&(*main)->tokens);
-//	free_main(main);
-//	exit(EXIT_SUCCESS);
-//}
-
 int	ft_isgood(t_main *main)
 {
 	auto int i = 0;
@@ -74,7 +47,6 @@ void	clear_tube(t_main **main)
 	}
 	if ((*main)->tube->fd != -1)
 		close((*main)->tube->fd);
-	// free((*main)->tube->filename);
 	free((*main)->tube);
 	(*main)->tube = NULL;
 	if ((*main)->cmd_info->argc == 2 && ft_isgood(*main))
@@ -97,6 +69,7 @@ void	free_exit(t_main **main)
 	}
 	if ((*main)->pids)
 		free((*main)->pids);
+	printf("exit\n");
 }
 
 int	exit_checker(t_main **main, int nbcmds, int onlyonecmd)

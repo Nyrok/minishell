@@ -14,7 +14,6 @@
 
 int	tube_handler(t_main **main)
 {
-	printf("zz\n");
 	if ((*main)->cmd_info->infile != NULL)
 	{
 		if (fd_opener(main, (*main)->cmd_info->infile, 0) == -1)
@@ -58,4 +57,25 @@ int	totalcmds(char *cmd)
 		i++;
 	}
 	return (total);
+}
+
+int	no_such_file(t_redir *actual_redir)
+{
+	printf("-minishell: %s: No such file or directory\n",
+		actual_redir->filename);
+	return (-1);
+}
+
+int	permission_denied(t_main **main, t_redir *actual_redir)
+{
+	if (actual_redir->type == REDOUT
+		&& access(actual_redir->filename, F_OK) != 0)
+	{
+		actual_redir->fd = open(actual_redir->filename,
+				O_CREAT | O_WRONLY | O_TRUNC, 0777);
+		return (0);
+	}
+	printf("-minishell: %s: Permission denied\n", actual_redir->filename);
+	(*main)->last_exit_status = 127;
+	return (-1);
 }

@@ -71,7 +71,6 @@ int	fdcls(t_main **main, int error)
 		}
 		cmd_tmp = cmd_tmp->next;
 	}
-	printf("aaa\n");
 	if (error == 1)
 		(*main)->cmd_info = NULL;
 	return (1);

@@ -94,7 +94,6 @@ int	cmd_executor(t_main *main, char **envp, int file)
 			close(file);
 		add_pid(main, pid);
 	}
-	//close(tube[0]);
 	return (tube[0]);
 }
 

@@ -16,11 +16,12 @@ t_cmds_paths	*cmds_paths_maker(void)
 {
 	static t_cmds_paths	cmds_paths;
 	static char			*paths[] = {
+		"", // Je lai add pour les trucs genre /bin/ls
 		"/bin",
 		"/sbin",
 		"/usr/bin",
 		"/usr/sbin",
-		"/usr/local/bin",
+		"/usr/local/bin", // Adapter ca aux env
 		"/usr/local/sbin",
 		"/snap/bin",
 		NULL

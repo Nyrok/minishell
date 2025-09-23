@@ -63,8 +63,6 @@ int	executor_setup(t_main **main, int *nbcmds, char *cmd)
 {
 	*nbcmds = totalcmds(cmd);
 	(*main)->pids[0] = 0;
-	// if (hasinfile(main) == -1)
-	// 	return (-1);
 	setup_tube(*main);
 	return (1);
 }
@@ -91,6 +89,7 @@ int	onecmdexector(t_main *main, char **envp)
 	return (1);
 }
 
+<<<<<<< HEAD
 int	multiplecmdexector(t_main *main, char **envp, int nbcmds)
 {
 	if (tube_handler(&main) == -1)

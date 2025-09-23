@@ -86,5 +86,8 @@ int			fdcls(t_main **main, int error);
 int			ft_heredoc(char *end);
 void		free_execve(t_main **main);
 void		free_envp(t_envp **envp);
+int			no_such_file(t_redir *actual_redir);
+int			permission_denied(t_main **main, t_redir *actual_redir);
+void		delete_tube(t_main *main);
 
 #endif
