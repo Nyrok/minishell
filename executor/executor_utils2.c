@@ -35,6 +35,9 @@ int	permission_denied(t_main **main, t_redir *actual_redir)
 
 int	fd_opener(t_main **main, t_redir *actual_redir, int error_check)
 {
+	if (actual_redir->io == STDOUT_FILENO \
+		&& access(actual_redir->filename, F_OK) != 0)
+		actual_redir->fd = open(actual_redir->filename, O_CREAT, 0777); /* Leak de FD /!\ */
 	if (actual_redir->io == STDIN_FILENO \
 		&& access(actual_redir->filename, F_OK) != 0 \
 			&& actual_redir->type != HEREDOC)

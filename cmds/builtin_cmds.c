@@ -14,6 +14,7 @@
 
 int	builtin_exec(t_main *main, t_envp **envp, int nbcmds, int onlyonecmd)
 {
+	delete_tube(main);
 	if (ft_strcmp(main->cmd_info->cmd, "cd") == 0)
 		cd(main, main->cmd_info->argc, main->cmd_info->argv[1]);
 	else if (ft_strcmp(main->cmd_info->cmd, "echo") == 0)
