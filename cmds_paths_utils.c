@@ -12,21 +12,45 @@
 
 #include "minishell.h"
 
-t_cmds_paths	*cmds_paths_maker(void)
-{
-	static t_cmds_paths	cmds_paths;
-	static char			*paths[] = {
-		"", // Je lai add pour les trucs genre /bin/ls
-		"/bin",
-		"/sbin",
-		"/usr/bin",
-		"/usr/sbin",
-		"/usr/local/bin", // Adapter ca aux env
-		"/usr/local/sbin",
-		"/snap/bin",
-		NULL
-	};
+// t_cmds_paths	*cmds_paths_maker(void)
+// {
+// 	static t_cmds_paths	cmds_paths;
+// 	static char			*paths[] = {
+// 		"", // Je lai add pour les trucs genre /bin/ls
+// 		"/bin",
+// 		"/sbin",
+// 		"/usr/bin",
+// 		"/usr/sbin",
+// 		"/usr/local/bin", // Adapter ca aux env
+// 		"/usr/local/sbin",
+// 		"/snap/bin",
+// 		NULL
+// 	};
 
-	cmds_paths.paths = paths;
-	return (&cmds_paths);
+// 	cmds_paths.paths = paths;
+// 	return (&cmds_paths);
+// }
+
+
+void	cmds_paths_maker(t_main *main)
+{
+	t_envp	**envp;
+	int		i;
+
+	i = 0;
+	if (main->cmds_paths && main->cmds_paths->paths)
+	{
+		while (main->cmds_paths->paths[i])
+			free(main->cmds_paths->paths[i++]);
+		free(main->cmds_paths->paths);
+	}
+	if (!main->cmds_paths)
+		main->cmds_paths = ft_calloc(1, sizeof(t_cmds_paths));
+	envp = get_env_addr(&main->envp, "PATH");
+	if (envp == NULL)
+	{
+		main->cmds_paths->paths = NULL;
+		return ;
+	}
+	main->cmds_paths->paths = ft_split((*envp)->value, ':');
 }

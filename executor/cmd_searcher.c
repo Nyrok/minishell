@@ -73,17 +73,17 @@ char	*paths_searcher(char *cmd, char *cmd_path, char *paths)
 
 void	lcmd_searcher(t_main *main, char **envp, int tube)
 {
-	int	cmdopener;
-
 	auto int i = 0;
 	auto int cmd_found = 0;
 	if (main->cmd_info->cmd[0] == '.' && main->cmd_info->cmd[1] == '/')
 		cmd_found = file_executor(main, -1, 1);
-	while (main->cmds_paths->paths[i] && cmd_found != -1)
+	cmds_paths_maker(main);
+	while (main->cmds_paths->paths && main->cmds_paths->paths[i]
+		&& cmd_found != -1)
 	{
 		main->cmd_info->cmd_path = paths_searcher(main->cmd_info->cmd,
 				main->cmd_info->cmd_path, main->cmds_paths->paths[i]);
-		cmdopener = open(main->cmd_info->cmd_path, O_RDONLY);
+		auto int cmdopener = open(main->cmd_info->cmd_path, O_RDONLY);
 		if (cmdopener != -1)
 		{
 			close(cmdopener);
@@ -102,17 +102,16 @@ void	lcmd_searcher(t_main *main, char **envp, int tube)
 
 int	cmd_searcher(t_main *main, char **envp, int file)
 {
-	int		cmdopener;
-
 	auto int i = 0;
 	auto int cmd_found = 0;
 	if (main->cmd_info->cmd[0] == '.' && main->cmd_info->cmd[1] == '/')
 		cmd_found = file_executor(main, file, 0);
-	while (main->cmds_paths->paths[i])
+	cmds_paths_maker(main);
+	while (main->cmds_paths->paths && main->cmds_paths->paths[i])
 	{
 		main->cmd_info->cmd_path = paths_searcher(main->cmd_info->cmd,
 				main->cmd_info->cmd_path, main->cmds_paths->paths[i++]);
-		cmdopener = open(main->cmd_info->cmd_path, O_RDONLY);
+		auto int cmdopener = open(main->cmd_info->cmd_path, O_RDONLY);
 		if (cmdopener != -1)
 		{
 			if (ft_access(main, main->cmd_info->cmd_path) == 0)

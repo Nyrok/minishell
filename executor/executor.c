@@ -19,9 +19,7 @@ int	file_executor(t_main *main, int file, int last)
 
 	i = 0;
 	if (isfilevalid(main) == -1)
-	{
 		return (-1); // Faire le free des redirs avant le return + gerer << EOF sans commande
-	}
 	tmp = ft_split(main->cmd_info->cmd, ' ');
 	main->cmd_info->cmd_path = ft_strdup(tmp[0]);
 	while (tmp[i])
@@ -59,7 +57,8 @@ void	child_executor(t_main *main, int *tube, int file, char **envp)
 		close(file);
 	}
 	printf("CC : %s\n", main->cmd_info->cmd_path);
-	dup2(tube[1], STDOUT_FILENO);
+	if (tube[1] != -1)
+		dup2(tube[1], STDOUT_FILENO);
 	close(tube[1]);
 	if (execve(main->cmd_info->cmd_path,
 			(char *const *)main->cmd_info->argv, envp) == -1)

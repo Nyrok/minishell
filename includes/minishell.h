@@ -50,6 +50,7 @@ struct s_main
 };
 
 void		line_reader(t_main *main_struct);
+
 t_history	*list_history_init(char *cmd);
 void		list_history_add(t_history **history, char *cmd);
 void		list_history_cleaner(t_main *main);
@@ -79,7 +80,7 @@ void		free_redir(t_redir **redir);
 int			create_out(t_main *main);
 int			handle_heredoc(t_main *main);
 void		handle_signal(int signal);
-int			check_access(t_main *main, int j);
+int			check_access(t_main *main, int j, char *filename);
 int			isfilevalid(t_main *main);
 int			tube_handler(t_main **main);
 int			fdcls(t_main **main, int error);

@@ -28,6 +28,7 @@ void	free_redir(t_redir **redir)
 void	free_execve(t_main **main)
 {
 	free_envp(&(*main)->envp);
+	printf("eeneneieniejnneoneoiepon\n");
 	if ((*main)->cmd_info && (*main)->cmd_info->cmd_path)
 		free((*main)->cmd_info->cmd_path);
 	if ((*main)->pids)

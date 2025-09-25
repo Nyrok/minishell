@@ -88,6 +88,5 @@ int	cd(t_main *main, int total_args, const char *path)
 	changepwd(main);
 	if (main->tube != NULL && main->tube->fd >= 0)
 		close(main->tube->fd);
-	main->tube = NULL;
 	return (1);
 }

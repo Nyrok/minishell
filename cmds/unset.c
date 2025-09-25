@@ -68,6 +68,5 @@ int	unset(t_main *main, int argc, t_envp **envp)
 	unset_list_maker(main, envp);
 	if (main->tube != NULL && main->tube->fd >= 0)
 		close(main->tube->fd);
-	main->tube = NULL;
 	return (1);
 }
