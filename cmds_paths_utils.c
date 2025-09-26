@@ -34,7 +34,8 @@
 
 void	cmds_paths_maker(t_main *main)
 {
-	t_envp	**envp;
+	//t_envp	**envp;
+	char	*env_value;
 	int		i;
 
 	i = 0;
@@ -46,11 +47,11 @@ void	cmds_paths_maker(t_main *main)
 	}
 	if (!main->cmds_paths)
 		main->cmds_paths = ft_calloc(1, sizeof(t_cmds_paths));
-	envp = get_env_addr(&main->envp, "PATH");
-	if (envp == NULL)
+	env_value = get_env_value(main->envp, "PATH");
+	if (env_value == NULL)
 	{
 		main->cmds_paths->paths = NULL;
 		return ;
 	}
-	main->cmds_paths->paths = ft_split((*envp)->value, ':');
+	main->cmds_paths->paths = ft_split(env_value, ':');
 }
