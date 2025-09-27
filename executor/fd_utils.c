@@ -12,13 +12,21 @@
 
 #include "minishell.h"
 
-int	check_access(t_main *main, int j)
+int	check_access(t_main *main, int j, char *filename)
 {
 	if (j == 0)
 	{
 		printf("minishell: ./: Is a file\n");
 		main->last_exit_status = 127;
 		return (-1);
+	}
+	if (filename != NULL)
+	{
+		if (access(filename, F_OK | X_OK) != 0)
+		{
+			printf("minishell: ./%s: No such file or directory\n", filename);
+			return (-1);
+		}
 	}
 	return (1);
 }
@@ -38,7 +46,7 @@ int	isfilevalid(t_main *main)
 	while (main->cmd_info->cmd[i + j])
 		j++;
 	if (j == 0)
-		return (check_access(main, j));
+		return (check_access(main, j, NULL));
 	filename = malloc((j + 1) * sizeof(char));
 	j = 0;
 	while (main->cmd_info->cmd[i + j])
@@ -47,7 +55,7 @@ int	isfilevalid(t_main *main)
 		j++;
 	}
 	filename[j] = '\0';
-	if (access(filename, F_OK | X_OK) == 0)
+	if (check_access(main, 1, filename) == -1)
 		return (free(filename), -1);
 	return (free(filename), 1);
 }

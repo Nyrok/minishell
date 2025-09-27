@@ -127,8 +127,10 @@ void	free_cmd_info(t_cmd_info **cmd_info)
 
 void	free_main(t_main **main_struct)
 {
-	t_history		*tmp;
+	t_history	*tmp;
+	int			i;
 
+	i = 0;
 	free_envp(&(*main_struct)->envp);
 	while ((*main_struct)->history != NULL)
 	{
@@ -136,6 +138,13 @@ void	free_main(t_main **main_struct)
 		(*main_struct)->history = (*main_struct)->history->next;
 		free(tmp->cmd);
 		free(tmp);
+	}
+	if ((*main_struct)->cmds_paths && (*main_struct)->cmds_paths->paths)
+	{
+		while ((*main_struct)->cmds_paths->paths[i])
+			free((*main_struct)->cmds_paths->paths[i++]);
+		free((*main_struct)->cmds_paths->paths);
+		free((*main_struct)->cmds_paths);
 	}
 	rl_clear_history();
 	free(*main_struct);

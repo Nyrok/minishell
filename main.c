@@ -34,7 +34,6 @@ static t_main	*init_main(char **envp)
 	if (!main_struct)
 		exit(1);
 	main_struct->envp = init_env(envp);
-	main_struct->cmds_paths = cmds_paths_maker();
 	return (main_struct);
 }
 
@@ -49,6 +48,7 @@ int	main(int argc, char **argv, char **envp)
 	sigaction(SIGINT, &sa, NULL);
 	signal(SIGQUIT, SIG_IGN);
 	main_struct = init_main(envp);
+	// cmds_paths_maker(main_struct);
 	(void)argc;
 	(void)argv;
 	line_reader(main_struct);

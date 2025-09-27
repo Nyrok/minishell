@@ -40,7 +40,7 @@ void	last_child_executor(int tube, t_main *main, char *cmd_path, char **envp)
 	}
 }
 
-void	last_executor(t_main *main, char **envp, int tube, pid_t **pids)
+void	last_executor(t_main *main, char **envp, int tube)
 {
 	pid_t	pid;
 
@@ -55,22 +55,22 @@ void	last_executor(t_main *main, char **envp, int tube, pid_t **pids)
 			close(tube);
 		if (main->cmd_info->outfile != NULL)
 			close(main->cmd_info->outfile->fd);
-		add_pid(pids, pid);
+		add_pid(main, pid);
 	}
 }
 
-int	executor_setup(t_main **main, pid_t *pids, int *nbcmds, char *cmd)
+int	executor_setup(t_main **main, int *nbcmds, char *cmd)
 {
 	*nbcmds = totalcmds(cmd);
-	pids[0] = 0;
+	(*main)->pids[0] = 0;
 	setup_tube(*main);
 	return (1);
 }
 
-int	onecmdexector(t_main *main, char **envp, pid_t **pids)
+int	onecmdexector(t_main *main, char **envp)
 {
 	if (main->cmd_info->cmd == NULL)
-		return (handle_heredoc(main), create_out(main), end_pids(&main, pids),
+		return (handle_heredoc(main), create_out(main), end_pids(&main),
 			free_all_cmd_info(&main), no_leaks(main), -1);
 	setup_cmd_redirs(main->cmd_info);
 	if (hasinfile(&main, 0) == -1)
@@ -80,39 +80,39 @@ int	onecmdexector(t_main *main, char **envp, pid_t **pids)
 	}
 	if (main->cmd_info->outfile && main->cmd_info->outfile->fd != -1)
 		close(main->cmd_info->outfile->fd);
-	if (builtin_exec(main, pids, &main->envp, 1) == 1)
+	if (builtin_exec(main, &main->envp, 1, 1) == 1)
 		return (1);
 	if (main->cmd_info->infile != NULL)
-		lcmd_searcher(main, envp, main->cmd_info->infile->fd, pids);
+		lcmd_searcher(main, envp, main->cmd_info->infile->fd);
 	else
-		lcmd_searcher(main, envp, -1, pids);
+		lcmd_searcher(main, envp, -1);
 	return (1);
 }
 
-int	multiplecmdexector(t_main *main, char **envp, pid_t **pids, int nbcmds)
+int	multiplecmdexector(t_main *main, char **envp, int nbcmds)
 {
 	if (tube_handler(&main) == -1)
 		return (-1);
-	if (builtin_exec(main, pids, &main->envp, nbcmds) == 1)
+	if (builtin_exec(main, &main->envp, nbcmds, 0) == 1)
 		return (1);
 	if (main->cmd_info->infile != NULL && main->cmd_info->outfile == NULL
 		&& nbcmds > 1)
 	{
 		main->tube->fd = cmd_searcher(main, envp,
-				main->cmd_info->infile->fd, pids);
+				main->cmd_info->infile->fd);
 	}
 	else if (main->cmd_info->infile == NULL && main->cmd_info->outfile == NULL
 		&& nbcmds > 1)
 		main->tube->fd = cmd_searcher(main, envp,
-				main->tube->fd, pids);
+				main->tube->fd);
 	else if (main->cmd_info->infile == NULL)
 	{
-		lcmd_searcher(main, envp, main->tube->fd, pids);
+		lcmd_searcher(main, envp, main->tube->fd);
 		main->tube->fd = -1;
 	}
 	else if (main->cmd_info->infile != NULL)
 	{
-		lcmd_searcher(main, envp, main->cmd_info->infile->fd, pids);
+		lcmd_searcher(main, envp, main->cmd_info->infile->fd);
 		main->tube->fd = -1;
 	}
 	return (1);

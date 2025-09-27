@@ -12,27 +12,27 @@
 
 #include "minishell.h"
 
-void	add_pid(pid_t **pids, pid_t newpid)
+void	add_pid(t_main *main, pid_t newpid)
 {
 	int		i;
 	pid_t	*actual;
 
 	i = 0;
-	actual = *pids;
+	actual = main->pids;
 	while (actual[i] != 0)
 		i++;
 	actual[i] = newpid;
 	actual[i + 1] = 0;
 }
 
-void	end_pids(t_main **main, pid_t **pids)
+void	end_pids(t_main **main)
 {
 	int		i;
 	int		status;
 	pid_t	*actual;
 
 	i = 0;
-	actual = *pids;
+	actual = (*main)->pids;
 	while (actual[i] != 0)
 	{
 		waitpid(actual[i], &status, 0);
@@ -71,26 +71,26 @@ char	*paths_searcher(char *cmd, char *cmd_path, char *paths)
 	return (cmd_path);
 }
 
-void	lcmd_searcher(t_main *main, char **envp, int tube, pid_t **pids)
+void	lcmd_searcher(t_main *main, char **envp, int tube)
 {
-	int	cmdopener;
-
 	auto int i = 0;
 	auto int cmd_found = 0;
 	if (main->cmd_info->cmd[0] == '.' && main->cmd_info->cmd[1] == '/')
-		cmd_found = file_executor(main, -1, pids, 1);
-	while (main->cmds_paths->paths[i] && cmd_found != -1)
+		cmd_found = file_executor(main, -1, 1);
+	cmds_paths_maker(main);
+	while (main->cmds_paths->paths && main->cmds_paths->paths[i]
+		&& cmd_found != -1)
 	{
 		main->cmd_info->cmd_path = paths_searcher(main->cmd_info->cmd,
 				main->cmd_info->cmd_path, main->cmds_paths->paths[i]);
-		cmdopener = open(main->cmd_info->cmd_path, O_RDONLY);
+		auto int cmdopener = open(main->cmd_info->cmd_path, O_RDONLY);
 		if (cmdopener != -1)
 		{
 			close(cmdopener);
 			if (ft_access(main, main->cmd_info->cmd_path) == 0)
 				break ;
 			cmd_found = 1;
-			last_executor(main, envp, tube, pids);
+			last_executor(main, envp, tube);
 			free(main->cmd_info->cmd_path);
 			break ;
 		}
@@ -100,26 +100,25 @@ void	lcmd_searcher(t_main *main, char **envp, int tube, pid_t **pids)
 	print_error(main, NOTFOUND, cmd_found);
 }
 
-int	cmd_searcher(t_main *main, char **envp, int file, pid_t **pids)
+int	cmd_searcher(t_main *main, char **envp, int file)
 {
-	int		cmdopener;
-
 	auto int i = 0;
 	auto int cmd_found = 0;
 	if (main->cmd_info->cmd[0] == '.' && main->cmd_info->cmd[1] == '/')
-		cmd_found = file_executor(main, file, pids, 0);
-	while (main->cmds_paths->paths[i])
+		cmd_found = file_executor(main, file, 0);
+	cmds_paths_maker(main);
+	while (main->cmds_paths->paths && main->cmds_paths->paths[i])
 	{
 		main->cmd_info->cmd_path = paths_searcher(main->cmd_info->cmd,
 				main->cmd_info->cmd_path, main->cmds_paths->paths[i++]);
-		cmdopener = open(main->cmd_info->cmd_path, O_RDONLY);
+		auto int cmdopener = open(main->cmd_info->cmd_path, O_RDONLY);
 		if (cmdopener != -1)
 		{
 			if (ft_access(main, main->cmd_info->cmd_path) == 0)
 				break ;
 			close(cmdopener);
 			cmd_found = 1;
-			main->tube->fd = cmd_executor(main, envp, file, pids);
+			main->tube->fd = cmd_executor(main, envp, file);
 			free(main->cmd_info->cmd_path);
 			break ;
 		}

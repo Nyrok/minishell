@@ -27,7 +27,7 @@ typedef enum e_error
 }	t_error_code;
 
 //void			cmd_searcher(char *cmd, char **paths, t_envp *envp);
-t_cmds_paths	*cmds_paths_maker(void);
-int				ft_access(t_main *main, char *pathname);
+void	cmds_paths_maker(t_main *main);
+int		ft_access(t_main *main, char *pathname);
 
 #endif
