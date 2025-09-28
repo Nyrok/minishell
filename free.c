@@ -53,6 +53,11 @@ void	free_all_cmd_info(t_main **main)
 	{
 		to_free = cmd_tmp;
 		cmd_tmp = cmd_tmp->next;
+		if (to_free && to_free->cmd_path)
+		{
+			free(to_free->cmd_path);
+			to_free->cmd_path = NULL;
+		}
 		free_cmd_info(&to_free);
 	}
 	(*main)->cmd_info = NULL;

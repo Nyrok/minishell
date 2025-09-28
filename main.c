@@ -42,14 +42,17 @@ int	main(int argc, char **argv, char **envp)
 	t_main				*main_struct;
 	struct sigaction	sa;
 
+	if (argc >= 2)
+	{
+		printf("Pas d'arguments stp !\n");
+		return (1);
+	}
 	sa.sa_handler = handle_signal;
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = SA_RESTART;
 	sigaction(SIGINT, &sa, NULL);
 	signal(SIGQUIT, SIG_IGN);
 	main_struct = init_main(envp);
-	// cmds_paths_maker(main_struct);
-	(void)argc;
 	(void)argv;
 	line_reader(main_struct);
 	free_main(&main_struct);
