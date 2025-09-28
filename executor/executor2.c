@@ -14,7 +14,7 @@
 
 void	last_child_executor(int tube, t_main *main, char *cmd_path, char **envp)
 {
-	signal(SIGQUIT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL); // ?????????
 	if (tube != -1)
 	{
 		dup2(tube, STDIN_FILENO);

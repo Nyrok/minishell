@@ -28,15 +28,25 @@ void	free_redir(t_redir **redir)
 void	free_execve(t_main **main)
 {
 	free_envp(&(*main)->envp);
-	printf("eeneneieniejnneoneoiepon\n");
 	if ((*main)->cmd_info && (*main)->cmd_info->cmd_path)
+	{
 		free((*main)->cmd_info->cmd_path);
+		(*main)->cmd_info->cmd_path = NULL;
+	}
 	if ((*main)->pids)
 		free((*main)->pids);
 	free((*main)->tube);
 	free_all_cmd_info(main);
 	free((*main)->str_envp);
 	free_tokens(&(*main)->tokens);
+	if ((*main)->cmds_paths)
+	{
+		auto int i = 0;
+		while ((*main)->cmds_paths->paths && (*main)->cmds_paths->paths[i])
+			free((*main)->cmds_paths->paths[i++]);
+		free((*main)->cmds_paths->paths);
+		free((*main)->cmds_paths);
+	}
 	list_history_cleaner(*main);
 	rl_clear_history();
 	free(*main);
@@ -44,6 +54,7 @@ void	free_execve(t_main **main)
 
 void	delete_tube(t_main *main)
 {
+	printf("TEST\n");
 	if (main->tube && main->tube->fd != -1)
 	{
 		close(main->tube->fd);

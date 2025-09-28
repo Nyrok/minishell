@@ -31,10 +31,8 @@
 // 	return (&cmds_paths);
 // }
 
-
 void	cmds_paths_maker(t_main *main)
 {
-	//t_envp	**envp;
 	char	*env_value;
 	int		i;
 
