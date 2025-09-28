@@ -33,6 +33,7 @@ int	file_executor(t_main *main, int file, int last)
 		main->tube->fd = -1;
 	}
 	free(main->cmd_info->cmd_path);
+	main->cmd_info->cmd_path = NULL;
 	return (1);
 }
 
@@ -55,16 +56,20 @@ void	child_executor(t_main *main, int *tube, int file, char **envp)
 	{
 		dup2(file, STDIN_FILENO);
 		close(file);
+		file = -1;
 	}
 	printf("CC : %s\n", main->cmd_info->cmd_path);
 	if (tube[1] != -1)
 		dup2(tube[1], STDOUT_FILENO);
 	close(tube[1]);
+	tube[1] = -1;
 	if (execve(main->cmd_info->cmd_path,
 			(char *const *)main->cmd_info->argv, envp) == -1)
 	{
-		close(tube[1]);
-		close(file);
+		if (tube[1] != -1)
+			close(tube[1]);
+		if (file != -1)
+			close(file);
 		free_all_cmd_info(&main);
 		free_execve(&main);
 		perror("execve failed");

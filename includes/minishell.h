@@ -90,5 +90,6 @@ void		free_envp(t_envp **envp);
 int			no_such_file(t_redir *actual_redir);
 int			permission_denied(t_main **main, t_redir *actual_redir);
 void		delete_tube(t_main *main);
+void		append_opener(t_redir *actual_redir);
 
 #endif

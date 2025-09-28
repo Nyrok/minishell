@@ -14,13 +14,7 @@
 
 int	fd_opener(t_main **main, t_redir *actual_redir, int error_check)
 {
-	if (actual_redir->io == STDOUT_FILENO \
-		&& access(actual_redir->filename, F_OK) != 0)
-	{
-		actual_redir->fd = open(actual_redir->filename, O_CREAT, 0777);
-		if (actual_redir->fd != -1)
-			close(actual_redir->fd);
-	}
+	append_opener(actual_redir);
 	if (actual_redir->io == STDIN_FILENO \
 		&& access(actual_redir->filename, F_OK) != 0 \
 			&& actual_redir->type != HEREDOC)
@@ -107,14 +101,20 @@ int	multiple_cmd_handler(t_main *main, char **envp, int nbcmds)
 		free_cmd_info(&main->cmd_info);
 	while (nbcmds > 0)
 	{
+		printf("CMDs = %p\n", main->cmd_info);
+		printf("CMD = %s\n", main->cmd_info->cmd);
 		if (main->cmd_info->cmd == NULL)
-			return (handle_heredoc(main), create_out(main), free_all_cmd_info(&main),end_pids(&main), no_leaks(main), -1);
+			return (handle_heredoc(main), create_out(main),
+				free_all_cmd_info(&main), end_pids(&main), no_leaks(main), -1);
 		setup_cmd_redirs(main->cmd_info);
 		check_tube(&main);
-		if (hasinfile(&main, 1) == -1)
-			return (free_all_cmd_info(&main), fdcls(&main, 1), no_leaks(main), 0); // end_pids(&main, pids) retiré
+		if (hasinfile(&main, 1) != -1) // G retape tte la condition ici a voir si ca leak pas
+		{
+			fdcls(&main, 0);
+			multiplecmdexector(main, envp, nbcmds);
+		}
+		nbcmds--;
 		fdcls(&main, 0);
-		multiplecmdexector(main, envp, nbcmds--);
 		temp_cmd_info = main->cmd_info;
 		main->cmd_info = main->cmd_info->next;
 		free_cmd_info(&temp_cmd_info);

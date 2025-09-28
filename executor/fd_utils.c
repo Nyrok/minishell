@@ -22,9 +22,16 @@ int	check_access(t_main *main, int j, char *filename)
 	}
 	if (filename != NULL)
 	{
-		if (access(filename, F_OK | X_OK) != 0)
+		if (access(filename, F_OK) != 0)
 		{
 			printf("minishell: ./%s: No such file or directory\n", filename);
+			main->last_exit_status = 127;
+			return (-1);
+		}
+		else if (access(filename, F_OK | X_OK) != 0)
+		{
+			printf("minishell: ./%s: No such file or directory\n", filename);
+			main->last_exit_status = 126;
 			return (-1);
 		}
 	}
@@ -82,4 +89,15 @@ int	fdcls(t_main **main, int error)
 	if (error == 1)
 		(*main)->cmd_info = NULL;
 	return (1);
+}
+
+void	append_opener(t_redir *actual_redir)
+{
+	if (actual_redir->io == STDOUT_FILENO \
+		&& access(actual_redir->filename, F_OK) != 0)
+	{
+		actual_redir->fd = open(actual_redir->filename, O_CREAT, 0777);
+		if (actual_redir->fd != -1)
+			close(actual_redir->fd);
+	}
 }

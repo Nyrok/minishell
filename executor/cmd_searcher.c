@@ -92,9 +92,11 @@ void	lcmd_searcher(t_main *main, char **envp, int tube)
 			cmd_found = 1;
 			last_executor(main, envp, tube);
 			free(main->cmd_info->cmd_path);
+			main->cmd_info->cmd_path = NULL;
 			break ;
 		}
 		free(main->cmd_info->cmd_path);
+		main->cmd_info->cmd_path = NULL;
 		i++;
 	}
 	print_error(main, NOTFOUND, cmd_found);

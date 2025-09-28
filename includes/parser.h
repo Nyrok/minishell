@@ -35,6 +35,7 @@ struct s_cmd_info
 	char				*cmd_path;
 	t_redir				*infile;
 	t_redir				*outfile;
+	int					tube[2];
 	struct s_cmd_info	*next;
 };
 
