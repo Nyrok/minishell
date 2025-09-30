@@ -12,22 +12,6 @@
 
 #include "minishell.h"
 
-static int	open_pipe_if_needed(t_main *main, int nbcmds, int *fd)
-{
-	int	tube[2];
-
-	if (nbcmds <= 1)
-		return (0);
-	if (pipe(tube) == -1)
-	{
-		perror("pipe");
-		return (-1);
-	}
-	*fd = tube[1];
-	main->tube->fd = tube[0];
-	return (1);
-}
-
 static int	is_n_flag(int argc, const char **argv, int *i)
 {
 	if (argc > 1 && ft_strncmp(argv[1], "-n", 2) == 0)
@@ -55,8 +39,10 @@ static void	close_fd_if_needed(t_main *main, int nbcmds, int fd)
 {
 	if (main->cmd_info->outfile != NULL)
 		close(main->cmd_info->outfile->fd);
-	else if (nbcmds > 1)
-		close(fd);
+	(void)fd;
+	(void)nbcmds;
+	//else if (nbcmds > 1)
+	//	close(fd);
 }
 
 int	echo(t_main *main, int argc, const char **argv, int nbcmds)
@@ -66,11 +52,9 @@ int	echo(t_main *main, int argc, const char **argv, int nbcmds)
 	int	i;
 
 	fd = STDOUT_FILENO;
+	if (check_outfile(main, &fd, nbcmds) == 2)
+		return (1);
 	i = 1;
-	if (main->cmd_info->outfile != NULL)
-		fd = main->cmd_info->outfile->fd;
-	else if (open_pipe_if_needed(main, nbcmds, &fd) == -1)
-		return (-1);
 	nl = is_n_flag(argc, argv, &i);
 	print_echo_args(fd, argc, argv, i);
 	if (argc == 1 || !nl)
