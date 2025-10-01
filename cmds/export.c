@@ -17,7 +17,7 @@ int	export(t_main *main, int argc, char **argv, int nbcmds)
 	auto t_envp * actual = main->envp;
 	auto int i = 0;
 	if (argc == 1)
-		env(main, main->envp, nbcmds);
+		env(main, main->envp, 1, nbcmds);
 	delete_tube(main);
 	if (main->envp == NULL)
 		return (-1);

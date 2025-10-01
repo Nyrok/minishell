@@ -122,7 +122,7 @@ void	free_cmd_info(t_cmd_info **cmd_info)
 		free(redirs_tmp);
 	}
 	i = 0;
-	while (cmd_tmp->argv && cmd_tmp->argv[i])
+	while (cmd_tmp && cmd_tmp->argv && i < cmd_tmp->argc)
 		free(cmd_tmp->argv[i++]);
 	free(cmd_tmp->cmd);
 	free(cmd_tmp->argv);

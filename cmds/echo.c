@@ -57,7 +57,7 @@ int	echo(t_main *main, int argc, const char **argv, int nbcmds)
 	i = 1;
 	nl = is_n_flag(argc, argv, &i);
 	print_echo_args(fd, argc, argv, i);
-	if (argc == 1 || !nl)
+	if (argc == 1 || nl)
 		write(fd, "\n", 1);
 	close_fd_if_needed(main, nbcmds, fd);
 	return (1);
