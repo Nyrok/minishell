@@ -56,6 +56,7 @@ void	clear_tube(t_main **main)
 void	free_exit(t_main **main)
 {
 	t_cmd_info	*tmp_cmd_info;
+	int			fd_tty;
 
 	while ((*main)->cmd_info)
 	{
@@ -69,14 +70,21 @@ void	free_exit(t_main **main)
 	}
 	if ((*main)->pids)
 		free((*main)->pids);
-	printf("exit\n");
+	fd_tty = open("/dev/tty", O_WRONLY);
+	if (fd_tty != -1)
+	{
+		write(fd_tty, "exit\n", 5);
+		close(fd_tty);
+	}
 }
 
 int	exit_checker(t_main **main, int nbcmds, int onlyonecmd)
 {
-	if (nbcmds == 1 && (*main)->tube->fd == -1 && (*main)->cmd_info->infile && onlyonecmd == 1)
+	if (nbcmds == 1 && (*main)->tube->fd == -1
+		&& (*main)->cmd_info->infile && onlyonecmd == 1)
 		return (0);
-	if ((*main)->tube->fd != -1 || (*main)->cmd_info->infile || nbcmds > 1 || onlyonecmd == 0) // Pk quand y'a un infile ???
+	if ((*main)->tube->fd != -1
+		|| (*main)->cmd_info->infile || nbcmds > 1 || onlyonecmd == 0) // Pk quand y'a un infile ???
 	{
 		return (1);
 	}
