@@ -14,27 +14,18 @@
 
 int	pwd(t_main *main, int nbcmds)
 {
-	int		tube[2];
 	int		fd;
 	char	*str;
 
+	(void)nbcmds;
 	str = get_env_value(main->envp, "PWD");
-	if (main->cmd_info->outfile != NULL)
-		fd = main->cmd_info->outfile->fd;
-	else if (nbcmds > 1)
-	{
-		if (pipe(tube) == -1)
-			print_error(main, DEF_PIPE, 1);
-		fd = tube[1];
-		main->tube->fd = tube[0];
-	}
-	else
-		fd = STDOUT_FILENO;
+	fd = STDOUT_FILENO;
+	if (check_outfile(main, &fd, nbcmds) == 2)
+		return (1);
+	printf("MMMM\n");
 	write(fd, str, ft_strlen(str));
 	write(fd, "\n", 1);
 	if (main->cmd_info->outfile != NULL)
 		close(main->cmd_info->outfile->fd);
-	else if (nbcmds > 1)
-		close(tube[1]);
 	return (1);
 }

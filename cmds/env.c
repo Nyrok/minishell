@@ -12,8 +12,38 @@
 
 #include "minishell.h"
 
-void	print_env(int fd, t_envp *actual)
+int	check_outfile(t_main *main, int *fd, int nbcmds)
 {
+	if (main->cmd_info->outfile)
+	{
+		if (access(main->cmd_info->outfile->filename, F_OK) != 0) // check si les access sont bons
+		{
+			main->cmd_info->outfile->fd
+				= open(main->cmd_info->outfile->filename,
+					O_WRONLY | O_CREAT | O_TRUNC, 0644);
+			*fd = main->cmd_info->outfile->fd;
+			if (nbcmds > 1)
+				delete_tube(main);
+		}
+		else if (access(main->cmd_info->outfile->filename, W_OK) == 0)
+		{
+			main->cmd_info->outfile->fd
+				= open(main->cmd_info->outfile->filename,
+					O_WRONLY | O_TRUNC, 0644);
+			*fd = main->cmd_info->outfile->fd;
+			if (nbcmds > 1)
+				delete_tube(main);
+		}
+		else
+			return (perror("Permission denied"), 2);
+	}
+	return (1);
+}
+
+void	print_env(t_main *main, int fd, t_envp *actual, int nbcmds)
+{
+	if (check_outfile(main, &fd, nbcmds) == 2)
+		return ;
 	while (actual != NULL)
 	{
 		write(fd, actual->full, ft_strlen(actual->full));
@@ -22,31 +52,12 @@ void	print_env(int fd, t_envp *actual)
 	}
 }
 
-int	env(t_main *main, t_envp *envp, int nbcmds)
+int	env(t_main *main, t_envp *envp, int onlyonecommand, int nbcmds)
 {
 	t_envp	*actual;
-	int		tube[2];
-	int		fd;
 
-	if (main->cmd_info->outfile != NULL)
-		fd = main->cmd_info->outfile->fd;
-	else if (nbcmds > 1)
-	{
-		if (pipe(tube) == -1)
-		{
-			perror("pipe");
-			return (-1);
-		}
-		fd = tube[1];
-		main->tube->fd = tube[0];
-	}
-	else
-		fd = STDOUT_FILENO;
 	actual = envp;
-	print_env(fd, actual);
-	if (main->cmd_info->outfile != NULL)
-		close(main->cmd_info->outfile->fd);
-	else if (nbcmds > 1)
-		close(tube[1]);
+	(void)onlyonecommand;
+	print_env(main, STDOUT_FILENO, actual, nbcmds);
 	return (1);
 }

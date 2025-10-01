@@ -12,18 +12,21 @@
 
 #include "minishell.h"
 
-int	changepwd(t_main *main)
+int	changepwd(t_main *main, int onlyonecommand)
 {
 	char	*buffer;
 
 	buffer = malloc(1024 * sizeof(char));
 	if (getcwd(buffer, 1024) == NULL)
 		return (free(buffer), -1);
-	add_or_replace(main, &main->envp, ft_strdup("PWD"), buffer);
+	if (onlyonecommand == 1)
+		add_or_replace(main, &main->envp, ft_strdup("PWD"), buffer);
+	else
+		free(buffer);
 	return (1);
 }
 
-int	cd_home(t_main *main)
+int	cd_home(t_main *main, int onlyonecommand)
 {
 	char	*home;
 
@@ -46,7 +49,7 @@ int	cd_home(t_main *main)
 		main->last_exit_status = 1;
 		return (0);
 	}
-	changepwd(main);
+	changepwd(main, onlyonecommand);
 	main->last_exit_status = 0;
 	return (1);
 }
@@ -59,7 +62,7 @@ int	cd_error_cases(t_main *main, int total_args, const char *path)
 		main->last_exit_status = 1;
 		return (0);
 	}
-	if (access(path, F_OK) != 0 && total_args == 2)
+	if (path && path[0] && access(path, F_OK) != 0 && total_args == 2)
 	{
 		printf("-minishell: %s: No such file or directory\n", path);
 		main->last_exit_status = 1;
@@ -70,7 +73,7 @@ int	cd_error_cases(t_main *main, int total_args, const char *path)
 		main->last_exit_status = 0;
 		return (0);
 	}
-	if (chdir(path) != 0 && total_args == 2)
+	if (path && path[0] && chdir(path) != 0 && total_args == 2)
 	{
 		printf("-minishell: Cannot enter into the folder.\n");
 		main->last_exit_status = 1;
@@ -79,13 +82,14 @@ int	cd_error_cases(t_main *main, int total_args, const char *path)
 	return (1);
 }
 
-int	cd(t_main *main, int total_args, const char *path)
+int	cd(t_main *main, int total_args, const char *path, int onlyonecommand)
 {
+	printf("CDDDDDDDDDDDDDDDDDDDDDDDd\n");
 	if (cd_error_cases(main, total_args, path) == 0)
 		return (0);
 	if (total_args == 1)
-		return (cd_home(main));
-	changepwd(main);
+		return (cd_home(main, onlyonecommand));
+	changepwd(main, onlyonecommand);
 	if (main->tube != NULL && main->tube->fd >= 0)
 		close(main->tube->fd);
 	return (1);
