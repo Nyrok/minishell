@@ -12,6 +12,19 @@
 
 #include "minishell.h"
 
+static t_envp	*default_env(void)
+{
+	t_envp		*head;
+	char		*buffer;
+
+	buffer = malloc(1024 * sizeof(char));
+	getcwd(buffer, 1024);
+	head = create_envp(ft_strdup("PWD"), buffer);
+	head->next = create_envp(ft_strdup("SHLVL"), ft_itoa(1));
+	head->next->next = create_envp(ft_strdup("_"), ft_strdup("/usr/bin/env"));
+	return (head);
+}
+
 t_envp	*create_envp(char *key, char *value)
 {
 	t_envp	*cell;
@@ -67,7 +80,7 @@ t_envp	*init_env(char **envp)
 
 	auto int i = -1;
 	if (!envp || !envp[0])
-		return (NULL);
+		return (default_env());
 	actual = NULL;
 	head = NULL;
 	while (envp[++i] != NULL)
