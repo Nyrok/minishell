@@ -14,7 +14,7 @@
 
 void	ft_ctrld(t_main *main)
 {
-	int	fd_tty;
+	// int	fd_tty;
 
 	if (main->tube)
 	{
@@ -28,15 +28,16 @@ void	ft_ctrld(t_main *main)
 	if (main->str_envp)
 		free(main->str_envp);
 	free_main(&main);
-	if (isatty(STDIN_FILENO) && isatty(STDOUT_FILENO) && isatty(STDERR_FILENO))
-	{
-		fd_tty = open("/dev/tty", O_WRONLY);
-		if (fd_tty != -1)
-		{
-			write(fd_tty, "exit\n", 5);
-			close(fd_tty);
-		}
-	}
+	// if (isatty(STDIN_FILENO) && isatty(STDOUT_FILENO) && isatty(STDERR_FILENO))
+	// {
+	// 	fd_tty = open("/dev/tty", O_WRONLY);
+	// 	if (fd_tty != -1)
+	// 	{
+	// 		write(fd_tty, "exit\n", 5);
+	// 		close(fd_tty);
+	// 	}
+	// }
+	printf("exit\n");
 	exit(EXIT_SUCCESS);
 }
 

@@ -46,11 +46,16 @@ void	clear_tube(t_main **main)
 		(*main)->pids = NULL;
 	}
 	if ((*main)->tube->fd != -1)
+	{
 		close((*main)->tube->fd);
+		(*main)->tube->fd = -1;
+	}
 	free((*main)->tube);
 	(*main)->tube = NULL;
 	if ((*main)->cmd_info->argc == 2 && ft_isgood(*main))
 		(*main)->last_exit_status = ft_atoi((*main)->cmd_info->argv[1]);
+	else
+		(*main)->last_exit_status = 0;
 }
 
 void	free_exit(t_main **main)

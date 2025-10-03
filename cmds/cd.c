@@ -17,6 +17,8 @@ int	changepwd(t_main *main, int onlyonecommand)
 	char	*buffer;
 
 	buffer = malloc(1024 * sizeof(char));
+	if (!buffer)
+		return (free(buffer), -1);
 	if (getcwd(buffer, 1024) == NULL)
 		return (free(buffer), -1);
 	if (onlyonecommand == 1)
@@ -91,6 +93,9 @@ int	cd(t_main *main, int total_args, const char *path, int onlyonecommand)
 		return (cd_home(main, onlyonecommand));
 	changepwd(main, onlyonecommand);
 	if (main->tube != NULL && main->tube->fd >= 0)
+	{
 		close(main->tube->fd);
+		main->tube->fd = -1;
+	}
 	return (1);
 }

@@ -12,25 +12,24 @@
 
 #include "minishell.h"
 
-int	file_executor(t_main *main, int file, int last)
+int	file_executor(t_main *main, int file, int last, int onlyonecommand)
 {
 	char	**tmp;
 	int		i;
 
 	i = 0;
-	if (isfilevalid(main) == -1)
-		return (-1); // Faire le free des redirs avant le return + gerer << EOF sans commande
+	isfilevalid(main);  // Faire le free des redirs avant le return + gerer << EOF sans commande
 	tmp = ft_split(main->cmd_info->cmd, ' ');
 	main->cmd_info->cmd_path = ft_strdup(tmp[0]);
 	while (tmp[i])
 		free(tmp[i++]);
 	free(tmp);
 	if (last == 0)
-		main->tube->fd = cmd_executor(main, main->str_envp, file);
+		main->tube->fd = cmd_executor(main, main->str_envp, file, -1);
 	else
 	{
-		last_executor(main, main->str_envp, main->tube->fd);
-		main->tube->fd = -1;
+		last_executor(main, main->str_envp, main->tube->fd, onlyonecommand);
+		// main->tube->fd = -1;
 	}
 	free(main->cmd_info->cmd_path);
 	main->cmd_info->cmd_path = NULL;
@@ -54,15 +53,18 @@ void	child_executor(t_main *main, int *tube, int file, char **envp)
 	close(tube[0]);
 	if (file != -1)
 	{
+		printf("Jjuube");
 		dup2(file, STDIN_FILENO);
 		close(file);
 		file = -1;
 	}
-	printf("CC : %s\n", main->cmd_info->cmd_path);
+	printf("CC- : %s\n", main->cmd_info->cmd_path);
 	if (tube[1] != -1)
+	{
 		dup2(tube[1], STDOUT_FILENO);
-	close(tube[1]);
-	tube[1] = -1;
+		close(tube[1]);
+		tube[1] = -1;
+	}
 	if (execve(main->cmd_info->cmd_path,
 			(char *const *)main->cmd_info->argv, envp) == -1)
 	{
@@ -70,15 +72,15 @@ void	child_executor(t_main *main, int *tube, int file, char **envp)
 			close(tube[1]);
 		if (file != -1)
 			close(file);
-		free_all_cmd_info(&main);
-		free_execve(&main);
+		// free_all_cmd_info(&main);
+		auto int exit_code = free_execve(&main);
 		perror("execve failed");
-		exit(EXIT_FAILURE);
+		exit(exit_code);
 	}
 	(void)main->cmd_info->argv;
 }
 
-int	cmd_executor(t_main *main, char **envp, int file)
+int	cmd_executor(t_main *main, char **envp, int file, int i)
 {
 	pid_t	pid;
 	int		tube[2];
@@ -88,12 +90,22 @@ int	cmd_executor(t_main *main, char **envp, int file)
 		perror("pipe");
 		return (-1);
 	}
+	if (i != -1 && main->cmds_paths->paths[i] == NULL)
+	{
+		printf("ABOULIGA\n");
+		close(tube[1]);
+		tube[1] = -1;
+	}
+	// (void)i;
 	pid = fork();
 	if (pid == 0)
+	{
 		child_executor(main, tube, file, envp);
+	}
 	else
 	{
-		close(tube[1]);
+		if (tube[1] != -1) 
+			close(tube[1]);
 		if (file != -1)
 			close(file);
 		add_pid(main, pid);
@@ -120,7 +132,7 @@ int	executor(char *cmd, struct s_main *main)
 	}
 	else
 	{
-		if (multiple_cmd_handler(main, main->str_envp, nbcmds) == -1)
+		if (multiple_cmd_handler(main, main->str_envp, nbcmds, 0) == -1)
 			return (-1);
 	}
 	if (main->pids)

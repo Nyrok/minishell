@@ -12,6 +12,7 @@
 
 #include "minishell.h"
 
+
 void	free_redir(t_redir **redir)
 {
 	t_redir		*redir_to_free;
@@ -25,8 +26,9 @@ void	free_redir(t_redir **redir)
 	free(redir_to_free);
 }
 
-void	free_execve(t_main **main)
+int	free_execve(t_main **main)
 {
+	delete_tube(*main);
 	free_envp(&(*main)->envp);
 	if ((*main)->cmd_info && (*main)->cmd_info->cmd_path)
 	{
@@ -36,6 +38,7 @@ void	free_execve(t_main **main)
 	if ((*main)->pids)
 		free((*main)->pids);
 	free((*main)->tube);
+	printf("ZZZZZ :%d %d \n", isfilevalid(*main), (*main)->last_exit_status);
 	free_all_cmd_info(main);
 	free((*main)->str_envp);
 	free_tokens(&(*main)->tokens);
@@ -49,12 +52,13 @@ void	free_execve(t_main **main)
 	}
 	list_history_cleaner(*main);
 	rl_clear_history();
+	auto int exit_code = (*main)->last_exit_status;
 	free(*main);
+	return (exit_code);
 }
 
 void	delete_tube(t_main *main)
 {
-	printf("TEST\n");
 	if (main->tube && main->tube->fd != -1)
 	{
 		close(main->tube->fd);
