@@ -14,7 +14,7 @@
 
 int	fd_opener(t_main **main, t_redir *actual_redir, int error_check)
 {
-	// append_opener(actual_redir);
+	append_opener(actual_redir);
 	if (actual_redir->io == STDIN_FILENO \
 		&& access(actual_redir->filename, F_OK) != 0 \
 			&& actual_redir->type != HEREDOC)
