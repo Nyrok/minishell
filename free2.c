@@ -38,7 +38,6 @@ int	free_execve(t_main **main)
 	if ((*main)->pids)
 		free((*main)->pids);
 	free((*main)->tube);
-	printf("ZZZZZ :%d %d \n", isfilevalid(*main), (*main)->last_exit_status);
 	free_all_cmd_info(main);
 	free((*main)->str_envp);
 	free_tokens(&(*main)->tokens);

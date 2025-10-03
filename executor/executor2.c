@@ -150,20 +150,16 @@ int	multiplecmdexector(t_main *main, char **envp, int nbcmds, int onlyonecommand
 	else if (main->cmd_info->infile == NULL && main->cmd_info->outfile == NULL
 		&& nbcmds > 1)
 	{
-		printf("Mon noir pref\n");
 		main->tube->fd = cmd_searcher(main, envp,
 				main->tube->fd, onlyonecommand);
 	}
 	else if (main->cmd_info->infile == NULL)
 	{
 		lcmd_searcher(main, envp, main->tube->fd, onlyonecommand);
-		printf("NON ALLO\n");	
-		printf("\n\n\nEZx : %d %d\n\n\n", main->tube->fd, main->cmd_info->tube[0]);
 		// main->tube->fd = -1;
 	}
 	else if (main->cmd_info->infile != NULL)
 	{
-		printf("NON INFILE\n");
 		if (main->tube && main->tube->fd != -1)
 		{
 			close(main->tube->fd);

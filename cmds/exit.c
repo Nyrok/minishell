@@ -27,14 +27,15 @@ int	ft_isgood(t_main *main)
 		if (ft_isdigit(main->cmd_info->argv[1][i]) == 0 \
 			|| ft_strlen(main->cmd_info->argv[1]) > 11)
 		{
-			main->last_exit_status = 2;
 			printf("minishell: exit: %s: numeric argument required\n",
 				main->cmd_info->argv[i]);
+			main->last_exit_status = 2;
 			return (0);
 		}
 		i++;
 	}
-	main->last_exit_status = 0;
+	// main->last_exit_status = 0;
+	main->last_exit_status = ft_atoi(main->cmd_info->argv[1]);
 	return (1);
 }
 
@@ -102,15 +103,16 @@ void	ft_exit(t_main **main, int nbcmds, int onlyonecmd)
 	if ((*main)->cmd_info->argc > 2)
 	{
 		printf("minishell: exit: too many arguments\n");
-		if ((*main)->tube->fd != -1)
-			clear_tube(main);
+		(*main)->last_exit_status = 1;
+		// if ((*main)->tube->fd != -1)
+		// 	clear_tube(main);
 		return ;
 	}
 	if ((*main)->cmd_info->argc == 2)
 		ft_isgood(*main);
-	if (exit_checker(main, nbcmds, onlyonecmd) == 1) // Pk quand y'a un infile ???
-		clear_tube(main);
-	else
+	// if (exit_checker(main, nbcmds, onlyonecmd) == 1) // Pk quand y'a un infile ???
+	// 	clear_tube(main);
+	if (exit_checker(main, nbcmds, onlyonecmd) != 1)
 	{
 		if ((*main)->cmd_info->argc == 2)
 			exit_code = ft_atoi((*main)->cmd_info->argv[1]);
@@ -123,4 +125,5 @@ void	ft_exit(t_main **main, int nbcmds, int onlyonecmd)
 		free_main(main);
 		exit(exit_code);
 	}
+	exit_code = (*main)->last_exit_status;
 }
