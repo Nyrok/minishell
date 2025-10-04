@@ -48,7 +48,7 @@ void	last_executor(t_main *main, char **envp, int tube, int onlyonecommand)
 	if (pipe(main->cmd_info->tube) == -1)
 	{
 		perror("pipe failed");
-		exit(EXIT_FAILURE);
+		return ;
 	}
 	close(main->cmd_info->tube[1]);
 	(void)onlyonecommand;

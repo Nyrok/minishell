@@ -19,13 +19,17 @@ void	dup2_builtin(t_main *main, int nbcmds)
 		if (dup2(main->cmd_info->outfile->fd, STDOUT_FILENO) == -1)
 		{
 			perror("dup2 failed");
-			exit(EXIT_FAILURE);
+			return ;
 		}
 		main->cmd_info->outfile->fd = -1;
 	}
 	else if (nbcmds > 1)
 	{
-		dup2(main->cmd_info->tube[1], STDOUT_FILENO);
+		if (dup2(main->cmd_info->tube[1], STDOUT_FILENO) == -1)
+		{
+			perror("dup2 failed");
+			return ;
+		}
 		close(main->cmd_info->tube[1]);
 		main->cmd_info->tube[1] = -1;
 	}
