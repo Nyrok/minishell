@@ -76,7 +76,8 @@ void		lcmd_searcher(t_main *main, char **envp, int tube,
 int			hasinfile(struct s_main **main, int error_check);
 void		setup_tube(t_main *main);
 void		reset_tube(t_main *main);
-int			fd_opener(t_main **main, t_redir *actual_redir, int error_check);
+int			fd_opener(t_main **main, t_redir *actual_redir,
+				int error_check, int print);
 int			multiple_cmd_handler(t_main *main,
 				char **envp, int nbcmds, int oocommand);
 void		free_redir(t_redir **redir);
@@ -90,8 +91,8 @@ int			fdcls(t_main **main, int error);
 int			ft_heredoc(char *end);
 int			free_execve(t_main **main);
 void		free_envp(t_envp **envp);
-int			no_such_file(t_redir *actual_redir);
-int			permission_denied(t_main **main, t_redir *actual_redir);
+int			no_such_file(t_redir *actual_redir, int print);
+int			permission_denied(t_main **main, t_redir *actual_redir, int print);
 void		delete_tube(t_main *main);
 void		append_opener(t_redir *actual_redir);
 void		ft_dup2(int src, int dest);

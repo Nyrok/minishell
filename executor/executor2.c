@@ -27,7 +27,7 @@ void	last_child_executor(int tube, t_main *main, char *cmd_path, char **envp)
 		close(main->tube->fd);
 	if (main->cmd_info->outfile != NULL)
 	{
-		fd_opener(&main, main->cmd_info->outfile, 0);
+		fd_opener(&main, main->cmd_info->outfile, 0, 1);
 		ft_dup2(main->cmd_info->outfile->fd, STDOUT_FILENO);
 		close_outfile(main);
 	}

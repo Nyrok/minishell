@@ -12,16 +12,16 @@
 
 #include "minishell.h"
 
-int	fd_opener(t_main **main, t_redir *actual_redir, int error_check)
+int	fd_opener(t_main **main, t_redir *actual_redir, int error_check, int print)
 {
 	append_opener(actual_redir);
 	if (actual_redir->io == STDIN_FILENO \
 		&& access(actual_redir->filename, F_OK) != 0 \
 			&& actual_redir->type != HEREDOC)
-		return (no_such_file(actual_redir));
+		return (no_such_file(actual_redir, print));
 	else if (access(actual_redir->filename, R_OK) != 0 && \
 			actual_redir->type != HEREDOC)
-		return (permission_denied(main, actual_redir));
+		return (permission_denied(main, actual_redir, print));
 	if (actual_redir->type == APPEND)
 		actual_redir->fd = open(actual_redir->filename,
 				O_CREAT | O_WRONLY | O_APPEND, 0777);
