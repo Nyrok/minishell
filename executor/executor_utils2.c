@@ -26,14 +26,7 @@ int	fd_opener(t_main **main, t_redir *actual_redir, int error_check)
 		actual_redir->fd = open(actual_redir->filename,
 				O_CREAT | O_WRONLY | O_APPEND, 0777);
 	else if (actual_redir->type == REDIN)
-	{
 		actual_redir->fd = open(actual_redir->filename, O_RDONLY, 0444);
-		// if ((*main)->cmd_info->infile && fcntl((*main)->cmd_info->infile->fd, F_GETFD) != -1)
-		// 	printf("TA MERE Infile detected: %s\n", (*main)->cmd_info->infile->filename);
-		// else
-		// 	printf("TA MERE FD is not open or no redirection.\n");
-		
-	}
 	else if (actual_redir->type == HEREDOC && error_check == 0)
 		actual_redir->fd = ft_heredoc(actual_redir->filename);
 	else
@@ -100,7 +93,7 @@ int	handle_heredoc(t_main *main)
 	return (-1);
 }
 
-int	multiple_cmd_handler(t_main *main, char **envp, int nbcmds, int onlyonecommand)
+int	multiple_cmd_handler(t_main *main, char **envp, int nbcmds, int oocommand)
 {
 	t_cmd_info	*temp_cmd_info;
 
@@ -108,17 +101,15 @@ int	multiple_cmd_handler(t_main *main, char **envp, int nbcmds, int onlyonecomma
 		free_cmd_info(&main->cmd_info);
 	while (nbcmds > 0)
 	{
-		// printf("CMDs = %p\n", main->cmd_info);
-		// printf("CMD = %s\n", main->cmd_info->cmd);
 		if (main->cmd_info->cmd == NULL)
 			return (handle_heredoc(main), create_out(main),
 				free_all_cmd_info(&main), end_pids(&main), no_leaks(main), -1);
 		setup_cmd_redirs(main->cmd_info);
 		check_tube(&main);
-		if (hasinfile(&main, 1) != -1) // G retape tte la condition ici a voir si ca leak pas
+		if (hasinfile(&main, 1) != -1)
 		{
 			fdcls(&main, 0);
-			multiplecmdexector(main, envp, nbcmds, onlyonecommand);
+			multiplecmdexector(main, envp, nbcmds, oocommand);
 		}
 		nbcmds--;
 		fdcls(&main, 0);

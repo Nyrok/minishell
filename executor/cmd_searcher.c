@@ -12,48 +12,6 @@
 
 #include "minishell.h"
 
-void	add_pid(t_main *main, pid_t newpid)
-{
-	int		i;
-	pid_t	*actual;
-
-	i = 0;
-	actual = main->pids;
-	while (actual[i] != 0)
-		i++;
-	actual[i] = newpid;
-	actual[i + 1] = 0;
-	// for (int j = 0; main->pids[j] != 0; j++)
-	// {
-	// 	printf("PID[%d]: %d\n", j, main->pids[j]);
-	// }
-}
-
-void	end_pids(t_main **main)
-{
-	int		i;
-	int		status;
-	pid_t	*actual;
-
-	i = 0;
-	actual = (*main)->pids;
-	while (actual[i] != 0)
-	{
-		// printf("TESTEEEEEEEEE %d\n", actual[i]);
-		waitpid(actual[i], &status, 0);
-		i++;
-	}
-	if (i > 0)
-	{
-		if (WIFEXITED(status))
-			(*main)->last_exit_status = WEXITSTATUS(status);
-		else if (WIFSIGNALED(status))
-			(*main)->last_exit_status = 128 + WTERMSIG(status);
-	}
-	i = 3;
-	free(actual);
-}
-
 char	*paths_searcher(char *cmd, char *cmd_path, char *paths)
 {
 	char	*tmp;
@@ -76,6 +34,14 @@ char	*paths_searcher(char *cmd, char *cmd_path, char *paths)
 	return (cmd_path);
 }
 
+int	llaunch_executions(t_main *main, char **envp, int tube, int onlyonecommand)
+{
+	last_executor(main, envp, tube, onlyonecommand);
+	free(main->cmd_info->cmd_path);
+	main->cmd_info->cmd_path = NULL;
+	return (1);
+}
+
 void	lcmd_searcher(t_main *main, char **envp, int tube, int onlyonecommand)
 {
 	auto int i = 0;
@@ -87,26 +53,29 @@ void	lcmd_searcher(t_main *main, char **envp, int tube, int onlyonecommand)
 		&& cmd_found != -1 && main->cmd_info->cmd[0] != '.')
 	{
 		main->cmd_info->cmd_path = paths_searcher(main->cmd_info->cmd,
-				main->cmd_info->cmd_path, main->cmds_paths->paths[i]);
+				main->cmd_info->cmd_path, main->cmds_paths->paths[i++]);
 		auto int cmdopener = open(main->cmd_info->cmd_path, O_RDONLY);
 		if (cmdopener != -1)
 		{
 			close(cmdopener);
 			if (ft_access(main, main->cmd_info->cmd_path) == 0)
 				break ;
-			cmd_found = 1;
-			last_executor(main, envp, tube, onlyonecommand);
-			free(main->cmd_info->cmd_path);
-			main->cmd_info->cmd_path = NULL;
+			cmd_found = llaunch_executions(main, envp, tube, onlyonecommand);
 			break ;
 		}
-		if (main->cmds_paths->paths[i + 1] == NULL)
+		if (main->cmds_paths->paths[i] == NULL)
 			last_executor(main, envp, tube, onlyonecommand);
 		free(main->cmd_info->cmd_path);
 		main->cmd_info->cmd_path = NULL;
-		i++;
 	}
 	print_error(main, NOTFOUND, cmd_found);
+}
+
+int	launch_executions(t_main *main, char **envp, int file, int i)
+{
+	main->tube->fd = cmd_executor(main, envp, file, i);
+	free(main->cmd_info->cmd_path);
+	return (1);
 }
 
 int	cmd_searcher(t_main *main, char **envp, int file, int onlyonecommand)
@@ -127,9 +96,7 @@ int	cmd_searcher(t_main *main, char **envp, int file, int onlyonecommand)
 			if (ft_access(main, main->cmd_info->cmd_path) == 0)
 				break ;
 			close(cmdopener);
-			cmd_found = 1;
-			main->tube->fd = cmd_executor(main, envp, file, i);
-			free(main->cmd_info->cmd_path);
+			cmd_found = launch_executions(main, envp, file, i);
 			break ;
 		}
 		if (main->cmds_paths->paths[i] == NULL)

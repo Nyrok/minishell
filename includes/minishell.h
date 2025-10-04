@@ -57,25 +57,28 @@ void		list_history_cleaner(t_main *main);
 void		print_history(t_history *history);
 int			executor(char *cmd, struct s_main *main);
 int			file_executor(t_main *main, int file, int last, int onlyonecommand);
-void		last_executor(t_main *main, char **envp, int tube, int onlyonecommand);
+void		last_executor(t_main *main, char **envp, int tube,
+				int onlyonecommand);
 int			cmd_executor(t_main *main, char **envp, int file, int i);
 int			totalcmds(char *cmd);
 int			multiplecmdexector(t_main *main,
-				char **envp, int nbcmds, int onlyonecommand);
+				char **envp, int nbcmd, int onlyonecommand);
 int			onecmdexector(t_main *main, char **envp);
 void		add_pid(t_main *main, pid_t newpid);
 void		end_pids(t_main **main);
 int			no_leaks(t_main *main);
 int			executor_setup(t_main **main, int *nbcmds, char *cmd);
 int			print_error(t_main *main, int error_code, int cmd_found);
-int			cmd_searcher(t_main *main, char **envp, int file, int onlyonecommand);
-void		lcmd_searcher(t_main *main, char **envp, int tube, int onlyonecommand);
+int			cmd_searcher(t_main *main, char **envp, int file,
+				int onlyonecommand);
+void		lcmd_searcher(t_main *main, char **envp, int tube,
+				int onlyonecommand);
 int			hasinfile(struct s_main **main, int error_check);
 void		setup_tube(t_main *main);
 void		reset_tube(t_main *main);
 int			fd_opener(t_main **main, t_redir *actual_redir, int error_check);
 int			multiple_cmd_handler(t_main *main,
-				char **envp, int nbcmds, int onlyonecommand);
+				char **envp, int nbcmds, int oocommand);
 void		free_redir(t_redir **redir);
 int			create_out(t_main *main);
 int			handle_heredoc(t_main *main);
@@ -91,5 +94,9 @@ int			no_such_file(t_redir *actual_redir);
 int			permission_denied(t_main **main, t_redir *actual_redir);
 void		delete_tube(t_main *main);
 void		append_opener(t_redir *actual_redir);
+void		ft_dup2(int src, int dest);
+int			isbuilt_in(t_main *main);
+int			ft_access(t_main *main, char *pathname);
+void		close_outfile(t_main *main);
 
 #endif

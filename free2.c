@@ -12,7 +12,6 @@
 
 #include "minishell.h"
 
-
 void	free_redir(t_redir **redir)
 {
 	t_redir		*redir_to_free;
@@ -52,8 +51,7 @@ int	free_execve(t_main **main)
 	list_history_cleaner(*main);
 	rl_clear_history();
 	auto int exit_code = (*main)->last_exit_status;
-	free(*main);
-	return (exit_code);
+	return (free(*main), exit_code);
 }
 
 void	delete_tube(t_main *main)

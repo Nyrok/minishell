@@ -34,7 +34,6 @@ int	ft_isgood(t_main *main)
 		}
 		i++;
 	}
-	// main->last_exit_status = 0;
 	main->last_exit_status = ft_atoi(main->cmd_info->argv[1]);
 	return (1);
 }
@@ -90,7 +89,7 @@ int	exit_checker(t_main **main, int nbcmds, int onlyonecmd)
 		&& (*main)->cmd_info->infile && onlyonecmd == 1)
 		return (0);
 	if ((*main)->tube->fd != -1
-		|| (*main)->cmd_info->infile || nbcmds > 1 || onlyonecmd == 0) // Pk quand y'a un infile ???
+		|| (*main)->cmd_info->infile || nbcmds > 1 || onlyonecmd == 0)
 	{
 		return (1);
 	}
@@ -104,14 +103,10 @@ void	ft_exit(t_main **main, int nbcmds, int onlyonecmd)
 	{
 		printf("minishell: exit: too many arguments\n");
 		(*main)->last_exit_status = 1;
-		// if ((*main)->tube->fd != -1)
-		// 	clear_tube(main);
 		return ;
 	}
 	if ((*main)->cmd_info->argc == 2)
 		ft_isgood(*main);
-	// if (exit_checker(main, nbcmds, onlyonecmd) == 1) // Pk quand y'a un infile ???
-	// 	clear_tube(main);
 	if (exit_checker(main, nbcmds, onlyonecmd) != 1)
 	{
 		if ((*main)->cmd_info->argc == 2)

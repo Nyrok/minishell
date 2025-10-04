@@ -51,62 +51,48 @@ void	reset_signal(void)
 	signal(SIGQUIT, SIG_IGN);
 }
 
-// ...existing code...
 int	heredoc_interrupt(char **line, int tube[2])
 {
-    if (g_signal == SIGINT)
-    {
-        if (line && *line)
-        {
-            free(*line);
-            *line = NULL;
-        }
-        /* fermer les deux bouts si interruption */
-        close(tube[0]);
-        close(tube[1]);
-        g_signal = 0;
-        reset_signal();
-        return (-1);
-    }
-    /* EOF (Ctrl-D) : readline renvoie NULL -> retourner 0 pour sortir la boucle,
-       ne pas fermer les descripteurs ici (ft_heredoc fermera tube[1] une fois) */
-    if (line == NULL || *line == NULL)
-    {
-        return (0);
-    }
-    return (1);
+	if (g_signal == SIGINT)
+	{
+		if (line)
+			free(*line);
+		close(tube[0]);
+		close(tube[1]);
+		g_signal = 0;
+		reset_signal();
+		return (-1);
+	}
+	if (!*line)
+	{
+		return (reset_signal(), close(tube[1]), 0);
+	}
+	return (1);
 }
 
 int	ft_heredoc(char *end)
 {
-    char	*line;
-    int		tube[2];
-    int		hret;
+	char	*line;
+	int		tube[2];
 
-    set_heredoc_signal();
-    if (pipe(tube) == -1)
-        return (reset_signal(), -1);
-    while (1)
-    {
-        line = readline("> ");
-        hret = heredoc_interrupt(&line, tube);
-        if (hret == -1)
-            return (-1);
-        if (hret == 0)
-            break ;
-        if (line && ft_strcmp(line, end) == 0)
-        {
-            free(line);
-            break ;
-        }
-        if (line)
-        {
-            write(tube[1], line, ft_strlen(line));
-            write(tube[1], "\n", 1);
-            free(line);
-        }
-    }
-    close(tube[1]);
-    reset_signal();
-    return (tube[0]);
+	set_heredoc_signal();
+	if (pipe(tube) == -1)
+		return (reset_signal(), -1);
+	while (1)
+	{
+		line = readline("> ");
+		if (heredoc_interrupt(&line, tube) == -1)
+			return (-1);
+		if (heredoc_interrupt(&line, tube) == 0)
+			break ;
+		if (ft_strcmp(line, end) == 0)
+		{
+			free(line);
+			break ;
+		}
+		write(tube[1], line, ft_strlen(line));
+		write(tube[1], "\n", 1);
+		free(line);
+	}
+	return (close(tube[1]), reset_signal(), tube[0]);
 }

@@ -25,10 +25,6 @@ int	tube_handler(t_main **main)
 			(*main)->tube->fd = -1;
 		}
 	}
-	// if ((*main)->cmd_info->infile && fcntl((*main)->cmd_info->infile->fd, F_GETFD) != -1)
-	// 	printf("TA MERE 2 Infile detected: %s\n", (*main)->cmd_info->infile->filename);
-	// else
-	// 	printf("TA MERE 2 FD is not open or no redirection.\n");
 	return (1);
 }
 
@@ -36,14 +32,8 @@ int	print_error(t_main *main, int error_code, int cmd_found)
 {
 	if (error_code == NOTFOUND && cmd_found == 0)
 	{
-		// if (main->tube && main->tube->fd != -1)
-		// {
-		// 	close(main->tube->fd);
-		// 	main->tube->fd = -1;
-		// }
-		printf("%s: command not found\n", main->cmd_info->cmd); // créer un tube vide pour que la commande d'après recoive quand mm EOF
+		printf("%s: command not found\n", main->cmd_info->cmd);
 		main->last_exit_status = 127;
-		// main->tube->fd = -1;
 	}
 	else if (error_code == DEF_PIPE && cmd_found == 0)
 	{
@@ -51,8 +41,8 @@ int	print_error(t_main *main, int error_code, int cmd_found)
 		{
 			close(main->tube->fd);
 			main->tube->fd = -1;
-		} // jsp si faut le close ou pas le tube ici je t'avoue
-		perror("pipe"); // Pas sur de ca un printf perso serait peut etre mieux
+		}
+		perror("pipe");
 		return (-1);
 	}
 	return (1);

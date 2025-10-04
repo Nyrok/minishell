@@ -40,8 +40,6 @@ int	check_access(t_main *main, int j, char *filename)
 
 int	isfilevalid(t_main *main)
 {
-	char	*filename;
-
 	auto int i = 0;
 	while (main->cmd_info->cmd[i] && main->cmd_info->cmd[i + 1])
 	{
@@ -54,7 +52,7 @@ int	isfilevalid(t_main *main)
 		j++;
 	if (j == 0)
 		return (check_access(main, j, NULL));
-	filename = malloc((j + 1) * sizeof(char));
+	auto char *filename = malloc((j + 1) * sizeof(char));
 	if (!filename)
 		return (-1);
 	j = 0;

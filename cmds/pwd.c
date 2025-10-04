@@ -22,7 +22,6 @@ int	pwd(t_main *main, int nbcmds)
 	fd = STDOUT_FILENO;
 	if (check_outfile(main, &fd, nbcmds) == 2)
 		return (1);
-	printf("MMMM\n");
 	write(fd, str, ft_strlen(str));
 	write(fd, "\n", 1);
 	if (main->cmd_info->outfile != NULL && main->cmd_info->outfile->fd != -1)
