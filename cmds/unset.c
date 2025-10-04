@@ -12,41 +12,52 @@
 
 #include "minishell.h"
 
-void	remove_first(t_envp **envp, t_envp *actual, t_envp *temp)
+static void	*free_envp_single(t_envp **envp)
 {
-	temp = actual->next;
-	*envp = temp;
+	free((*envp)->key);
+	free((*envp)->value);
+	free((*envp)->full);
+	free(*envp);
+	*envp = NULL;
+	return (NULL);
 }
 
-void	unset_list_loop(t_main *main, t_envp *actual, t_envp *previous, int i)
+static void	rm_first(t_envp **envp, t_envp *actual, t_envp **to_free)
 {
-	t_envp	*temp;
+	*to_free = actual;
+	*envp = actual->next;
+}
 
+static void	*unset_loop(t_main *main, t_envp *actual, t_envp *previous, int i)
+{
+	auto t_envp * temp = NULL;
+	auto t_envp * to_free = NULL;
 	while (actual != NULL)
 	{
-		if (previous == NULL && ft_strcmp(actual->key,
-				main->cmd_info->argv[i + 1]) == 0)
-			remove_first(&main->envp, actual, temp);
+		if (!previous && !ft_strcmp(actual->key, main->cmd_info->argv[i + 1]))
+			rm_first(&main->envp, actual, &to_free);
 		else if (actual->next != NULL && ft_strcmp(actual->key,
 				main->cmd_info->argv[i + 1]) == 0)
 		{
 			temp = actual->next;
+			to_free = actual;
 			actual = previous;
 			actual->next = temp;
 		}
 		else if (ft_strcmp(actual->key, main->cmd_info->argv[i + 1]) == 0)
+		{
 			previous->next = NULL;
+			to_free = actual;
+		}
+		if (to_free)
+			return (free_envp_single(&to_free));
 		previous = actual;
 		actual = actual->next;
-		if (ft_strcmp(previous->key, main->cmd_info->argv[i + 1]) == 0)
-		{
-			free_envp(&previous);
-			break ;
-		}
 	}
+	return (NULL);
 }
 
-void	unset_list_maker(t_main *main, t_envp **envp)
+static void	unset_list_maker(t_main *main, t_envp **envp)
 {
 	t_envp	*actual;
 	t_envp	*previous;
@@ -56,7 +67,7 @@ void	unset_list_maker(t_main *main, t_envp **envp)
 	while (i < main->cmd_info->argc - 1)
 	{
 		actual = *envp;
-		unset_list_loop(main, actual, previous, i);
+		unset_loop(main, actual, previous, i);
 		i++;
 	}
 }
