@@ -12,8 +12,6 @@
 
 #include "minishell.h"
 
-// echo START | env | export TEST=hello > tmpout | echo AFTER_EXPORT | unset TEST | pwd | cat -e | printf line < HEREDOC1 | history -c HEREDOC1 line1 line2 HEREDOC1 | echo $TEST >> result | echo $PATH | cat > count.txt | pwd
-
 int	g_signal = 0;
 
 void	handle_signal(int signal)

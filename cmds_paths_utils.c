@@ -12,25 +12,6 @@
 
 #include "minishell.h"
 
-// t_cmds_paths	*cmds_paths_maker(void)
-// {
-// 	static t_cmds_paths	cmds_paths;
-// 	static char			*paths[] = {
-// 		"", // Je lai add pour les trucs genre /bin/ls
-// 		"/bin",
-// 		"/sbin",
-// 		"/usr/bin",
-// 		"/usr/sbin",
-// 		"/usr/local/bin", // Adapter ca aux env
-// 		"/usr/local/sbin",
-// 		"/snap/bin",
-// 		NULL
-// 	};
-
-// 	cmds_paths.paths = paths;
-// 	return (&cmds_paths);
-// }
-
 void	cmds_paths_maker(t_main *main)
 {
 	char	*env_value;

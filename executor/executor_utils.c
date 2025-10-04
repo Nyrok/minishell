@@ -49,7 +49,7 @@ int	hasinfile(struct s_main **main, int error_check)
 		actual_redir = actual_cmd->redirs;
 		while (actual_redir != NULL)
 		{
-			if (fd_opener(main, actual_redir, error_check) == -1)
+			if (fd_opener(main, actual_redir, error_check, 1) == -1)
 				return (-1);
 			if (actual_redir->type == 3)
 				total = 1;

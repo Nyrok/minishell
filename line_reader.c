@@ -14,8 +14,6 @@
 
 void	ft_ctrld(t_main *main)
 {
-	// int	fd_tty;
-
 	if (main->tube)
 	{
 		if (main->tube->fd != -1)
@@ -28,15 +26,6 @@ void	ft_ctrld(t_main *main)
 	if (main->str_envp)
 		free(main->str_envp);
 	free_main(&main);
-	// if (isatty(STDIN_FILENO) && isatty(STDOUT_FILENO) && isatty(STDERR_FILENO))
-	// {
-	// 	fd_tty = open("/dev/tty", O_WRONLY);
-	// 	if (fd_tty != -1)
-	// 	{
-	// 		write(fd_tty, "exit\n", 5);
-	// 		close(fd_tty);
-	// 	}
-	// }
 	printf("exit\n");
 	exit(EXIT_SUCCESS);
 }
@@ -50,16 +39,16 @@ void	line_reader(t_main *main)
 		user_input = readline(PURPLE "minishell>" RESET);
 		if (user_input == NULL)
 			ft_ctrld(main);
+		if (main->history == NULL && user_input)
+				main->history = list_history_init(user_input);
+		else if (user_input)
+			list_history_add(&main->history, user_input);
+		if (user_input && *user_input)
+			add_history(user_input);
 		main->tokens = tokenize_input(user_input);
 		main->cmd_info = parse_tokens(main, main->tokens);
 		if (main->cmd_info)
 		{
-			if (main->history == NULL && user_input)
-				main->history = list_history_init(user_input);
-			else if (user_input)
-				list_history_add(&main->history, user_input);
-			if (user_input && *user_input)
-				add_history(user_input);
 			if (!user_input)
 				break ;
 			executor(user_input, main);
@@ -67,6 +56,5 @@ void	line_reader(t_main *main)
 		free(user_input);
 		free_cmd_info(&main->cmd_info);
 		free_tokens(&main->tokens);
-		printf("Exit status : %d\n", main->last_exit_status);
 	}
 }

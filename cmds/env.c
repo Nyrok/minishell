@@ -12,24 +12,34 @@
 
 #include "minishell.h"
 
+void	openoutfile(t_main *main)
+{
+	if (main->cmd_info->outfile->type == REDOUT)
+	{
+		main->cmd_info->outfile->fd = open(main->cmd_info->outfile->filename,
+				O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	}
+	else if (main->cmd_info->outfile->type == APPEND)
+	{
+		main->cmd_info->outfile->fd = open(main->cmd_info->outfile->filename,
+				O_WRONLY | O_CREAT | O_APPEND, 0644);
+	}
+}
+
 int	check_outfile(t_main *main, int *fd, int nbcmds)
 {
 	if (main->cmd_info->outfile)
 	{
-		if (access(main->cmd_info->outfile->filename, F_OK) != 0) // check si les access sont bons
+		if (access(main->cmd_info->outfile->filename, F_OK) != 0)
 		{
-			main->cmd_info->outfile->fd
-				= open(main->cmd_info->outfile->filename,
-					O_WRONLY | O_CREAT | O_TRUNC, 0644);
+			openoutfile(main);
 			*fd = main->cmd_info->outfile->fd;
 			if (nbcmds > 1)
 				delete_tube(main);
 		}
 		else if (access(main->cmd_info->outfile->filename, W_OK) == 0)
 		{
-			main->cmd_info->outfile->fd
-				= open(main->cmd_info->outfile->filename,
-					O_WRONLY | O_TRUNC, 0644);
+			openoutfile(main);
 			*fd = main->cmd_info->outfile->fd;
 			if (nbcmds > 1)
 				delete_tube(main);

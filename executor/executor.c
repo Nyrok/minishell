@@ -18,7 +18,7 @@ int	file_executor(t_main *main, int file, int last, int onlyonecommand)
 	int		i;
 
 	i = 0;
-	isfilevalid(main);  // Faire le free des redirs avant le return + gerer << EOF sans commande
+	isfilevalid(main);
 	tmp = ft_split(main->cmd_info->cmd, ' ');
 	main->cmd_info->cmd_path = ft_strdup(tmp[0]);
 	while (tmp[i])
@@ -27,24 +27,16 @@ int	file_executor(t_main *main, int file, int last, int onlyonecommand)
 	if (last == 0)
 		main->tube->fd = cmd_executor(main, main->str_envp, file, -1);
 	else
-	{
 		last_executor(main, main->str_envp, main->tube->fd, onlyonecommand);
-		// main->tube->fd = -1;
-	}
 	free(main->cmd_info->cmd_path);
 	main->cmd_info->cmd_path = NULL;
 	return (1);
 }
 
-int	ft_access(t_main *main, char *pathname)
+void	ft_dup2(int src, int dest)
 {
-	if (access(pathname, X_OK) != 0)
-	{
-		printf("-minishell: %s: Permission denied", pathname);
-		main->last_exit_status = 127;
-		return (0);
-	}
-	return (1);
+	if (dup2(src, dest) == -1)
+		perror("dup2 failed");
 }
 
 void	child_executor(t_main *main, int *tube, int file, char **envp)
@@ -53,15 +45,13 @@ void	child_executor(t_main *main, int *tube, int file, char **envp)
 	close(tube[0]);
 	if (file != -1)
 	{
-		printf("Jjuube");
-		dup2(file, STDIN_FILENO);
+		ft_dup2(file, STDIN_FILENO);
 		close(file);
 		file = -1;
 	}
-	printf("CC- : %s\n", main->cmd_info->cmd_path);
 	if (tube[1] != -1)
 	{
-		dup2(tube[1], STDOUT_FILENO);
+		ft_dup2(tube[1], STDOUT_FILENO);
 		close(tube[1]);
 		tube[1] = -1;
 	}
@@ -72,12 +62,10 @@ void	child_executor(t_main *main, int *tube, int file, char **envp)
 			close(tube[1]);
 		if (file != -1)
 			close(file);
-		// free_all_cmd_info(&main);
 		auto int exit_code = free_execve(&main);
 		perror("execve failed");
 		exit(exit_code);
 	}
-	(void)main->cmd_info->argv;
 }
 
 int	cmd_executor(t_main *main, char **envp, int file, int i)
@@ -92,19 +80,15 @@ int	cmd_executor(t_main *main, char **envp, int file, int i)
 	}
 	if (i != -1 && main->cmds_paths->paths[i] == NULL)
 	{
-		printf("ABOULIGA\n");
 		close(tube[1]);
 		tube[1] = -1;
 	}
-	// (void)i;
 	pid = fork();
 	if (pid == 0)
-	{
 		child_executor(main, tube, file, envp);
-	}
 	else
 	{
-		if (tube[1] != -1) 
+		if (tube[1] != -1)
 			close(tube[1]);
 		if (file != -1)
 			close(file);
@@ -138,6 +122,5 @@ int	executor(char *cmd, struct s_main *main)
 	if (main->pids)
 		end_pids(&main);
 	no_leaks(main);
-	printf("Exit statussqqss : %d\n", main->last_exit_status);
 	return (1);
 }

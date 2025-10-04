@@ -11,6 +11,7 @@ SRCS = main.c \
 	cmds/pwd.c \
 	cmds/unset.c \
 	cmds/exit.c \
+	cmds/builtin_utils.c \
 	cmds/builtin_cmds.c \
 	executor/cmd_searcher.c \
 	executor/executor.c \
@@ -19,6 +20,7 @@ SRCS = main.c \
 	executor/executor_utils2.c \
 	executor/executor_utils3.c \
 	executor/fd_utils.c \
+	executor/executor_utils4.c \
 	executor/ft_heredoc.c \
 	cmds_paths_utils.c \
 	line_reader.c \

@@ -44,8 +44,6 @@ static void	close_fd_if_needed(t_main *main, int nbcmds, int fd)
 	}
 	(void)fd;
 	(void)nbcmds;
-	//else if (nbcmds > 1)
-	//	close(fd);
 }
 
 int	echo(t_main *main, int argc, const char **argv, int nbcmds)

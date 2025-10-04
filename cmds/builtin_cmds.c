@@ -14,23 +14,22 @@
 
 void	dup2_builtin(t_main *main, int nbcmds)
 {
-	// if (main->cmd_info->outfile && main->cmd_info->tube[0] != -1)
-	// {
-	// 	close(main->cmd_info->tube[0]);
-	// 	main->cmd_info->tube[0] = -1;
-	// }
 	if (main->cmd_info->outfile && main->cmd_info->outfile->fd != -1)
 	{
 		if (dup2(main->cmd_info->outfile->fd, STDOUT_FILENO) == -1)
 		{
 			perror("dup2 failed");
-			exit(EXIT_FAILURE);
+			return ;
 		}
 		main->cmd_info->outfile->fd = -1;
 	}
 	else if (nbcmds > 1)
 	{
-		dup2(main->cmd_info->tube[1], STDOUT_FILENO);
+		if (dup2(main->cmd_info->tube[1], STDOUT_FILENO) == -1)
+		{
+			perror("dup2 failed");
+			return ;
+		}
 		close(main->cmd_info->tube[1]);
 		main->cmd_info->tube[1] = -1;
 	}
@@ -42,8 +41,7 @@ int	builtin_exec_fork(t_main *main, t_envp **envp, int nbcmds, int onlyonecmd)
 	if (ft_strcmp(main->cmd_info->cmd, "cd") == 0)
 		cd(main, main->cmd_info->argc, main->cmd_info->argv[1], onlyonecmd);
 	else if (ft_strcmp(main->cmd_info->cmd, "echo") == 0)
-		echo(main, main->cmd_info->argc, (const char **)main->cmd_info->argv,
-			nbcmds);
+		echo(main, main->cmd_info->argc, (t_cstrs)main->cmd_info->argv, nbcmds);
 	else if (ft_strcmp(main->cmd_info->cmd, "env") == 0)
 		env(main, *envp, onlyonecmd, nbcmds);
 	else if (ft_strcmp(main->cmd_info->cmd, "export") == 0)
@@ -66,22 +64,22 @@ int	builtin_exec_fork(t_main *main, t_envp **envp, int nbcmds, int onlyonecmd)
 	exit(exit_code);
 }
 
-int	builtin_exec_no_fork(t_main *main, t_envp **envp, int nbcmds, int onlyonecmd)
+int	builtin_exec_no_fork(t_main *main, t_envp **envp, int nbcmd, int onlyonecmd)
 {
 	delete_tube(main);
 	if (ft_strcmp(main->cmd_info->cmd, "cd") == 0)
 		cd(main, main->cmd_info->argc, main->cmd_info->argv[1], onlyonecmd);
 	else if (ft_strcmp(main->cmd_info->cmd, "echo") == 0)
 		echo(main, main->cmd_info->argc, (const char **)main->cmd_info->argv,
-			nbcmds);
+			nbcmd);
 	else if (ft_strcmp(main->cmd_info->cmd, "env") == 0)
-		env(main, *envp, onlyonecmd, nbcmds);
+		env(main, *envp, onlyonecmd, nbcmd);
 	else if (ft_strcmp(main->cmd_info->cmd, "export") == 0)
-		export(main, main->cmd_info->argc, main->cmd_info->argv, nbcmds);
+		export(main, main->cmd_info->argc, main->cmd_info->argv, nbcmd);
 	else if (ft_strcmp(main->cmd_info->cmd, "unset") == 0)
 		unset(main, main->cmd_info->argc, envp);
 	else if (ft_strcmp(main->cmd_info->cmd, "pwd") == 0)
-		pwd(main, nbcmds);
+		pwd(main, nbcmd);
 	else if (ft_strcmp(main->cmd_info->cmd, "history") == 0 \
 		&& main->cmd_info->argc >= 2 \
 		&& ft_strncmp(main->cmd_info->argv[1], "-c", 2) == 0)
@@ -89,52 +87,55 @@ int	builtin_exec_no_fork(t_main *main, t_envp **envp, int nbcmds, int onlyonecmd
 	else if (ft_strcmp(main->cmd_info->cmd, "history") == 0)
 		print_history(main->history);
 	else if (ft_strcmp(main->cmd_info->cmd, "exit") == 0)
-		ft_exit(&main, nbcmds, onlyonecmd);
+		ft_exit(&main, nbcmd, onlyonecmd);
 	else
 		return (0);
 	return (1);
 }
 
-int	isbuilt_in(t_main *main)
+int	builtinfork_handler(t_main *main, t_envp **envp, int nbcmds, int oonecmd)
 {
-	if (ft_strcmp(main->cmd_info->cmd, "cd") == 0 ||
-		ft_strcmp(main->cmd_info->cmd, "echo") == 0
-		|| ft_strcmp(main->cmd_info->cmd, "env") == 0
-		|| ft_strcmp(main->cmd_info->cmd, "export") == 0
-		|| ft_strcmp(main->cmd_info->cmd, "unset") == 0
-		|| ft_strcmp(main->cmd_info->cmd, "pwd") == 0
-		|| ft_strcmp(main->cmd_info->cmd, "history") == 0
-		|| ft_strcmp(main->cmd_info->cmd, "history") == 0
-		|| ft_strcmp(main->cmd_info->cmd, "exit") == 0)
+	auto int return_value;
+	delete_tube(main);
+	if (pipe(main->cmd_info->tube) == -1)
+		return (perror("pipe"), -1);
+	auto pid_t pid = fork();
+	if (pid == 0)
+		return_value = builtin_exec_fork(main, envp, nbcmds, oonecmd);
+	else
 	{
-		return (1);
+		close(main->cmd_info->tube[1]);
+		if (main->cmd_info->outfile && main->cmd_info->outfile->fd != -1)
+		{
+			close(main->cmd_info->outfile->fd);
+			main->cmd_info->outfile->fd = -1;
+		}
+		if (nbcmds > 1)
+			delete_tube(main);
+		if (main->tube)
+			main->tube->fd = main->cmd_info->tube[0];
+		add_pid(main, pid);
+		return_value = 1;
 	}
-	return (0);
+	return (return_value);
 }
 
 int	builtin_exec(t_main *main, t_envp **envp, int nbcmds, int onlyonecmd)
 {
-	pid_t	pid;
-	int		return_value;
+	int	return_value;
 
 	return_value = 0;
 	if (onlyonecmd == 1 && isbuilt_in(main) == 1)
-	{
-		printf("Built in no fork\n");
 		return_value = builtin_exec_no_fork(main, envp, nbcmds, onlyonecmd);
-	}
-	else if ((isbuilt_in(main) == 1 && nbcmds == 1) || (isbuilt_in(main) == 1 && main->cmd_info->outfile))
+	else if ((isbuilt_in(main) == 1 && nbcmds == 1)
+		|| (isbuilt_in(main) == 1 && main->cmd_info->outfile))
 	{
-		printf("Built in fork no tube\n");
 		delete_tube(main);
 		if (pipe(main->cmd_info->tube) == -1)
-		{
-			perror("pipe failed");
-			exit(EXIT_FAILURE);
-		}
+			return (perror("pipe"), -1);
 		close(main->cmd_info->tube[1]);
 		main->tube->fd = main->cmd_info->tube[0];
-		pid = fork();
+		auto pid_t pid = fork();
 		if (pid == 0)
 			return_value = builtin_exec_fork(main, envp, nbcmds, onlyonecmd);
 		else
@@ -144,39 +145,6 @@ int	builtin_exec(t_main *main, t_envp **envp, int nbcmds, int onlyonecmd)
 		}
 	}
 	else if (isbuilt_in(main) == 1 && nbcmds > 1)
-	{
-		printf("Built in fork\n");
-		delete_tube(main);
-		if (pipe(main->cmd_info->tube) == -1)
-		{
-			perror("pipe");
-			return (-1);
-		}
-		pid = fork();
-		if (pid == 0)
-			return_value = builtin_exec_fork(main, envp, nbcmds, onlyonecmd);
-		else
-		{
-			close(main->cmd_info->tube[1]);
-			if (main->cmd_info->outfile && main->cmd_info->outfile->fd != -1)
-			{
-				close(main->cmd_info->outfile->fd);
-				main->cmd_info->outfile->fd = -1;
-			}
-			if (nbcmds > 1 && main->tube && main->tube->fd != -1)
-			{
-				close(main->tube->fd);
-				main->tube->fd = -1;
-			}
-			if (main->tube)
-			{
-				printf("NOMRMA\n");
-				main->tube->fd = main->cmd_info->tube[0];
-			}
-			add_pid(main, pid);
-			return_value = 1;
-		}
-	}
-	// printf("CC = %d\n", return_value);
+		return_value = builtinfork_handler(main, envp, nbcmds, onlyonecmd);
 	return (return_value);
 }
