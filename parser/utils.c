@@ -12,6 +12,34 @@
 
 #include "minishell.h"
 
+char	*rm_dollars(char *str, size_t start, size_t n)
+{
+	size_t	i;
+	size_t	j;
+	size_t	size;
+	int		count;
+	char	*result;
+
+	count = 0;
+	i = -1;
+	while (++i < n)
+		if (str[start + i] == '$' && str[start + i + 1])
+			count++;
+	size = n - count;
+	result = ft_calloc(size + 1, sizeof(char));
+	if (!result)
+		return (NULL);
+	i = -1;
+	j = 0;
+	while (++i < n)
+	{
+		if (str[start + i] != '$' || !str[start + i + 1])
+			result[j++] = str[start + i];
+	}
+	free(str);
+	return (result);
+}
+
 char	*rm_quotes(char *str, size_t start, size_t n)
 {
 	size_t	i;

@@ -22,17 +22,20 @@ static int	is_n_flag(int argc, const char **argv, int *i)
 	return (0);
 }
 
-static void	print_echo_args(int fd, int argc, const char **argv, int start)
+static size_t	print_echo_args(int fd, int argc, const char **argv, int start)
 {
-	int	i;
+	int		i;
+	size_t	len;
 
 	i = start;
+	len = 0;
 	while (i < argc)
 	{
-		write(fd, argv[i], ft_strlen(argv[i]));
+		len += write(fd, argv[i], ft_strlen(argv[i]));
 		if (++i < argc)
-			write(fd, " ", 1);
+			len += write(fd, " ", 1);
 	}
+	return (len);
 }
 
 static void	close_fd_if_needed(t_main *main, int nbcmds, int fd)
@@ -50,17 +53,18 @@ static void	close_fd_if_needed(t_main *main, int nbcmds, int fd)
 
 int	echo(t_main *main, int argc, const char **argv, int nbcmds)
 {
-	int	fd;
-	int	nl;
-	int	i;
+	int		fd;
+	int		nl;
+	int		i;
+	size_t	len_writed;
 
 	fd = STDOUT_FILENO;
 	if (check_outfile(main, &fd, nbcmds) == 2)
 		return (1);
 	i = 1;
 	nl = is_n_flag(argc, argv, &i);
-	print_echo_args(fd, argc, argv, i);
-	if (argc == 1 || nl)
+	len_writed = print_echo_args(fd, argc, argv, i);
+	if (argc == 1 || nl || !len_writed)
 		write(fd, "\n", 1);
 	close_fd_if_needed(main, nbcmds, fd);
 	return (1);

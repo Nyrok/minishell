@@ -28,7 +28,7 @@ static void	replace_word_env(char *env_value, char **word, char *key, size_t *i)
 	size_t	after_len;
 
 	if (!env_value)
-		return ;
+		env_value = ft_strdup("");
 	auto char *tmp = ft_substr(*word, 0, *i - ft_strlen(key) - 1);
 	auto char *before_word = ft_strjoin(tmp, env_value);
 	free(tmp);
@@ -47,6 +47,8 @@ static void	replace_word_env(char *env_value, char **word, char *key, size_t *i)
 		*word = before_word;
 	}
 	*i = ft_strlen(env_value) - 1;
+	if ((int)ft_strlen(env_value) - 1 < 0)
+		*i = 0;
 }
 
 static void	parse_word(t_envp *envp, char **word, int last_exit_status)
@@ -56,11 +58,12 @@ static void	parse_word(t_envp *envp, char **word, int last_exit_status)
 	char	*env_value;
 
 	i = 0;
-	while (word && (*word) && (*word)[i])
+	while (word && (*word) && (*word)[i] && ft_strlen(*word) > 1)
 	{
 		if ((*word)[i] == '$')
 		{
-			i++;
+			if (++i && (!(*word)[i] || (*word)[i] == '"' || (*word)[i] == '\''))
+				continue ;
 			key = get_key(*word, &i);
 			if (ft_strcmp(key, "?") == 0)
 				env_value = ft_itoa(last_exit_status);
@@ -82,14 +85,12 @@ void	parse_env(t_envp *envp, t_token *tokens, int last_exit_status)
 	while (tokens)
 	{
 		if (tokens->word)
-		{
 			has_quote = tokens->word[0] == '"';
-			tokens->word = rm_quotes(tokens->word, 0, \
-				ft_strlen(tokens->word));
-		}
 		if (tokens->type == WORD && tokens->word \
 			&& (tokens->word[0] == '$' || has_quote))
 			parse_word(envp, &tokens->word, last_exit_status);
+		tokens->word = rm_quotes(tokens->word, 0, ft_strlen(tokens->word));
+		tokens->word = rm_dollars(tokens->word, 0, ft_strlen(tokens->word));
 		tokens = tokens->next;
 		has_quote = 0;
 	}
