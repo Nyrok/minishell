@@ -62,7 +62,8 @@ static void	parse_word(t_envp *envp, char **word, int last_exit_status)
 	{
 		if ((*word)[i] == '$')
 		{
-			if (++i && (!(*word)[i] || (*word)[i] == '"' || (*word)[i] == '\''))
+			if (++i && (!(*word)[i] || (*word)[i] == '$' \
+			|| (*word)[i] == '"' || (*word)[i] == '\''))
 				continue ;
 			key = get_key(*word, &i);
 			if (ft_strcmp(key, "?") == 0)
