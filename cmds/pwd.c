@@ -25,7 +25,10 @@ int	pwd(t_main *main, int nbcmds)
 	printf("MMMM\n");
 	write(fd, str, ft_strlen(str));
 	write(fd, "\n", 1);
-	if (main->cmd_info->outfile != NULL)
+	if (main->cmd_info->outfile != NULL && main->cmd_info->outfile->fd != -1)
+	{
 		close(main->cmd_info->outfile->fd);
+		main->cmd_info->outfile->fd = -1;
+	}
 	return (1);
 }

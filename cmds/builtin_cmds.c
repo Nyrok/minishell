@@ -14,20 +14,25 @@
 
 void	dup2_builtin(t_main *main, int nbcmds)
 {
+	// if (main->cmd_info->outfile && main->cmd_info->tube[0] != -1)
+	// {
+	// 	close(main->cmd_info->tube[0]);
+	// 	main->cmd_info->tube[0] = -1;
+	// }
 	if (main->cmd_info->outfile && main->cmd_info->outfile->fd != -1)
 	{
-		dup2(main->cmd_info->outfile->fd, STDOUT_FILENO);
-		close(main->cmd_info->outfile->fd);
-		if (nbcmds > 1)
+		if (dup2(main->cmd_info->outfile->fd, STDOUT_FILENO) == -1)
 		{
-			close(main->cmd_info->tube[1]);
-			main->cmd_info->tube[1] = -1;
+			perror("dup2 failed");
+			exit(EXIT_FAILURE);
 		}
+		main->cmd_info->outfile->fd = -1;
 	}
 	else if (nbcmds > 1)
 	{
 		dup2(main->cmd_info->tube[1], STDOUT_FILENO);
 		close(main->cmd_info->tube[1]);
+		main->cmd_info->tube[1] = -1;
 	}
 }
 
@@ -114,10 +119,21 @@ int	builtin_exec(t_main *main, t_envp **envp, int nbcmds, int onlyonecmd)
 
 	return_value = 0;
 	if (onlyonecmd == 1 && isbuilt_in(main) == 1)
-		return_value = builtin_exec_no_fork(main, envp, nbcmds, onlyonecmd);
-	else if (isbuilt_in(main) == 1 && nbcmds == 1)
 	{
+		printf("Built in no fork\n");
+		return_value = builtin_exec_no_fork(main, envp, nbcmds, onlyonecmd);
+	}
+	else if ((isbuilt_in(main) == 1 && nbcmds == 1) || (isbuilt_in(main) == 1 && main->cmd_info->outfile))
+	{
+		printf("Built in fork no tube\n");
 		delete_tube(main);
+		if (pipe(main->cmd_info->tube) == -1)
+		{
+			perror("pipe failed");
+			exit(EXIT_FAILURE);
+		}
+		close(main->cmd_info->tube[1]);
+		main->tube->fd = main->cmd_info->tube[0];
 		pid = fork();
 		if (pid == 0)
 			return_value = builtin_exec_fork(main, envp, nbcmds, onlyonecmd);
@@ -129,6 +145,8 @@ int	builtin_exec(t_main *main, t_envp **envp, int nbcmds, int onlyonecmd)
 	}
 	else if (isbuilt_in(main) == 1 && nbcmds > 1)
 	{
+		printf("Built in fork\n");
+		delete_tube(main);
 		if (pipe(main->cmd_info->tube) == -1)
 		{
 			perror("pipe");
@@ -141,15 +159,24 @@ int	builtin_exec(t_main *main, t_envp **envp, int nbcmds, int onlyonecmd)
 		{
 			close(main->cmd_info->tube[1]);
 			if (main->cmd_info->outfile && main->cmd_info->outfile->fd != -1)
+			{
 				close(main->cmd_info->outfile->fd);
+				main->cmd_info->outfile->fd = -1;
+			}
 			if (nbcmds > 1 && main->tube && main->tube->fd != -1)
+			{
 				close(main->tube->fd);
+				main->tube->fd = -1;
+			}
 			if (main->tube)
+			{
+				printf("NOMRMA\n");
 				main->tube->fd = main->cmd_info->tube[0];
+			}
 			add_pid(main, pid);
 			return_value = 1;
 		}
 	}
-	printf("CC = %d\n", return_value);
+	// printf("CC = %d\n", return_value);
 	return (return_value);
 }

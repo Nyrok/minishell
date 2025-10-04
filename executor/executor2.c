@@ -15,48 +15,87 @@
 void	last_child_executor(int tube, t_main *main, char *cmd_path, char **envp)
 {
 	signal(SIGQUIT, SIG_DFL); // ?????????
+	// if (tube == -1)
+	// {
+	// 	if (main->cmd_info->infile && fcntl(main->cmd_info->infile->fd, F_GETFD) != -1)
+	// 		printf("Infile detected: %s\n", main->cmd_info->infile->filename);
+	// 	else
+	// 		printf("FD is not open or no redirection.\n");
+	// 	if (dup2(main->tube->fd, STDIN_FILENO) == -1)
+	// 		perror("dup2 failed");
+	// 	main->tube->fd = -1;
+	// }
+	// close(main->tube->fd);
+	if (main->cmd_info->tube[0] != -1 && tube != main->cmd_info->tube[0])
+		close(main->cmd_info->tube[0]);
 	if (tube != -1)
 	{
-		dup2(tube, STDIN_FILENO);
+		printf("TT = %d\n", tube);
+		if (dup2(tube, STDIN_FILENO) == -1)
+			perror("dup2 failed");
 		close(tube);
 		tube = -1;
 	}
+	printf("CC : %s\n", main->cmd_info->cmd_path);
 	if (main->tube && main->tube->fd != -1)
 		close(main->tube->fd);
 	if (main->cmd_info->outfile != NULL)
 	{
 		fd_opener(&main, main->cmd_info->outfile, 0);
+		if (fcntl(main->cmd_info->outfile->fd, F_GETFD) == -1)
+		{
+			perror("outfile fd is not open");
+			exit(EXIT_FAILURE);
+		}
+		else
+			printf("OPEN LE BOUG %d %s\n", main->cmd_info->outfile->fd, main->cmd_info->outfile->filename);
 		if (dup2(main->cmd_info->outfile->fd, STDOUT_FILENO) == -1)
 			perror("dup2 failed");
-		close(main->cmd_info->outfile->fd);
+		if (main->cmd_info->outfile && main->cmd_info->outfile->fd != -1)
+			close(main->cmd_info->outfile->fd);
 	}
 	if (execve(cmd_path, (char *const *)main->cmd_info->argv, envp) == -1)
 	{
 		if (main->cmd_info->outfile && main->cmd_info->outfile->fd != -1)
 			close(main->cmd_info->outfile->fd);
-		free_execve(&main);
+		auto int exit_code = free_execve(&main);
 		perror("execve failed");
-		exit(EXIT_FAILURE);
+		exit(exit_code);
 	}
 }
 
-void	last_executor(t_main *main, char **envp, int tube)
+void	last_executor(t_main *main, char **envp, int tube, int onlyonecommand)
 {
 	pid_t	pid;
 
+	if (pipe(main->cmd_info->tube) == -1)
+	{
+		perror("pipe failed");
+		exit(EXIT_FAILURE);
+	}
+	close(main->cmd_info->tube[1]);
+	// if (onlyonecommand == 1)
+	// {
+	// 	close(main->cmd_info->tube[0]);
+	// 	main->cmd_info->tube[0] = -1;
+	// }
+	(void)onlyonecommand;
 	pid = fork();
 	if (pid == 0)
-	{
 		last_child_executor(tube, main, main->cmd_info->cmd_path, envp);
-	}
 	else
 	{
+		// close(main->cmd_info->tube[1]);
 		if (tube != -1)
 			close(tube);
-		if (main->cmd_info->outfile != NULL)
+		if (main->cmd_info->outfile != NULL && main->cmd_info->outfile->fd != -1)
+		{
 			close(main->cmd_info->outfile->fd);
+			main->cmd_info->outfile->fd = -1;
+		}
 		add_pid(main, pid);
 	}
+	main->tube->fd = main->cmd_info->tube[0];
 }
 
 int	executor_setup(t_main **main, int *nbcmds, char *cmd)
@@ -79,41 +118,55 @@ int	onecmdexector(t_main *main, char **envp)
 			no_leaks(main), 0); // end_pids(&main, pids) retiré
 	}
 	if (main->cmd_info->outfile && main->cmd_info->outfile->fd != -1)
+	{
 		close(main->cmd_info->outfile->fd);
+		main->cmd_info->outfile->fd = -1;
+	}
 	if (builtin_exec(main, &main->envp, 1, 1) == 1)
 		return (1);
 	if (main->cmd_info->infile != NULL)
-		lcmd_searcher(main, envp, main->cmd_info->infile->fd);
+		lcmd_searcher(main, envp, main->cmd_info->infile->fd, 1);
 	else
-		lcmd_searcher(main, envp, -1);
+		lcmd_searcher(main, envp, -1, 1);
 	return (1);
 }
 
-int	multiplecmdexector(t_main *main, char **envp, int nbcmds)
+int	multiplecmdexector(t_main *main, char **envp, int nbcmds, int onlyonecommand)
 {
 	if (tube_handler(&main) == -1)
 		return (-1);
+	// if (main->cmd_info->infile && fcntl(main->cmd_info->infile->fd, F_GETFD) != -1)
+	// 	printf("Infile detected: %s\n", main->cmd_info->infile->filename);
+	// else
+	// 	printf("FD is not open or no redirection.\n");
 	if (builtin_exec(main, &main->envp, nbcmds, 0) == 1)
 		return (1);
 	if (main->cmd_info->infile != NULL && main->cmd_info->outfile == NULL
 		&& nbcmds > 1)
 	{
 		main->tube->fd = cmd_searcher(main, envp,
-				main->cmd_info->infile->fd);
+				main->cmd_info->infile->fd, onlyonecommand);
 	}
 	else if (main->cmd_info->infile == NULL && main->cmd_info->outfile == NULL
 		&& nbcmds > 1)
+	{
 		main->tube->fd = cmd_searcher(main, envp,
-				main->tube->fd);
+				main->tube->fd, onlyonecommand);
+	}
 	else if (main->cmd_info->infile == NULL)
 	{
-		lcmd_searcher(main, envp, main->tube->fd);
-		main->tube->fd = -1;
+		lcmd_searcher(main, envp, main->tube->fd, onlyonecommand);
+		// main->tube->fd = -1;
 	}
 	else if (main->cmd_info->infile != NULL)
 	{
-		lcmd_searcher(main, envp, main->cmd_info->infile->fd);
-		main->tube->fd = -1;
+		if (main->tube && main->tube->fd != -1)
+		{
+			close(main->tube->fd);
+			main->tube->fd = -1;
+		}
+		lcmd_searcher(main, envp, main->cmd_info->infile->fd, onlyonecommand);
+		// main->tube->fd = -1;
 	}
 	return (1);
 }

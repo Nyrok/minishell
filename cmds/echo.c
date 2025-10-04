@@ -37,8 +37,11 @@ static void	print_echo_args(int fd, int argc, const char **argv, int start)
 
 static void	close_fd_if_needed(t_main *main, int nbcmds, int fd)
 {
-	if (main->cmd_info->outfile != NULL)
+	if (main->cmd_info->outfile != NULL && main->cmd_info->outfile->fd != -1)
+	{
 		close(main->cmd_info->outfile->fd);
+		main->cmd_info->outfile->fd = -1;
+	}
 	(void)fd;
 	(void)nbcmds;
 	//else if (nbcmds > 1)

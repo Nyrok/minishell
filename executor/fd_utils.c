@@ -55,6 +55,8 @@ int	isfilevalid(t_main *main)
 	if (j == 0)
 		return (check_access(main, j, NULL));
 	filename = malloc((j + 1) * sizeof(char));
+	if (!filename)
+		return (-1);
 	j = 0;
 	while (main->cmd_info->cmd[i + j])
 	{
@@ -81,7 +83,10 @@ int	fdcls(t_main **main, int error)
 		while (actual_redir != NULL)
 		{
 			if (actual_redir->fd != -1)
+			{
 				close(actual_redir->fd);
+				actual_redir->fd = -1;
+			}
 			actual_redir = actual_redir->next;
 		}
 		cmd_tmp = cmd_tmp->next;

@@ -19,7 +19,10 @@ int	no_leaks(t_main *main)
 	free(main->str_envp);
 	main->str_envp = NULL;
 	if (main->tube && main->tube->fd != -1)
+	{
 		close(main->tube->fd);
+		main->tube->fd = -1;
+	}
 	if (main->tube)
 		free(main->tube);
 	main->tube = NULL;
@@ -67,6 +70,9 @@ void	setup_tube(t_main *main)
 void	reset_tube(t_main *main)
 {
 	if (main->tube != NULL && main->tube->fd >= 0)
+	{
 		close(main->tube->fd);
+		main->tube->fd = -1;
+	}
 	main->tube = NULL;
 }

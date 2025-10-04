@@ -23,6 +23,10 @@ void	add_pid(t_main *main, pid_t newpid)
 		i++;
 	actual[i] = newpid;
 	actual[i + 1] = 0;
+	// for (int j = 0; main->pids[j] != 0; j++)
+	// {
+	// 	printf("PID[%d]: %d\n", j, main->pids[j]);
+	// }
 }
 
 void	end_pids(t_main **main)
@@ -35,6 +39,7 @@ void	end_pids(t_main **main)
 	actual = (*main)->pids;
 	while (actual[i] != 0)
 	{
+		// printf("TESTEEEEEEEEE %d\n", actual[i]);
 		waitpid(actual[i], &status, 0);
 		i++;
 	}
@@ -71,15 +76,15 @@ char	*paths_searcher(char *cmd, char *cmd_path, char *paths)
 	return (cmd_path);
 }
 
-void	lcmd_searcher(t_main *main, char **envp, int tube)
+void	lcmd_searcher(t_main *main, char **envp, int tube, int onlyonecommand)
 {
 	auto int i = 0;
 	auto int cmd_found = 0;
 	if (main->cmd_info->cmd[0] == '.' && main->cmd_info->cmd[1] == '/')
-		cmd_found = file_executor(main, -1, 1);
+		cmd_found = file_executor(main, -1, 1, onlyonecommand);
 	cmds_paths_maker(main);
 	while (main->cmds_paths->paths && main->cmds_paths->paths[i]
-		&& cmd_found != -1)
+		&& cmd_found != -1 && main->cmd_info->cmd[0] != '.')
 	{
 		main->cmd_info->cmd_path = paths_searcher(main->cmd_info->cmd,
 				main->cmd_info->cmd_path, main->cmds_paths->paths[i]);
@@ -90,11 +95,13 @@ void	lcmd_searcher(t_main *main, char **envp, int tube)
 			if (ft_access(main, main->cmd_info->cmd_path) == 0)
 				break ;
 			cmd_found = 1;
-			last_executor(main, envp, tube);
+			last_executor(main, envp, tube, onlyonecommand);
 			free(main->cmd_info->cmd_path);
 			main->cmd_info->cmd_path = NULL;
 			break ;
 		}
+		if (main->cmds_paths->paths[i + 1] == NULL)
+			last_executor(main, envp, tube, onlyonecommand);
 		free(main->cmd_info->cmd_path);
 		main->cmd_info->cmd_path = NULL;
 		i++;
@@ -102,14 +109,15 @@ void	lcmd_searcher(t_main *main, char **envp, int tube)
 	print_error(main, NOTFOUND, cmd_found);
 }
 
-int	cmd_searcher(t_main *main, char **envp, int file)
+int	cmd_searcher(t_main *main, char **envp, int file, int onlyonecommand)
 {
 	auto int i = 0;
 	auto int cmd_found = 0;
 	if (main->cmd_info->cmd[0] == '.' && main->cmd_info->cmd[1] == '/')
-		cmd_found = file_executor(main, file, 0);
+		cmd_found = file_executor(main, file, 0, onlyonecommand);
 	cmds_paths_maker(main);
-	while (main->cmds_paths->paths && main->cmds_paths->paths[i])
+	while (main->cmds_paths->paths && main->cmds_paths->paths[i]
+		&& main->cmd_info->cmd[0] != '.')
 	{
 		main->cmd_info->cmd_path = paths_searcher(main->cmd_info->cmd,
 				main->cmd_info->cmd_path, main->cmds_paths->paths[i++]);
@@ -120,10 +128,12 @@ int	cmd_searcher(t_main *main, char **envp, int file)
 				break ;
 			close(cmdopener);
 			cmd_found = 1;
-			main->tube->fd = cmd_executor(main, envp, file);
+			main->tube->fd = cmd_executor(main, envp, file, i);
 			free(main->cmd_info->cmd_path);
 			break ;
 		}
+		if (main->cmds_paths->paths[i] == NULL)
+			main->tube->fd = cmd_executor(main, envp, file, i);
 		free(main->cmd_info->cmd_path);
 	}
 	print_error(main, NOTFOUND, cmd_found);
