@@ -29,5 +29,6 @@ int	pwd(t_main *main, int nbcmds)
 		close(main->cmd_info->outfile->fd);
 		main->cmd_info->outfile->fd = -1;
 	}
+	main->last_exit_status = 0;
 	return (1);
 }

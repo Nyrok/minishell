@@ -56,5 +56,6 @@ void	line_reader(t_main *main)
 		free(user_input);
 		free_cmd_info(&main->cmd_info);
 		free_tokens(&main->tokens);
+		printf("Exit status : %d\n", main->last_exit_status);
 	}
 }

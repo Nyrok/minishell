@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int	file_executor(t_main *main, int file, int last, int onlyonecommand)
+int	file_executor(t_main *main, int file, int last)
 {
 	char	**tmp;
 	int		i;
@@ -27,7 +27,7 @@ int	file_executor(t_main *main, int file, int last, int onlyonecommand)
 	if (last == 0)
 		main->tube->fd = cmd_executor(main, main->str_envp, file, -1);
 	else
-		last_executor(main, main->str_envp, main->tube->fd, onlyonecommand);
+		last_executor(main, main->str_envp, main->tube->fd, -1);
 	free(main->cmd_info->cmd_path);
 	main->cmd_info->cmd_path = NULL;
 	return (1);
@@ -78,8 +78,9 @@ int	cmd_executor(t_main *main, char **envp, int file, int i)
 		perror("pipe");
 		return (-1);
 	}
-	if (i != -1 && main->cmds_paths->paths[i] == NULL)
+	if (i == -2 || (i != -1 && main->cmds_paths->paths[i] == NULL)) // pas sûr de la condition
 	{
+		print_error(main, NOTFOUND, 0);
 		close(tube[1]);
 		tube[1] = -1;
 	}
@@ -116,11 +117,12 @@ int	executor(char *cmd, struct s_main *main)
 	}
 	else
 	{
-		if (multiple_cmd_handler(main, main->str_envp, nbcmds, 0) == -1)
+		if (multiple_cmd_handler(main, main->str_envp, nbcmds) == -1)
 			return (-1);
 	}
 	if (main->pids)
 		end_pids(&main);
 	no_leaks(main);
+	printf("Exit status : %d\n", main->last_exit_status);
 	return (1);
 }

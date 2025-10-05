@@ -34,75 +34,83 @@ char	*paths_searcher(char *cmd, char *cmd_path, char *paths)
 	return (cmd_path);
 }
 
-int	llaunch_executions(t_main *main, char **envp, int tube, int onlyonecommand)
+int	llaunch_executions(t_main *main, char **envp, int tube, int i)
 {
-	last_executor(main, envp, tube, onlyonecommand);
+	if (i == -2)
+	{
+		free(main->cmd_info->cmd_path);
+		main->cmd_info->cmd_path = ft_strdup(main->cmd_info->cmd);
+		// if (access(main->cmd_info->cmd_path, F_OK) == 0)
+		// 	i = -1;
+	}
+	last_executor(main, envp, tube, i);
 	free(main->cmd_info->cmd_path);
 	main->cmd_info->cmd_path = NULL;
 	return (1);
 }
 
-void	lcmd_searcher(t_main *main, char **envp, int tube, int onlyonecommand)
+void	handle_null_case(t_main *main, char **envp, int tube, int i)
+{
+	if (main->cmds_paths->paths[i] == NULL && main->cmd_info->cmd[0] != '/')
+		last_executor(main, envp, tube, i);
+	if (main->cmds_paths->paths[i] == NULL && main->cmd_info->cmd[0] == '/')
+		llaunch_executions(main, envp, tube, -2);
+}
+
+void	lcmd_searcher(t_main *main, char **envp, int tube)
 {
 	auto int i = 0;
 	auto int cmd_found = 0;
 	if (main->cmd_info->cmd[0] == '.' && main->cmd_info->cmd[1] == '/')
-		cmd_found = file_executor(main, -1, 1, onlyonecommand);
+		cmd_found = file_executor(main, -1, 1);
 	cmds_paths_maker(main);
 	while (main->cmds_paths->paths && main->cmds_paths->paths[i]
 		&& cmd_found != -1 && main->cmd_info->cmd[0] != '.')
 	{
 		main->cmd_info->cmd_path = paths_searcher(main->cmd_info->cmd,
-				main->cmd_info->cmd_path, main->cmds_paths->paths[i++]);
-		auto int cmdopener = open(main->cmd_info->cmd_path, O_RDONLY);
-		if (cmdopener != -1)
+				main->cmd_info->cmd_path, main->cmds_paths->paths[i++]);		
+		if (access(main->cmd_info->cmd_path, X_OK) == 0)
 		{
-			close(cmdopener);
-			if (ft_access(main, main->cmd_info->cmd_path) == 0)
-				break ;
-			cmd_found = llaunch_executions(main, envp, tube, onlyonecommand);
+			cmd_found = llaunch_executions(main, envp, tube, -1);
 			break ;
 		}
-		if (main->cmds_paths->paths[i] == NULL)
-			last_executor(main, envp, tube, onlyonecommand);
-		free(main->cmd_info->cmd_path);
+		handle_null_case(main, envp, tube, i);
+		if (main->cmd_info->cmd_path)
+			free(main->cmd_info->cmd_path);
 		main->cmd_info->cmd_path = NULL;
 	}
-	print_error(main, NOTFOUND, cmd_found);
 }
 
 int	launch_executions(t_main *main, char **envp, int file, int i)
 {
 	main->tube->fd = cmd_executor(main, envp, file, i);
 	free(main->cmd_info->cmd_path);
+	main->cmd_info->cmd_path = NULL;
 	return (1);
 }
 
-int	cmd_searcher(t_main *main, char **envp, int file, int onlyonecommand)
+int	cmd_searcher(t_main *main, char **envp, int file)
 {
 	auto int i = 0;
-	auto int cmd_found = 0;
 	if (main->cmd_info->cmd[0] == '.' && main->cmd_info->cmd[1] == '/')
-		cmd_found = file_executor(main, file, 0, onlyonecommand);
+		file_executor(main, file, 0);
 	cmds_paths_maker(main);
 	while (main->cmds_paths->paths && main->cmds_paths->paths[i]
 		&& main->cmd_info->cmd[0] != '.')
 	{
 		main->cmd_info->cmd_path = paths_searcher(main->cmd_info->cmd,
 				main->cmd_info->cmd_path, main->cmds_paths->paths[i++]);
-		auto int cmdopener = open(main->cmd_info->cmd_path, O_RDONLY);
-		if (cmdopener != -1)
+		if (access(main->cmd_info->cmd_path, X_OK) == 0)
 		{
-			if (ft_access(main, main->cmd_info->cmd_path) == 0)
-				break ;
-			close(cmdopener);
-			cmd_found = launch_executions(main, envp, file, i);
+			launch_executions(main, envp, file, i);
 			break ;
 		}
-		if (main->cmds_paths->paths[i] == NULL)
+		if (main->cmds_paths->paths[i] == NULL && main->cmd_info->cmd[0] != '/')
 			main->tube->fd = cmd_executor(main, envp, file, i);
-		free(main->cmd_info->cmd_path);
+		if (main->cmds_paths->paths[i] == NULL && main->cmd_info->cmd[0] == '/')
+			launch_executions(main, envp, file, i);
+		if (main->cmd_info->cmd_path)
+			free(main->cmd_info->cmd_path);
 	}
-	print_error(main, NOTFOUND, cmd_found);
 	return (main->tube->fd);
 }

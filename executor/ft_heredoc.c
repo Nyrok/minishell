@@ -94,5 +94,6 @@ int	ft_heredoc(char *end)
 		write(tube[1], "\n", 1);
 		free(line);
 	}
+	printf("Heredoc delimiter '%s' received. Stopping heredoc input.\n", end);
 	return (close(tube[1]), reset_signal(), tube[0]);
 }
