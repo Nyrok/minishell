@@ -18,10 +18,10 @@ int	fd_opener(t_main **main, t_redir *actual_redir, int error_check, int print)
 	if (actual_redir->io == STDIN_FILENO \
 		&& access(actual_redir->filename, F_OK) != 0 \
 			&& actual_redir->type != HEREDOC)
-		return (no_such_file(actual_redir, print));
+		return (no_such_file(actual_redir, print), -2);
 	else if (access(actual_redir->filename, R_OK) != 0 && \
 			actual_redir->type != HEREDOC)
-		return (permission_denied(main, actual_redir, print));
+		return (permission_denied(main, actual_redir, print), -2);
 	if (actual_redir->type == APPEND)
 		actual_redir->fd = open(actual_redir->filename,
 				O_CREAT | O_WRONLY | O_APPEND, 0777);
@@ -31,7 +31,7 @@ int	fd_opener(t_main **main, t_redir *actual_redir, int error_check, int print)
 		actual_redir->fd = ft_heredoc(actual_redir->filename);
 	else
 		actual_redir->fd = open(actual_redir->filename,
-				O_CREAT | O_WRONLY | O_TRUNC | O_RDONLY, 0777);
+				O_CREAT | O_WRONLY | O_TRUNC, 0777);
 	if (actual_redir->fd == -1)
 		return (-1);
 	if (actual_redir->good == 0)
@@ -60,7 +60,7 @@ int	create_out(t_main *main)
 		if (redir_tmp->type == REDOUT)
 		{
 			redir_tmp->fd = open(redir_tmp->filename,
-					O_CREAT | O_WRONLY | O_APPEND, 0777);
+					O_CREAT | O_WRONLY | O_TRUNC, 0777);
 			if (redir_tmp->fd == -1)
 				return (-1);
 			close(redir_tmp->fd);
@@ -93,26 +93,47 @@ int	handle_heredoc(t_main *main)
 	return (-1);
 }
 
-int	multiple_cmd_handler(t_main *main, char **envp, int nbcmds, int oocommand)
+void	handle_multiple_cmds(t_main *main, char **envp, int nbcmds, int *error_printed)
+{
+	auto int has_infile = 0;
+	setup_cmd_redirs(main->cmd_info);
+	check_tube(&main);
+	has_infile = hasinfile(&main, 1, error_printed);
+	if (has_infile == -2 && main->tube)
+	{
+		if (main->tube->fd != -1)
+		{
+			close(main->tube->fd);
+			main->tube->fd = -1;
+		}
+		main->tube->fd = create_eof_fd();
+	}
+	else if (has_infile != -1)
+	{
+		fdcls(&main, 0);
+		multiplecmdexector(main, envp, nbcmds);
+	}
+	fdcls(&main, 0);
+}
+
+int	multiple_cmd_handler(t_main *main, char **envp, int nbcmds)
 {
 	t_cmd_info	*temp_cmd_info;
 
+	auto int error_printed = 1;
 	if (nbcmds == 0)
 		free_cmd_info(&main->cmd_info);
 	while (nbcmds > 0)
 	{
-		if (main->cmd_info->cmd == NULL)
-			return (handle_heredoc(main), create_out(main),
-				free_all_cmd_info(&main), end_pids(&main), no_leaks(main), -1);
-		setup_cmd_redirs(main->cmd_info);
-		check_tube(&main);
-		if (hasinfile(&main, 1) != -1)
+		if (main->cmd_info && main->cmd_info->cmd != NULL)
+			handle_multiple_cmds(main, envp, nbcmds, &error_printed);
+		else
 		{
-			fdcls(&main, 0);
-			multiplecmdexector(main, envp, nbcmds, oocommand);
+			hasinfile(&main, 1, &error_printed);
+			handle_heredoc(main);
+			create_out(main);
 		}
 		nbcmds--;
-		fdcls(&main, 0);
 		temp_cmd_info = main->cmd_info;
 		main->cmd_info = main->cmd_info->next;
 		free_cmd_info(&temp_cmd_info);

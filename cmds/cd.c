@@ -29,7 +29,7 @@ static int	changepwd(t_main *main, char *oldpwd, int onlyonecommand)
 	}
 	else
 	{
-		free(oldpwd);
+		// free(oldpwd);
 		free(buffer);
 	}
 	return (1);

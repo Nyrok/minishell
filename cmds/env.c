@@ -45,7 +45,11 @@ int	check_outfile(t_main *main, int *fd, int nbcmds)
 				delete_tube(main);
 		}
 		else
-			return (perror("Permission denied"), 2);
+		{
+			if (ft_strcmp(main->cmd_info->cmd, "echo") == 0)
+				main->last_exit_status = 12;
+			return (2);
+		}
 	}
 	return (1);
 }
@@ -69,5 +73,6 @@ int	env(t_main *main, t_envp *envp, int onlyonecommand, int nbcmds)
 	actual = envp;
 	(void)onlyonecommand;
 	print_env(main, STDOUT_FILENO, actual, nbcmds);
+	main->last_exit_status = 0;
 	return (1);
 }

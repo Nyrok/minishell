@@ -35,5 +35,6 @@ int	export(t_main *main, int argc, char **argv, int nbcmds)
 				ft_strdup(pair[0]), ft_strdup(pair[1]));
 		free_split(pair, 2);
 	}
+	main->last_exit_status = 0;
 	return (1);
 }
