@@ -41,7 +41,7 @@ char	*rm_char(char *str, const char c, size_t start, size_t n)
 char	*rm_dollars(char *str, size_t start, size_t n)
 {
 	size_t	i;
-	size_t	j;;
+	size_t	j;
 	int		count;
 	char	*result;
 
@@ -50,7 +50,8 @@ char	*rm_dollars(char *str, size_t start, size_t n)
 	count = 0;
 	i = -1;
 	while (++i < n)
-		if (str[start + i] == '$' && str[start + i + 1])
+		if (str[start + i] == '$' && (is_valid_env_char(str[start + i + 1]) \
+			|| ft_strchr("'\"", str[start + i + 1])))
 			count++;
 	result = ft_calloc(n - count + 1, sizeof(char));
 	if (!result)
@@ -58,7 +59,8 @@ char	*rm_dollars(char *str, size_t start, size_t n)
 	i = -1;
 	j = 0;
 	while (++i < n)
-		if (str[start + i] != '$' || !str[start + i + 1])
+		if (str[start + i] != '$' || (!is_valid_env_char(str[start + i + 1]) \
+			&& !ft_strchr("'\"", str[start + i + 1])))
 			result[j++] = str[start + i];
 	free(str);
 	return (result);
@@ -67,24 +69,22 @@ char	*rm_dollars(char *str, size_t start, size_t n)
 char	*get_word(const char *str, size_t *i)
 {
 	size_t	start;
-	int		has_quote;
 	char	quote;
 
 	start = *i;
-	has_quote = 0;
+	quote = 0;
 	while (str[*i])
 	{
-		if (!has_quote && (ft_isspace(str[*i]) || ft_strchr("|<>", str[*i])) \
+		if (!quote && (ft_isspace(str[*i]) || ft_strchr("|<>", str[*i])) \
 		&& (*i)--)
 			break ;
 		if ((str[*i] == '\'' || str[*i] == '"'))
 		{
 			quote = str[*i];
-			has_quote = 1;
 			(*i)++;
-			while (str[*i] && str[*i] != quote)
+			while (str[*i] && (str[*i] != quote || str[*i + 1]))
 				(*i)++;
-			if (str[*i] == quote)
+			if (str[*i] == quote && !str[*i + 1])
 				(*i)++;
 		}
 		if (str[*i])
@@ -101,9 +101,9 @@ char	*get_quoted(const char *str, size_t *i)
 	start = *i;
 	quote = str[start];
 	(*i)++;
-	while (str[*i] && str[*i] != quote)
+	while (str[*i] && (str[*i] != quote || str[*i + 1]))
 		(*i)++;
-	if (str[*i] == quote)
+	if (str[*i] == quote && !str[*i + 1])
 		(*i)++;
 	return (ft_substr(str, start, *i - start));
 }

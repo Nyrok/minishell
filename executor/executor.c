@@ -102,7 +102,7 @@ int	executor(char *cmd, struct s_main *main)
 {
 	int	nbcmds;
 
-	main->pids = malloc((totalcmds(cmd) + 1) * sizeof(pid_t));
+	main->pids = malloc((count_cmd_info(main->cmd_info) + 1) * sizeof(pid_t));
 	if (!main->pids)
 		return (0);
 	main->str_envp = envp_to_str(main->envp);

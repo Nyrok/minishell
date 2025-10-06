@@ -60,7 +60,6 @@ int			file_executor(t_main *main, int file, int last);
 void		last_executor(t_main *main, char **envp, int tube,
 				int i);
 int			cmd_executor(t_main *main, char **envp, int file, int i);
-int			totalcmds(char *cmd);
 int			multiplecmdexector(t_main *main,
 				char **envp, int nbcmd);
 int			onecmdexector(t_main *main, char **envp);
@@ -98,6 +97,6 @@ int			isbuilt_in(t_main *main);
 int			ft_access(t_main *main, char *pathname);
 void		close_outfile(t_main *main);
 char		*paths_searcher(char *cmd, char *cmd_path, char *paths);
-int 		create_eof_fd(void);
+int			create_eof_fd(void);
 
 #endif
