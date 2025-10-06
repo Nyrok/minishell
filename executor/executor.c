@@ -123,6 +123,5 @@ int	executor(char *cmd, struct s_main *main)
 	if (main->pids)
 		end_pids(&main);
 	no_leaks(main);
-	printf("Exit status : %d\n", main->last_exit_status);
 	return (1);
 }
