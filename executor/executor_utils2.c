@@ -101,6 +101,11 @@ void	handle_multiple_cmds(t_main *main, char **envp, int nbcmds, int *error_prin
 	has_infile = hasinfile(&main, 1, error_printed);
 	if (has_infile == -2 && main->tube)
 	{
+		if (main->tube->fd != -1)
+		{
+			close(main->tube->fd);
+			main->tube->fd = -1;
+		}
 		main->tube->fd = create_eof_fd();
 	}
 	else if (has_infile != -1)
@@ -124,6 +129,7 @@ int	multiple_cmd_handler(t_main *main, char **envp, int nbcmds)
 			handle_multiple_cmds(main, envp, nbcmds, &error_printed);
 		else
 		{
+			hasinfile(&main, 1, &error_printed);
 			handle_heredoc(main);
 			create_out(main);
 		}

@@ -82,15 +82,15 @@ int	executor_setup(t_main **main, int *nbcmds, char *cmd)
 
 int create_eof_fd(void)
 {
-    int pipefd[2];
-    
-    if (pipe(pipefd) == -1)
-    {
-        perror("pipe");
-        return (-1);
-    }
-    close(pipefd[1]);
-    return (pipefd[0]);
+	int	pipefd[2];
+
+	if (pipe(pipefd) == -1)
+	{
+		perror("pipe");
+		return (-1);
+	}
+	close(pipefd[1]);
+	return (pipefd[0]);
 }
 
 int	onecmdexector(t_main *main, char **envp)
@@ -98,7 +98,8 @@ int	onecmdexector(t_main *main, char **envp)
 	auto int error_printed = 1;
 	auto int has_infile = 0;
 	if (main->cmd_info->cmd == NULL)
-		return (handle_heredoc(main), create_out(main), end_pids(&main),
+		return (hasinfile(&main, 0, &error_printed),handle_heredoc(main),
+			create_out(main), end_pids(&main),
 			free_all_cmd_info(&main), no_leaks(main), -1);
 	setup_cmd_redirs(main->cmd_info);
 	has_infile = hasinfile(&main, 0, &error_printed);
