@@ -76,16 +76,8 @@ int	cmd_executor(t_main *main, char **envp, int file, int i)
 	if (pipe(tube) == -1)
 		return (perror("pipe"), -1);
 	if (i == -2 || (i != -1 && main->cmds_paths->paths[i] == NULL)
-		|| ft_strlen(main->cmd_info->cmd) == 0) // pas sûr de la condition
-	{
-		print_error(main, NOTFOUND, 0);
-		close(tube[1]);
-		tube[1] = -1;
-		if (tube[1] != -1)
-			close(tube[1]);
-		if (file != -1)
-			close(file);
-	}
+		|| ft_strlen(main->cmd_info->cmd) == 0)
+		isnocommand(main, file, tube);
 	else
 	{
 		pid = fork();

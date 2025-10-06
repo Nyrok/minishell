@@ -98,5 +98,10 @@ int			ft_access(t_main *main, char *pathname);
 void		close_outfile(t_main *main);
 char		*paths_searcher(char *cmd, char *cmd_path, char *paths);
 int			create_eof_fd(void);
+void		isnocommand(t_main *main, int file, int tube[2]);
+void		lisnocommand(t_main *main, int tube);
+int			launch_executions(t_main *main, char **envp, int file, int i);
+void		check_tube(t_main **main);
+int			check_if_exist(t_main *main);
 
 #endif

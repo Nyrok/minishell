@@ -28,40 +28,12 @@ int	tube_handler(t_main **main)
 	return (1);
 }
 
-int	check_if_exist(t_main *main)
-{
-	int 	i;
-	int		cmd_found;
-	char	*tmp;
-
-	i = 0;
-	cmd_found = 0;
-	while (main->cmds_paths->paths && main->cmds_paths->paths[i]
-		&& main->cmd_info->cmd[0] != '.')
-	{
-		tmp = paths_searcher(main->cmd_info->cmd,
-				main->cmd_info->cmd_path, main->cmds_paths->paths[i++]);
-		if (access(tmp, F_OK) == 0)
-		{
-			cmd_found = 1;
-			break ;
-		}
-		free(tmp);
-		tmp = NULL;
-	}
-	if (access(main->cmd_info->cmd, F_OK) == 0)
-		cmd_found = 1;
-	if (tmp)
-		free(tmp);
-	return (cmd_found);
-}
-
 void	print_not_found(t_main *main, int error_code, int cmd_found)
 {
+	struct stat	file_stat;
+
 	if (error_code == NOTFOUND && cmd_found == 0)
 	{
-		struct stat file_stat;
-		printf("cc2 = %zu\n", ft_strlen(main->cmd_info->cmd));
 		if (stat(main->cmd_info->cmd_path, &file_stat) != 0)
 			file_stat.st_mode = 0;
 		if (S_ISDIR(file_stat.st_mode) \
