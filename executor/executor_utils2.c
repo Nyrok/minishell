@@ -29,9 +29,11 @@ int	fd_opener(t_main **main, t_redir *actual_redir, int error_check, int print)
 		actual_redir->fd = open(actual_redir->filename, O_RDONLY, 0444);
 	else if (actual_redir->type == HEREDOC && error_check == 0)
 		actual_redir->fd = ft_heredoc(actual_redir->filename);
-	else
+	else if (actual_redir->type == REDOUT && actual_redir->good == 1)
 		actual_redir->fd = open(actual_redir->filename,
 				O_CREAT | O_WRONLY | O_TRUNC, 0777);
+	else if (actual_redir->type == REDOUT && actual_redir->good == 0)
+		actual_redir->fd = open(actual_redir->filename, O_CREAT, 0777);
 	if (actual_redir->fd == -1)
 		return (-1);
 	if (actual_redir->good == 0)
@@ -90,14 +92,14 @@ void	handle_multiple_cmds(t_main *main, char **envp,
 	setup_cmd_redirs(main->cmd_info);
 	check_tube(&main);
 	has_infile = hasinfile(&main, 1, error_printed);
-	if (has_infile == -2 && main->tube)
+	if ((has_infile == -2 || ft_strlen(main->cmd_info->cmd) == 0) && main->tube)
 	{
 		if (main->tube->fd != -1)
 		{
 			close(main->tube->fd);
 			main->tube->fd = -1;
 		}
-		main->tube->fd = create_eof_fd();
+		main->tube->fd = create_eof_fd(main, 0);
 	}
 	else if (has_infile != -1)
 	{
@@ -121,8 +123,10 @@ int	multiple_cmd_handler(t_main *main, char **envp, int nbcmds)
 		else
 		{
 			hasinfile(&main, 1, &error_printed);
+			fdcls(&main, 0);
 			handle_heredoc(main);
 			create_out(main);
+			main->tube->fd = create_eof_fd(main, 1);
 		}
 		nbcmds--;
 		temp_cmd_info = main->cmd_info;

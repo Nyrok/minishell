@@ -38,16 +38,28 @@ void	lisnocommand(t_main *main, int tube)
 
 int	launch_executions(t_main *main, char **envp, int file, int i)
 {
+	if (i == -2)
+	{
+		free(main->cmd_info->cmd_path);
+		main->cmd_info->cmd_path = ft_strdup(main->cmd_info->cmd);
+	}
 	main->tube->fd = cmd_executor(main, envp, file, i);
 	free(main->cmd_info->cmd_path);
 	main->cmd_info->cmd_path = NULL;
 	return (1);
 }
 
-int	create_eof_fd(void)
+int	create_eof_fd(t_main *main, int code)
 {
 	int	pipefd[2];
 
+	(void)code;
+	if (main->cmd_info && main->cmd_info->cmd == NULL
+		&& main->tube && main->tube->fd != -1)
+	{
+		close(main->tube->fd);
+		main->tube->fd = -1;
+	}
 	if (pipe(pipefd) == -1)
 	{
 		perror("pipe");

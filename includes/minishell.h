@@ -97,7 +97,7 @@ int			isbuilt_in(t_main *main);
 int			ft_access(t_main *main, char *pathname);
 void		close_outfile(t_main *main);
 char		*paths_searcher(char *cmd, char *cmd_path, char *paths);
-int			create_eof_fd(void);
+int			create_eof_fd(t_main *main, int code);
 void		isnocommand(t_main *main, int file, int tube[2]);
 void		lisnocommand(t_main *main, int tube);
 int			launch_executions(t_main *main, char **envp, int file, int i);
