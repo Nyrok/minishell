@@ -58,9 +58,6 @@ static void	parse_word(t_envp *envp, char **word, int last_exit_status)
 	i = 0;
 	while (word && (*word) && (*word)[i] && ft_strlen(*word) > 1)
 	{
-		if ((*word)[i] == '\'')
-			while ((*word)[i + 1] && (*word)[i + 1] != '\'')
-				i++;
 		if ((*word)[i] == '$')
 		{
 			if (++i && !is_valid_env_char((*word)[i]))
@@ -84,16 +81,22 @@ void	parse_env(t_envp *envp, t_token *tokens, int last_exit_status)
 	{
 		if (tokens->type == WORD && tokens->word)
 		{
-			if (tokens->word[0] != '\'' && ft_strchr(tokens->word, '$'))
+			if (ft_strchr(tokens->word, '$'))
 			{
 				parse_word(envp, &tokens->word, last_exit_status);
-				tokens->word = rm_dollars(tokens->word, 0, \
-					ft_strlen(tokens->word));
+				if (tokens->word[0] != '"')
+					tokens->word = rm_dollars(tokens->word, 0, \
+						ft_strlen(tokens->word));
 			}
 			if (tokens->word[0] == '\'')
 				tokens->word = rm_char(tokens->word, '\'');
 			else if (tokens->word[0] == '"')
 				tokens->word = rm_char(tokens->word, '"');
+			else
+			{
+				tokens->word = rm_char(tokens->word, '"');
+				tokens->word = rm_char(tokens->word, '\'');
+			}
 		}
 		tokens = tokens->next;
 	}
