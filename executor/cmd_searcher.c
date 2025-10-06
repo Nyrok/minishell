@@ -52,7 +52,9 @@ void	handle_null_case(t_main *main, char **envp, int tube, int i)
 	if (main->cmds_paths->paths[i] == NULL && main->cmd_info->cmd[0] != '/')
 		last_executor(main, envp, tube, i);
 	if (main->cmds_paths->paths[i] == NULL && main->cmd_info->cmd[0] == '/')
+	{
 		llaunch_executions(main, envp, tube, -2);
+	}
 }
 
 void	lcmd_searcher(t_main *main, char **envp, int tube)
@@ -98,7 +100,7 @@ int	cmd_searcher(t_main *main, char **envp, int file)
 		if (main->cmds_paths->paths[i] == NULL && main->cmd_info->cmd[0] != '/')
 			main->tube->fd = cmd_executor(main, envp, file, i);
 		if (main->cmds_paths->paths[i] == NULL && main->cmd_info->cmd[0] == '/')
-			launch_executions(main, envp, file, i);
+			launch_executions(main, envp, file, -2);
 		if (main->cmd_info->cmd_path)
 			free(main->cmd_info->cmd_path);
 	}

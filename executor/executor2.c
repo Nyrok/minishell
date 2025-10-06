@@ -46,7 +46,8 @@ void	last_executor(t_main *main, char **envp, int tube, int i)
 	if (pipe(main->cmd_info->tube) == -1)
 		return (perror("pipe failed"));
 	close(main->cmd_info->tube[1]);
-	if (i == -2 || (i != -1 && main->cmds_paths->paths[i] == NULL)
+	if ((i == -2 && check_if_exist(main) == 0)
+		|| (i != -1 && i != -2 && main->cmds_paths->paths[i] == NULL)
 		|| ft_strlen(main->cmd_info->cmd) == 0)
 		lisnocommand(main, tube);
 	else
@@ -58,8 +59,7 @@ void	last_executor(t_main *main, char **envp, int tube, int i)
 		{
 			if (tube != -1)
 				close(tube);
-			if (main->cmd_info->outfile != NULL
-				&& main->cmd_info->outfile->fd != -1)
+			if (main->cmd_info->outfile && main->cmd_info->outfile->fd != -1)
 			{
 				close(main->cmd_info->outfile->fd);
 				main->cmd_info->outfile->fd = -1;
@@ -84,13 +84,15 @@ int	onecmdexector(t_main *main, char **envp)
 	auto int error_printed = 1;
 	auto int has_infile = 0;
 	if (main->cmd_info->cmd == NULL)
-		return (hasinfile(&main, 0, &error_printed), handle_heredoc(main),
-			create_out(main), end_pids(&main),
+		return (hasinfile(&main, 0, &error_printed), fdcls(&main, 0),
+			handle_heredoc(main), create_out(main), end_pids(&main),
 			free_all_cmd_info(&main), no_leaks(main), -1);
 	setup_cmd_redirs(main->cmd_info);
 	has_infile = hasinfile(&main, 0, &error_printed);
-	if (has_infile == -1 || has_infile == -2)
-		return (free_cmd_info(&main->cmd_info), no_leaks(main), 0);
+	if (has_infile == -1 || has_infile == -2
+		|| ft_strlen(main->cmd_info->cmd) == 0)
+		return (free_cmd_info(&main->cmd_info),
+			no_leaks(main), 0);
 	if (main->cmd_info->outfile && main->cmd_info->outfile->fd != -1)
 	{
 		close(main->cmd_info->outfile->fd);
