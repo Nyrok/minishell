@@ -50,19 +50,20 @@ char	*rm_dollars(char *str, size_t start, size_t n)
 	count = 0;
 	i = -1;
 	while (++i < n)
-		if (str[start + i] == '$' && (is_valid_env_char(str[start + i + 1]) \
-			|| ft_strchr("'\"", str[start + i + 1])))
+		if (str[start + i] == '$' && str[start + i + 1] \
+			&& (is_valid_env_char(str[start + i + 1]) \
+		|| ft_strchr("'\"", str[start + i + 1])))
 			count++;
 	result = ft_calloc(n - count + 1, sizeof(char));
-	if (!result)
-		return (NULL);
 	i = -1;
 	j = 0;
-	while (++i < n)
-		if (str[start + i] != '$' || (!is_valid_env_char(str[start + i + 1]) \
+	while (result && ++i < n)
+		if (str[start + i] != '$' || !str[start + i + 1] \
+			|| (!is_valid_env_char(str[start + i + 1]) \
 			&& !ft_strchr("'\"", str[start + i + 1])))
 			result[j++] = str[start + i];
-	free(str);
+	if (result)
+		free(str);
 	return (result);
 }
 

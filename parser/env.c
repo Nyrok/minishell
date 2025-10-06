@@ -58,9 +58,6 @@ static void	parse_word(t_envp *envp, char **word, int last_exit_status)
 	i = 0;
 	while (word && (*word) && (*word)[i] && ft_strlen(*word) > 1)
 	{
-		if ((*word)[i] == '\'')
-			while ((*word)[i + 1] && (*word)[i + 1] != '\'')
-				i++;
 		if ((*word)[i] == '$')
 		{
 			if (++i && !is_valid_env_char((*word)[i]))
@@ -69,8 +66,9 @@ static void	parse_word(t_envp *envp, char **word, int last_exit_status)
 			if (ft_strcmp(key, "?") == 0)
 				env_value = ft_itoa(last_exit_status);
 			else
-				env_value = get_env_value(envp, key);
+				env_value = ft_strdup(get_env_value(envp, key));
 			replace_word_env(env_value, word, key, &i);
+			free(env_value);
 			free(key);
 		}
 		if ((*word)[i] && (*word)[i] != '$')
@@ -80,24 +78,25 @@ static void	parse_word(t_envp *envp, char **word, int last_exit_status)
 
 void	parse_env(t_envp *envp, t_token *tokens, int last_exit_status)
 {
-	int	i;
-
 	while (tokens)
 	{
 		if (tokens->type == WORD && tokens->word)
 		{
-			i = 0;
-			while (tokens->word[i])
+			if (tokens->word[0] != '\'' && ft_strchr(tokens->word, '$'))
 			{
-				if (tokens->word[i] != '\'' && ft_strchr(tokens->word, '$'))
-				{
-					parse_word(envp, &tokens->word, last_exit_status);
+				parse_word(envp, &tokens->word, last_exit_status);
+				if (tokens->word[0] != '"')
 					tokens->word = rm_dollars(tokens->word, 0, \
 						ft_strlen(tokens->word));
-				}
+			}
+			if (tokens->word[0] == '\'')
 				tokens->word = rm_char(tokens->word, '\'');
+			else if (tokens->word[0] == '"')
 				tokens->word = rm_char(tokens->word, '"');
-				i++;
+			else
+			{
+				tokens->word = rm_char(tokens->word, '"');
+				tokens->word = rm_char(tokens->word, '\'');
 			}
 		}
 		tokens = tokens->next;
