@@ -98,5 +98,6 @@ int			isbuilt_in(t_main *main);
 int			ft_access(t_main *main, char *pathname);
 void		close_outfile(t_main *main);
 char		*paths_searcher(char *cmd, char *cmd_path, char *paths);
+int 		create_eof_fd(void);
 
 #endif

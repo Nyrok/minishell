@@ -80,18 +80,30 @@ int	executor_setup(t_main **main, int *nbcmds, char *cmd)
 	return (1);
 }
 
+int create_eof_fd(void)
+{
+    int pipefd[2];
+    
+    if (pipe(pipefd) == -1)
+    {
+        perror("pipe");
+        return (-1);
+    }
+    close(pipefd[1]);
+    return (pipefd[0]);
+}
+
 int	onecmdexector(t_main *main, char **envp)
 {
 	auto int error_printed = 1;
+	auto int has_infile = 0;
 	if (main->cmd_info->cmd == NULL)
 		return (handle_heredoc(main), create_out(main), end_pids(&main),
 			free_all_cmd_info(&main), no_leaks(main), -1);
 	setup_cmd_redirs(main->cmd_info);
-	if (hasinfile(&main, 0, &error_printed) == -1)
-	{
-		return (free_cmd_info(&main->cmd_info),
-			no_leaks(main), 0);
-	}
+	has_infile = hasinfile(&main, 0, &error_printed);
+	if (has_infile == -1 || has_infile == -2)
+		return (free_cmd_info(&main->cmd_info), no_leaks(main), 0);
 	if (main->cmd_info->outfile && main->cmd_info->outfile->fd != -1)
 	{
 		close(main->cmd_info->outfile->fd);
