@@ -52,7 +52,7 @@ static void	close_fd_if_needed(t_main *main, int nbcmds, int fd)
 int	echo(t_main *main, int argc, const char **argv, int nbcmds)
 {
 	int		fd;
-	int		nl;
+	int		n_flag;
 	int		i;
 	size_t	len_writed;
 
@@ -60,9 +60,9 @@ int	echo(t_main *main, int argc, const char **argv, int nbcmds)
 	if (check_outfile(main, &fd, nbcmds) == 2)
 		return (1);
 	i = 1;
-	nl = is_n_flag(argc, argv, &i);
+	n_flag = is_n_flag(argc, argv, &i);
 	len_writed = print_echo_args(fd, argc, argv, i);
-	if (argc == 1 || nl || !len_writed)
+	if (argc == 1 || !n_flag || !len_writed)
 		write(fd, "\n", 1);
 	close_fd_if_needed(main, nbcmds, fd);
 	return (1);
