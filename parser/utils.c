@@ -82,9 +82,11 @@ char	*get_word(const char *str, size_t *i)
 		{
 			quote = str[*i];
 			(*i)++;
-			while (str[*i] && (str[*i] != quote || str[*i + 1]))
+			while (str[*i] && (str[*i] != quote \
+				|| (str[*i + 1] && !ft_isspace(str[*i + 1]))))
 				(*i)++;
-			if (str[*i] == quote && !str[*i + 1])
+			if (str[*i] == quote \
+				&& (!str[*i + 1] || ft_isspace(str[*i + 1])))
 				(*i)++;
 		}
 		if (str[*i])
@@ -101,9 +103,11 @@ char	*get_quoted(const char *str, size_t *i)
 	start = *i;
 	quote = str[start];
 	(*i)++;
-	while (str[*i] && (str[*i] != quote || str[*i + 1]))
+	while (str[*i] && (str[*i] != quote \
+		|| (str[*i + 1] && !ft_isspace(str[*i + 1]))))
 		(*i)++;
-	if (str[*i] == quote && !str[*i + 1])
+	if (str[*i] == quote \
+		&& (!str[*i + 1] || ft_isspace(str[*i + 1])))
 		(*i)++;
 	return (ft_substr(str, start, *i - start));
 }
