@@ -91,7 +91,7 @@ int	onecmdexector(t_main *main, char **envp)
 	has_infile = hasinfile(&main, 0, &error_printed);
 	if (has_infile == -1 || has_infile == -2
 		|| ft_strlen(main->cmd_info->cmd) == 0)
-		return (free_cmd_info(&main->cmd_info),
+		return (print_not_found(main, 0, 0), free_cmd_info(&main->cmd_info),
 			no_leaks(main), 0);
 	if (main->cmd_info->outfile && main->cmd_info->outfile->fd != -1)
 	{
