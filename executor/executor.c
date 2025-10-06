@@ -75,7 +75,8 @@ int	cmd_executor(t_main *main, char **envp, int file, int i)
 
 	if (pipe(tube) == -1)
 		return (perror("pipe"), -1);
-	if (i == -2 || (i != -1 && main->cmds_paths->paths[i] == NULL)
+	if ((i == -2 && check_if_exist(main) == 0)
+		|| (i != -1 && i != -2 && main->cmds_paths->paths[i] == NULL)
 		|| ft_strlen(main->cmd_info->cmd) == 0)
 		isnocommand(main, file, tube);
 	else

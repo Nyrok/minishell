@@ -48,7 +48,8 @@ void	print_not_found(t_main *main, int error_code, int cmd_found)
 			printf("minishell: %s: command not found\n", main->cmd_info->cmd);
 			main->last_exit_status = 127;
 		}
-		else if (access(main->cmd_info->cmd_path, X_OK) != 0)
+		else if (access(main->cmd_info->cmd_path, X_OK) != 0
+			&& access(main->cmd_info->cmd, X_OK) != 0)
 		{
 			printf("minishell: %s: Permission denied\n", main->cmd_info->cmd);
 			main->last_exit_status = 126;
