@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-char	*rm_char(char *str, const char c, size_t start, size_t n)
+char	*rm_char(char *str, const char c)
 {
 	size_t	i;
 	size_t	j;
@@ -23,17 +23,17 @@ char	*rm_char(char *str, const char c, size_t start, size_t n)
 		return (str);
 	count = 0;
 	i = -1;
-	while (++i < n)
-		if (str[start + i] == c)
+	while (++i < ft_strlen(str))
+		if (str[i] == c)
 			count++;
-	result = ft_calloc(n - count + 1, sizeof(char));
+	result = ft_calloc(ft_strlen(str) - count + 1, sizeof(char));
 	if (!result)
 		return (NULL);
 	i = -1;
 	j = 0;
-	while (++i < n)
-		if (str[start + i] != c)
-			result[j++] = str[start + i];
+	while (++i < ft_strlen(str))
+		if (str[i] != c)
+			result[j++] = str[i];
 	free(str);
 	return (result);
 }
@@ -103,10 +103,10 @@ char	*get_quoted(const char *str, size_t *i)
 	start = *i;
 	quote = str[start];
 	(*i)++;
-	while (str[*i] && (str[*i] != quote \
-		|| (str[*i + 1] && !ft_isspace(str[*i + 1]))))
+	while (str[*i] && !ft_strchr("|<>", str[*i]) && (str[*i] != quote \
+	|| (str[*i + 1] && !ft_isspace(str[*i + 1]))))
 		(*i)++;
-	if (str[*i] == quote \
+	if (str[*i] == quote
 		&& (!str[*i + 1] || ft_isspace(str[*i + 1])))
 		(*i)++;
 	return (ft_substr(str, start, *i - start));

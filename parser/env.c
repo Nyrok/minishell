@@ -80,20 +80,25 @@ static void	parse_word(t_envp *envp, char **word, int last_exit_status)
 
 void	parse_env(t_envp *envp, t_token *tokens, int last_exit_status)
 {
+	int	i;
+
 	while (tokens)
 	{
 		if (tokens->type == WORD && tokens->word)
 		{
-			if (tokens->word[0] != '\'' && ft_strchr(tokens->word, '$'))
+			i = 0;
+			while (tokens->word[i])
 			{
-				parse_word(envp, &tokens->word, last_exit_status);
-				tokens->word = rm_dollars(tokens->word, 0, \
-					ft_strlen(tokens->word));
+				if (tokens->word[i] != '\'' && ft_strchr(tokens->word, '$'))
+				{
+					parse_word(envp, &tokens->word, last_exit_status);
+					tokens->word = rm_dollars(tokens->word, 0, \
+						ft_strlen(tokens->word));
+				}
+				tokens->word = rm_char(tokens->word, '\'');
+				tokens->word = rm_char(tokens->word, '"');
+				i++;
 			}
-			tokens->word = rm_char(tokens->word, '\'', 0, \
-				ft_strlen(tokens->word));
-			tokens->word = rm_char(tokens->word, '"', 0, \
-				ft_strlen(tokens->word));
 		}
 		tokens = tokens->next;
 	}
