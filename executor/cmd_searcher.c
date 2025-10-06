@@ -40,8 +40,6 @@ int	llaunch_executions(t_main *main, char **envp, int tube, int i)
 	{
 		free(main->cmd_info->cmd_path);
 		main->cmd_info->cmd_path = ft_strdup(main->cmd_info->cmd);
-		// if (access(main->cmd_info->cmd_path, F_OK) == 0)
-		// 	i = -1;
 	}
 	last_executor(main, envp, tube, i);
 	free(main->cmd_info->cmd_path);
@@ -68,7 +66,7 @@ void	lcmd_searcher(t_main *main, char **envp, int tube)
 		&& cmd_found != -1 && main->cmd_info->cmd[0] != '.')
 	{
 		main->cmd_info->cmd_path = paths_searcher(main->cmd_info->cmd,
-				main->cmd_info->cmd_path, main->cmds_paths->paths[i++]);		
+				main->cmd_info->cmd_path, main->cmds_paths->paths[i++]);
 		if (access(main->cmd_info->cmd_path, X_OK) == 0)
 		{
 			cmd_found = llaunch_executions(main, envp, tube, -1);
@@ -79,14 +77,6 @@ void	lcmd_searcher(t_main *main, char **envp, int tube)
 			free(main->cmd_info->cmd_path);
 		main->cmd_info->cmd_path = NULL;
 	}
-}
-
-int	launch_executions(t_main *main, char **envp, int file, int i)
-{
-	main->tube->fd = cmd_executor(main, envp, file, i);
-	free(main->cmd_info->cmd_path);
-	main->cmd_info->cmd_path = NULL;
-	return (1);
 }
 
 int	cmd_searcher(t_main *main, char **envp, int file)

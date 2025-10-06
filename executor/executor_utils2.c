@@ -39,16 +39,6 @@ int	fd_opener(t_main **main, t_redir *actual_redir, int error_check, int print)
 	return (1);
 }
 
-void	check_tube(t_main **main)
-{
-	if ((*main)->tube == NULL)
-	{
-		(*main)->pids = ft_calloc((count_cmd_info((*main)->cmd_info) + 1), \
-			sizeof(pid_t));
-		setup_tube(*main);
-	}
-}
-
 int	create_out(t_main *main)
 {
 	t_redir	*redir_tmp;
@@ -93,7 +83,8 @@ int	handle_heredoc(t_main *main)
 	return (-1);
 }
 
-void	handle_multiple_cmds(t_main *main, char **envp, int nbcmds, int *error_printed)
+void	handle_multiple_cmds(t_main *main, char **envp,
+			int nbcmds, int *error_printed)
 {
 	auto int has_infile = 0;
 	setup_cmd_redirs(main->cmd_info);
