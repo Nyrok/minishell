@@ -46,18 +46,14 @@ void	last_executor(t_main *main, char **envp, int tube, int i)
 	pid_t	pid;
 
 	if (pipe(main->cmd_info->tube) == -1)
-	{
-		perror("pipe failed");
-		return ;
-	}
-	if (i == -2 || (i != -1 && main->cmds_paths->paths[i] == NULL)) // pas sûr de la condition
-		print_error(main, NOTFOUND, 0);
+		return (perror("pipe failed"));
 	close(main->cmd_info->tube[1]);
-	pid = fork();
-	if (pid == 0)
-		last_child_executor(tube, main, main->cmd_info->cmd_path, envp);
-	else
+	printf("cc = %zu\n", ft_strlen(main->cmd_info->cmd));
+	if (i == -2 || (i != -1 && main->cmds_paths->paths[i] == NULL)
+		|| ft_strlen(main->cmd_info->cmd) == 0) // pas sûr de la condition
 	{
+		printf("cc = %s, %s\n", main->cmd_info->cmd, main->cmd_info->cmd_path);
+		print_error(main, NOTFOUND, 0);
 		if (tube != -1)
 			close(tube);
 		if (main->cmd_info->outfile != NULL
@@ -66,7 +62,24 @@ void	last_executor(t_main *main, char **envp, int tube, int i)
 			close(main->cmd_info->outfile->fd);
 			main->cmd_info->outfile->fd = -1;
 		}
-		add_pid(main, pid);
+	}
+	else
+	{
+		pid = fork();
+		if (pid == 0)
+			last_child_executor(tube, main, main->cmd_info->cmd_path, envp);
+		else
+		{
+			if (tube != -1)
+				close(tube);
+			if (main->cmd_info->outfile != NULL
+				&& main->cmd_info->outfile->fd != -1)
+			{
+				close(main->cmd_info->outfile->fd);
+				main->cmd_info->outfile->fd = -1;
+			}
+			add_pid(main, pid);
+		}
 	}
 	main->tube->fd = main->cmd_info->tube[0];
 }

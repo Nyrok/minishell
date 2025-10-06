@@ -61,21 +61,24 @@ void	print_not_found(t_main *main, int error_code, int cmd_found)
 	if (error_code == NOTFOUND && cmd_found == 0)
 	{
 		struct stat file_stat;
+		printf("cc2 = %zu\n", ft_strlen(main->cmd_info->cmd));
 		if (stat(main->cmd_info->cmd_path, &file_stat) != 0)
 			file_stat.st_mode = 0;
-		if (S_ISDIR(file_stat.st_mode))
+		if (S_ISDIR(file_stat.st_mode) \
+			&& ft_strlen(main->cmd_info->cmd) != 0)
 		{
-			printf("%s: Is a directory\n", main->cmd_info->cmd);
+			printf("minishell: %s: Is a directory\n", main->cmd_info->cmd);
 			main->last_exit_status = 126;
 		}
-		else if (check_if_exist(main) == 0)
+		else if (ft_strlen(main->cmd_info->cmd) == 0 \
+			|| check_if_exist(main) == 0)
 		{
-			printf("%s: command not found\n", main->cmd_info->cmd);
+			printf("minishell: %s: command not found\n", main->cmd_info->cmd);
 			main->last_exit_status = 127;
 		}
 		else if (access(main->cmd_info->cmd_path, X_OK) != 0)
 		{
-			printf("%s: Permission denied\n", main->cmd_info->cmd);
+			printf("minishell: %s: Permission denied\n", main->cmd_info->cmd);
 			main->last_exit_status = 126;
 		}
 	}
