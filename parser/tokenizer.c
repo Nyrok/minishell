@@ -60,5 +60,11 @@ t_token	*tokenize_input(const char *input)
 			append_token(&tokens, create_token(get_word(input, &i), WORD));
 	}
 	append_token(&tokens, create_token(NULL, END));
+	t_token *token = tokens;
+	while (token)
+	{
+		printf("TOKEN %s\n", token->word);
+		token = token->next;
+	}
 	return (tokens);
 }

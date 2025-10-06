@@ -98,22 +98,6 @@ int	print_error(t_main *main, int error_code, int cmd_found)
 	return (1);
 }
 
-int	totalcmds(char *cmd)
-{
-	int	i;
-	int	total;
-
-	i = 0;
-	total = 1;
-	while (cmd[i])
-	{
-		if (cmd[i] == '|')
-			total++;
-		i++;
-	}
-	return (total);
-}
-
 int	no_such_file(t_redir *actual_redir, int print)
 {
 	if (print == 1)
