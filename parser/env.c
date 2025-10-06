@@ -66,8 +66,9 @@ static void	parse_word(t_envp *envp, char **word, int last_exit_status)
 			if (ft_strcmp(key, "?") == 0)
 				env_value = ft_itoa(last_exit_status);
 			else
-				env_value = get_env_value(envp, key);
+				env_value = ft_strdup(get_env_value(envp, key));
 			replace_word_env(env_value, word, key, &i);
+			free(env_value);
 			free(key);
 		}
 		if ((*word)[i] && (*word)[i] != '$')
@@ -81,7 +82,7 @@ void	parse_env(t_envp *envp, t_token *tokens, int last_exit_status)
 	{
 		if (tokens->type == WORD && tokens->word)
 		{
-			if (ft_strchr(tokens->word, '$'))
+			if (tokens->word[0] != '\'' && ft_strchr(tokens->word, '$'))
 			{
 				parse_word(envp, &tokens->word, last_exit_status);
 				if (tokens->word[0] != '"')
