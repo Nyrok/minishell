@@ -103,5 +103,6 @@ void		lisnocommand(t_main *main, int tube);
 int			launch_executions(t_main *main, char **envp, int file, int i);
 void		check_tube(t_main **main);
 int			check_if_exist(t_main *main);
+void		print_not_found(t_main *main, int error_code, int cmd_found);
 
 #endif
