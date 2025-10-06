@@ -23,7 +23,8 @@ void	dup2_builtin(t_main *main, int nbcmds)
 		}
 		main->cmd_info->outfile->fd = -1;
 	}
-	else if (nbcmds > 1)
+	else if (nbcmds > 1 && main->cmd_info->tube[1] != -1 \
+		&& !main->cmd_info->outfile)
 	{
 		if (dup2(main->cmd_info->tube[1], STDOUT_FILENO) == -1)
 		{

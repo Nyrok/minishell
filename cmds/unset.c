@@ -82,5 +82,6 @@ int	unset(t_main *main, int argc, t_envp **envp)
 		close(main->tube->fd);
 		main->tube->fd = -1;
 	}
+	main->last_exit_status = 0;
 	return (1);
 }

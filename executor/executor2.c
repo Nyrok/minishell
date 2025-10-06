@@ -41,7 +41,7 @@ void	last_child_executor(int tube, t_main *main, char *cmd_path, char **envp)
 	}
 }
 
-void	last_executor(t_main *main, char **envp, int tube, int onlyonecommand)
+void	last_executor(t_main *main, char **envp, int tube, int i)
 {
 	pid_t	pid;
 
@@ -50,8 +50,9 @@ void	last_executor(t_main *main, char **envp, int tube, int onlyonecommand)
 		perror("pipe failed");
 		return ;
 	}
+	if (i == -2 || (i != -1 && main->cmds_paths->paths[i] == NULL)) // pas sûr de la condition
+		print_error(main, NOTFOUND, 0);
 	close(main->cmd_info->tube[1]);
-	(void)onlyonecommand;
 	pid = fork();
 	if (pid == 0)
 		last_child_executor(tube, main, main->cmd_info->cmd_path, envp);
@@ -72,23 +73,38 @@ void	last_executor(t_main *main, char **envp, int tube, int onlyonecommand)
 
 int	executor_setup(t_main **main, int *nbcmds, char *cmd)
 {
-	*nbcmds = totalcmds(cmd);
+	(void)cmd;
+	*nbcmds = count_cmd_info((*main)->cmd_info);
 	(*main)->pids[0] = 0;
 	setup_tube(*main);
 	return (1);
 }
 
+int create_eof_fd(void)
+{
+	int	pipefd[2];
+
+	if (pipe(pipefd) == -1)
+	{
+		perror("pipe");
+		return (-1);
+	}
+	close(pipefd[1]);
+	return (pipefd[0]);
+}
+
 int	onecmdexector(t_main *main, char **envp)
 {
+	auto int error_printed = 1;
+	auto int has_infile = 0;
 	if (main->cmd_info->cmd == NULL)
-		return (handle_heredoc(main), create_out(main), end_pids(&main),
+		return (hasinfile(&main, 0, &error_printed),handle_heredoc(main),
+			create_out(main), end_pids(&main),
 			free_all_cmd_info(&main), no_leaks(main), -1);
 	setup_cmd_redirs(main->cmd_info);
-	if (hasinfile(&main, 0) == -1)
-	{
-		return (free_cmd_info(&main->cmd_info),
-			no_leaks(main), 0);
-	}
+	has_infile = hasinfile(&main, 0, &error_printed);
+	if (has_infile == -1 || has_infile == -2)
+		return (free_cmd_info(&main->cmd_info), no_leaks(main), 0);
 	if (main->cmd_info->outfile && main->cmd_info->outfile->fd != -1)
 	{
 		close(main->cmd_info->outfile->fd);
@@ -97,13 +113,13 @@ int	onecmdexector(t_main *main, char **envp)
 	if (builtin_exec(main, &main->envp, 1, 1) == 1)
 		return (1);
 	if (main->cmd_info->infile != NULL)
-		lcmd_searcher(main, envp, main->cmd_info->infile->fd, 1);
+		lcmd_searcher(main, envp, main->cmd_info->infile->fd);
 	else
-		lcmd_searcher(main, envp, -1, 1);
+		lcmd_searcher(main, envp, -1);
 	return (1);
 }
 
-int	multiplecmdexector(t_main *main, char **envp, int nbcmd, int onlyonecommand)
+int	multiplecmdexector(t_main *main, char **envp, int nbcmd)
 {
 	if (tube_handler(&main) == -1)
 		return (-1);
@@ -113,20 +129,20 @@ int	multiplecmdexector(t_main *main, char **envp, int nbcmd, int onlyonecommand)
 		&& nbcmd > 1)
 	{
 		main->tube->fd = cmd_searcher(main, envp,
-				main->cmd_info->infile->fd, onlyonecommand);
+				main->cmd_info->infile->fd);
 	}
 	else if (main->cmd_info->infile == NULL && main->cmd_info->outfile == NULL
 		&& nbcmd > 1)
 	{
 		main->tube->fd = cmd_searcher(main, envp,
-				main->tube->fd, onlyonecommand);
+				main->tube->fd);
 	}
 	else if (main->cmd_info->infile == NULL)
-		lcmd_searcher(main, envp, main->tube->fd, onlyonecommand);
+		lcmd_searcher(main, envp, main->tube->fd);
 	else if (main->cmd_info->infile != NULL)
 	{
 		delete_tube(main);
-		lcmd_searcher(main, envp, main->cmd_info->infile->fd, onlyonecommand);
+		lcmd_searcher(main, envp, main->cmd_info->infile->fd);
 	}
 	return (1);
 }
