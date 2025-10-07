@@ -60,6 +60,7 @@ int			file_executor(t_main *main, int file, int last);
 void		last_executor(t_main *main, char **envp, int tube,
 				int i);
 int			cmd_executor(t_main *main, char **envp, int file, int i);
+int			totalcmds(char *cmd);
 int			multiplecmdexector(t_main *main,
 				char **envp, int nbcmd);
 int			onecmdexector(t_main *main, char **envp);
@@ -97,12 +98,8 @@ int			isbuilt_in(t_main *main);
 int			ft_access(t_main *main, char *pathname);
 void		close_outfile(t_main *main);
 char		*paths_searcher(char *cmd, char *cmd_path, char *paths);
-int			create_eof_fd(t_main *main, int code);
-void		isnocommand(t_main *main, int file, int tube[2]);
-void		lisnocommand(t_main *main, int tube);
-int			launch_executions(t_main *main, char **envp, int file, int i);
-void		check_tube(t_main **main);
+int			create_eof_fd(t_main *main);
 int			check_if_exist(t_main *main);
-void		print_not_found(t_main *main, int error_code, int cmd_found);
+int 		hasinfile_heredocs_only(t_main *main);
 
 #endif

@@ -19,15 +19,20 @@ int	file_executor(t_main *main, int file, int last)
 
 	i = 0;
 	isfilevalid(main);
-	tmp = ft_split(main->cmd_info->cmd, ' ');
+	tmp = ft_split(main->cmd_info->cmd, ' '); // Voir si ca passe ici les commandes genre "./cc dd"
 	main->cmd_info->cmd_path = ft_strdup(tmp[0]);
 	while (tmp[i])
 		free(tmp[i++]);
 	free(tmp);
 	if (last == 0)
-		main->tube->fd = cmd_executor(main, main->str_envp, file, -1);
+		main->tube->fd = cmd_executor(main, main->str_envp, file, -1); // ok enft je ne charge jamais le tube ou le infile
 	else
-		last_executor(main, main->str_envp, main->tube->fd, -1);
+	{
+		if (main->cmd_info->infile)
+			last_executor(main, main->str_envp, main->cmd_info->infile->fd, -1);
+		else
+			last_executor(main, main->str_envp, main->tube->fd, -1); // ok enft je ne charge jamais le tube ou le infile
+	}
 	free(main->cmd_info->cmd_path);
 	main->cmd_info->cmd_path = NULL;
 	return (1);
@@ -39,10 +44,36 @@ void	ft_dup2(int src, int dest)
 		perror("dup2 failed");
 }
 
+void	close_heredoc_future_cmds(t_main *main)
+{
+	t_cmd_info	*tmp_cmd_info;
+	t_redir		*tmp_redir;
+
+	if (main->cmd_info && main->cmd_info->next)
+	{
+		tmp_cmd_info = main->cmd_info->next; // s'assurer du bon fonctionnement de cette fonction
+		while (tmp_cmd_info)
+		{
+			tmp_redir = tmp_cmd_info->redirs;
+			while (tmp_redir)
+			{
+				if (tmp_redir->type == HEREDOC && tmp_redir->fd != -1)
+				{
+					close(tmp_redir->fd);
+					tmp_redir->fd = -1;
+				}
+				tmp_redir = tmp_redir->next;
+			}
+			tmp_cmd_info = tmp_cmd_info->next;
+		}
+	}
+}
+
 void	child_executor(t_main *main, int *tube, int file, char **envp)
 {
 	signal(SIGQUIT, SIG_DFL);
 	close(tube[0]);
+	close_heredoc_future_cmds(main);
 	if (file != -1)
 	{
 		ft_dup2(file, STDIN_FILENO);
@@ -51,6 +82,7 @@ void	child_executor(t_main *main, int *tube, int file, char **envp)
 	}
 	if (tube[1] != -1)
 	{
+		printf("ccc\n");
 		ft_dup2(tube[1], STDOUT_FILENO);
 		close(tube[1]);
 		tube[1] = -1;
@@ -74,24 +106,27 @@ int	cmd_executor(t_main *main, char **envp, int file, int i)
 	int		tube[2];
 
 	if (pipe(tube) == -1)
-		return (perror("pipe"), -1);
-	if ((i == -2 && check_if_exist(main) == 0)
-		|| (i != -1 && i != -2 && main->cmds_paths->paths[i] == NULL)
-		|| ft_strlen(main->cmd_info->cmd) == 0)
-		isnocommand(main, file, tube);
+	{
+		perror("pipe");
+		return (-1);
+	}
+	if ((i == -2 && check_if_exist(main) == 0) || (i > 0 && main->cmds_paths->paths[i] == NULL)) // pas sûr de la condition i != -1 -> i > 0
+	{
+		//printf("CC\n");
+		print_error(main, NOTFOUND, 0);
+		close(tube[1]);
+		tube[1] = -1;
+	}
+	pid = fork();
+	if (pid == 0)
+		child_executor(main, tube, file, envp);
 	else
 	{
-		pid = fork();
-		if (pid == 0)
-			child_executor(main, tube, file, envp);
-		else
-		{
-			if (tube[1] != -1)
-				close(tube[1]);
-			if (file != -1)
-				close(file);
-			add_pid(main, pid);
-		}
+		if (tube[1] != -1)
+			close(tube[1]);
+		if (file != -1)
+			close(file);
+		add_pid(main, pid);
 	}
 	return (tube[0]);
 }
@@ -100,7 +135,7 @@ int	executor(char *cmd, struct s_main *main)
 {
 	int	nbcmds;
 
-	main->pids = malloc((count_cmd_info(main->cmd_info) + 1) * sizeof(pid_t));
+	main->pids = malloc((totalcmds(cmd) + 1) * sizeof(pid_t));
 	if (!main->pids)
 		return (0);
 	main->str_envp = envp_to_str(main->envp);
@@ -121,5 +156,6 @@ int	executor(char *cmd, struct s_main *main)
 	if (main->pids)
 		end_pids(&main);
 	no_leaks(main);
+	printf("Exit status : %d\n", main->last_exit_status);
 	return (1);
 }
