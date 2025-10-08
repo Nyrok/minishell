@@ -20,3 +20,5 @@ tester
 tester.c
 test
 test.sh
+venv/
+.venv/
