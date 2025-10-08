@@ -134,7 +134,8 @@ int	permission_denied(t_main **main, t_redir *actual_redir, int print)
 	if (print == 1)
 		printf("-minishell: %s: Permission denied\n", actual_redir->filename);
 	(*main)->last_exit_status = 126;
-	if (ft_strcmp((*main)->cmd_info->cmd, "echo") == 0)
+	if ((*main)->cmd_info && (*main)->cmd_info->cmd 
+		&& ft_strcmp((*main)->cmd_info->cmd, "echo") == 0)
 		(*main)->last_exit_status = 1;
 	return (0);
 }

@@ -69,8 +69,10 @@ int	create_out(t_main *main)
 		main->cmd_info->redirs = main->cmd_info->redirs->next;
 		if (redir_tmp->type == REDOUT)
 		{
+			// redir_tmp->fd = open(redir_tmp->filename,
+			// 		O_CREAT | O_WRONLY | O_TRUNC, 0777);
 			redir_tmp->fd = open(redir_tmp->filename,
-					O_CREAT | O_WRONLY | O_TRUNC, 0777);
+					O_CREAT, 0777); // create only car je crois pas qu'il faille supp les infos mais a check
 			if (redir_tmp->fd == -1)
 				return (-1);
 			close(redir_tmp->fd);
@@ -180,7 +182,7 @@ int	multiple_cmd_handler(t_main *main, char **envp, int nbcmds)
 				fork_bad_file(main);
 				hasinfile2(&main, 0, 1); // on gère par exemple < in | cat ou < invalid | cat ici
 				fdcls(&main, 0);
-				// create_out(main); // je crois pas besoin car on open deja via hasinfile2
+				// create_out(main);
 				// main->tube->fd = create_eof_fd(main);
 			}
 		}

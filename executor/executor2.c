@@ -103,7 +103,7 @@ int	onecmdexector(t_main *main, char **envp)
 	auto int error_printed = 1;
 	auto int has_infile = 0;
 	if (main->cmd_info && main->cmd_info->cmd == NULL)
-		return (hasinfile_heredocs_only(main), main->last_exit_status = 1,  fork_bad_file(main), 
+		return (hasinfile_heredocs_only(main), main->last_exit_status = 1, fork_bad_file(main), 
 		hasinfile2(&main, 0, 1), fdcls(&main, 0), end_pids(&main),
 		free_all_cmd_info(&main), no_leaks(main), -1);
 	setup_cmd_redirs(main->cmd_info);
