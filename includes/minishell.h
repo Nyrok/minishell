@@ -101,5 +101,7 @@ char		*paths_searcher(char *cmd, char *cmd_path, char *paths);
 int			create_eof_fd(t_main *main);
 int			check_if_exist(t_main *main);
 int 		hasinfile_heredocs_only(t_main *main);
+void		fork_bad_file(t_main *main);
+int			hasinfile2(struct s_main **main, int error_check, int print);
 
 #endif

@@ -103,13 +103,14 @@ int	onecmdexector(t_main *main, char **envp)
 	auto int error_printed = 1;
 	auto int has_infile = 0;
 	if (main->cmd_info && main->cmd_info->cmd == NULL)
-		return (hasinfile_heredocs_only(main), create_out(main), end_pids(&main),
-			free_all_cmd_info(&main), no_leaks(main), -1);
+		return (hasinfile_heredocs_only(main), main->last_exit_status = 1,  fork_bad_file(main), 
+		hasinfile2(&main, 0, 1), fdcls(&main, 0), end_pids(&main),
+		free_all_cmd_info(&main), no_leaks(main), -1);
 	setup_cmd_redirs(main->cmd_info);
 	hasinfile_heredocs_only(main);
 	has_infile = hasinfile(&main, 0, &error_printed);
 	if (has_infile == -1 || has_infile == -2)
-		return (free_cmd_info(&main->cmd_info), no_leaks(main), 0);
+		return (main->last_exit_status = 1, fork_bad_file(main), free_cmd_info(&main->cmd_info), no_leaks(main), 0);
 	if (main->cmd_info->outfile && main->cmd_info->outfile->fd != -1)
 	{
 		close(main->cmd_info->outfile->fd);
@@ -154,10 +155,30 @@ int	hasinfile2(struct s_main **main, int error_check, int print)
 	return (total);
 }
 
+void	fork_bad_file(t_main *main)
+{
+	pid_t	pid;
+	int		exit_code;
+	pid = fork();
+	if (pid == 0)
+	{
+		exit_code = main->last_exit_status;
+		printf("Exit status : %d\n", exit_code);
+		free_execve(&main);
+		exit(exit_code);
+	}
+	else
+		add_pid(main, pid);
+	main->tube->fd = create_eof_fd(main);
+}
+
 int	multiplecmdexector(t_main *main, char **envp, int nbcmd)
 {
 	if (hasinfile2(&main, 0, 1) == -1)
+	{
+		fork_bad_file(main);
 		return (-1);
+	}
 	fdcls(&main, 0);
 	if (tube_handler(&main) == -1)
 		return (-1);

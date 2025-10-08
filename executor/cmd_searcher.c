@@ -16,10 +16,10 @@ char	*paths_searcher(char *cmd, char *cmd_path, char *paths)
 {
 	char	*tmp;
 	//char	**res;
-	int		i;
+	// int		i;
 
 	tmp = ft_strjoin(paths, "/");
-	i = 0;
+	// i = 0;
 	cmd_path = ft_strjoin(tmp, cmd);
 	//printf("CMD Path = %s\n", cmd_path);
 	free(tmp);

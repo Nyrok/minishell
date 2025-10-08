@@ -174,9 +174,15 @@ int	multiple_cmd_handler(t_main *main, char **envp, int nbcmds)
 			handle_multiple_cmds(main, envp, nbcmds, &error_printed);
 		else
 		{
-			//handle_heredoc(main); on ouvre deja les avamt heredoc t dans tt les cas
-			create_out(main);
-			main->tube->fd = create_eof_fd(main);
+			if (main->cmd_info)
+			{
+				main->last_exit_status = 1;
+				fork_bad_file(main);
+				hasinfile2(&main, 0, 1); // on gère par exemple < in | cat ou < invalid | cat ici
+				fdcls(&main, 0);
+				// create_out(main); // je crois pas besoin car on open deja via hasinfile2
+				// main->tube->fd = create_eof_fd(main);
+			}
 		}
 		nbcmds--;
 		temp_cmd_info = main->cmd_info;
