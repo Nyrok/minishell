@@ -25,3 +25,4 @@ test.sh
 venv/
 .venv/
 paslespermissions
+tester2.c
