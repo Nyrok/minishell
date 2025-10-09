@@ -37,6 +37,7 @@ void	add_pid(t_main *main, pid_t newpid)
 	int		i;
 	pid_t	*actual;
 
+	//printf("EMMMM\n");
 	i = 0;
 	actual = main->pids;
 	while (actual[i] != 0)

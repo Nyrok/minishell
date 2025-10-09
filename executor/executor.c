@@ -41,7 +41,7 @@ int	file_executor(t_main *main, int file, int last)
 void	ft_dup2(int src, int dest)
 {
 	if (dup2(src, dest) == -1)
-		perror("dup2 failed");
+		perror("dup2 failed"); // oui
 }
 
 void	close_heredoc_future_cmds(t_main *main)
@@ -82,7 +82,7 @@ void	child_executor(t_main *main, int *tube, int file, char **envp)
 	}
 	if (tube[1] != -1)
 	{
-		printf("ccc\n");
+		//printf("ccc\n");
 		ft_dup2(tube[1], STDOUT_FILENO);
 		close(tube[1]);
 		tube[1] = -1;
@@ -112,7 +112,7 @@ int	cmd_executor(t_main *main, char **envp, int file, int i)
 	}
 	if (i == -2 || (i != -1 && main->cmds_paths->paths[i] == NULL)) // pas sûr de la condition // edit pas sur du tt car on check pas if exist et on ne met pas le tube a null je crois
 	{
-		printf("CC2\n"); 
+		//printf("CC2\n"); 
 		print_error(main, NOTFOUND, 0);
 		if (main->tube && main->tube->fd != -1)
 		{
@@ -152,6 +152,7 @@ int	executor(char *cmd, struct s_main *main)
 {
 	int	nbcmds;
 
+	//printf("ee = %d\n", totalcmds(cmd));
 	main->pids = malloc((totalcmds(cmd) + 1) * sizeof(pid_t));
 	if (!main->pids)
 		return (0);

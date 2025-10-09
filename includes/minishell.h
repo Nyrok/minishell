@@ -103,5 +103,7 @@ int			check_if_exist(t_main *main);
 int 		hasinfile_heredocs_only(t_main *main);
 void		fork_bad_file(t_main *main);
 int			hasinfile2(struct s_main **main, int error_check, int print);
+void		relative_path_executor(t_main *main, char **envp, int lastcmd);
+void		close_heredoc_future_cmds(t_main *main);
 
 #endif

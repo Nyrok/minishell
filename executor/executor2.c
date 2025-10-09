@@ -15,6 +15,7 @@
 void	last_child_executor(int tube, t_main *main, char *cmd_path, char **envp)
 {
 	signal(SIGQUIT, SIG_DFL);
+	close_heredoc_future_cmds(main);
 	if (main->cmd_info->tube[0] != -1 && tube != main->cmd_info->tube[0])
 		close(main->cmd_info->tube[0]);
 	if (tube != -1)
@@ -47,7 +48,7 @@ void	last_executor(t_main *main, char **envp, int tube, int i)
 
 	if (i == -2 || (i != -1 && main->cmds_paths->paths[i] == NULL)) // pas sûr de la condition // edit pas sur du tt car on check pas if exist et on ne met pas le tube a null je crois
 	{
-		printf("CC\n"); 
+		//printf("CC\n"); 
 		print_error(main, NOTFOUND, 0);
 		fork_bad_file(main);
 		if (tube != -1)
@@ -116,7 +117,7 @@ int	onecmdexector(t_main *main, char **envp)
 	auto int error_printed = 1;
 	auto int has_infile = 0;
 	if (main->cmd_info && main->cmd_info->cmd == NULL)
-		return (hasinfile_heredocs_only(main), main->last_exit_status = 1, fork_bad_file(main), 
+		return (hasinfile_heredocs_only(main), main->last_exit_status = 1, fork_bad_file(main),
 		hasinfile2(&main, 0, 1), fdcls(&main, 0), end_pids(&main),
 		free_all_cmd_info(&main), no_leaks(main), -1);
 	setup_cmd_redirs(main->cmd_info);
