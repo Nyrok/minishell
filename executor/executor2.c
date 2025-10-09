@@ -45,13 +45,26 @@ void	last_executor(t_main *main, char **envp, int tube, int i)
 {
 	pid_t	pid;
 
+	if (i == -2 || (i != -1 && main->cmds_paths->paths[i] == NULL)) // pas sûr de la condition // edit pas sur du tt car on check pas if exist et on ne met pas le tube a null je crois
+	{
+		printf("CC\n"); 
+		print_error(main, NOTFOUND, 0);
+		fork_bad_file(main);
+		if (tube != -1)
+			close(tube);
+		if (main->cmd_info->outfile != NULL
+			&& main->cmd_info->outfile->fd != -1)
+		{
+			close(main->cmd_info->outfile->fd);
+			main->cmd_info->outfile->fd = -1;
+		}
+		return ;
+	}
 	if (pipe(main->cmd_info->tube) == -1)
 	{
 		perror("pipe failed");
 		return ;
 	}
-	if (i == -2 || (i != -1 && main->cmds_paths->paths[i] == NULL)) // pas sûr de la condition // edit pas sur du tt car on check pas if exist et on ne met pas le tube a null je crois
-		print_error(main, NOTFOUND, 0);
 	close(main->cmd_info->tube[1]);
 	pid = fork();
 	if (pid == 0)
@@ -159,6 +172,7 @@ void	fork_bad_file(t_main *main)
 {
 	pid_t	pid;
 	int		exit_code;
+
 	pid = fork();
 	if (pid == 0)
 	{

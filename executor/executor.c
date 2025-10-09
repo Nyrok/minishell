@@ -82,7 +82,7 @@ void	child_executor(t_main *main, int *tube, int file, char **envp)
 	}
 	if (tube[1] != -1)
 	{
-		//printf("ccc\n");
+		printf("ccc\n");
 		ft_dup2(tube[1], STDOUT_FILENO);
 		close(tube[1]);
 		tube[1] = -1;
@@ -110,13 +110,30 @@ int	cmd_executor(t_main *main, char **envp, int file, int i)
 		perror("pipe");
 		return (-1);
 	}
-	if ((i == -2 && check_if_exist(main) == 0) || (i > 0 && main->cmds_paths->paths[i] == NULL)) // pas sûr de la condition i != -1 -> i > 0
+	if (i == -2 || (i != -1 && main->cmds_paths->paths[i] == NULL)) // pas sûr de la condition // edit pas sur du tt car on check pas if exist et on ne met pas le tube a null je crois
 	{
-		//printf("CC\n");
+		printf("CC2\n"); 
 		print_error(main, NOTFOUND, 0);
+		if (main->tube && main->tube->fd != -1)
+		{
+			close(main->tube->fd);
+			main->tube->fd = -1;
+		}
 		close(tube[1]);
+		main->tube->fd = tube[0];
+		fork_bad_file(main); // pas de leak ?
 		tube[1] = -1;
+		//if (file != -1)
+		//	close(file);
+		return (main->tube->fd);
 	}
+	//if ((i == -2 && check_if_exist(main) == 0) || (i > 0 && main->cmds_paths->paths[i] == NULL)) // pas sûr de la condition i != -1 -> i > 0
+	//{
+	//	//printf("CC\n");
+	//	print_error(main, NOTFOUND, 0);
+	//	close(tube[1]);
+	//	tube[1] = -1;
+	//}
 	pid = fork();
 	if (pid == 0)
 		child_executor(main, tube, file, envp);

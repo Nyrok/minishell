@@ -44,8 +44,10 @@ int	fd_opener(t_main **main, t_redir *actual_redir, int error_check, int print)
 		//printf("SASASAS %d\n", actual_redir->type); // apparait dans heredoc avec une cmd + ctrl c
 		return (-1);
 	}
-	if (actual_redir->good == 0)
+	if (actual_redir->good == 0 && actual_redir->fd != -1) // ajout du check si f != -1 car sinon si je fais << eof << eof2 bah eof2 n'est pas good pourtant il est deja ferme donc invalid close
+	{
 		close(actual_redir->fd);
+	}
 	return (1);
 }
 
@@ -143,11 +145,11 @@ int hasinfile_heredocs_only(t_main *main)
                 redir->fd = ft_heredoc(redir->filename);
                 if (redir->fd == -1)
                     return (-1);
-				if (main->cmd_info->cmd == NULL)
-				{
-					close(redir->fd);
-					redir->fd = -1;
-				}
+				//if (main->cmd_info->cmd == NULL && redir->fd != -1) // Jai retire ca pour test car << eof << eof2 avait des invalid close
+				//{
+				//	close(redir->fd);
+				//	redir->fd = -1;
+				//}
             }
             redir = redir->next;
         }
