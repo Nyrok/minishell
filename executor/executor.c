@@ -82,7 +82,7 @@ void	child_executor(t_main *main, int *tube, int file, char **envp)
 	}
 	if (tube[1] != -1)
 	{
-		printf("ccc\n");
+		//printf("ccc\n");
 		ft_dup2(tube[1], STDOUT_FILENO);
 		close(tube[1]);
 		tube[1] = -1;

@@ -41,7 +41,7 @@ int	fd_opener(t_main **main, t_redir *actual_redir, int error_check, int print)
 		actual_redir->fd = open(actual_redir->filename, O_CREAT, 0777);
 	if (actual_redir->fd == -1 && error_check == 0) // Ce cas arrive si il n'a rien uvert ou pas reussi a ouvrir le soucis c que bah ca nique si y'a un heredoc
 	{
-		printf("SASASAS %d\n", actual_redir->type);
+		//printf("SASASAS %d\n", actual_redir->type); // apparait dans heredoc avec une cmd + ctrl c
 		return (-1);
 	}
 	if (actual_redir->good == 0)
