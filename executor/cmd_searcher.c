@@ -73,10 +73,50 @@ void	handle_null_case(t_main *main, char **envp, int tube, int i)
 		llaunch_executions(main, envp, tube, -2);
 }
 
+int	isonlypoint(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] != '.')
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
 int	gestion_error_relative_path(t_main *main, int type)
 {
+	struct stat file_stat;
+
 	if (type == 1)
 	{
+		if (ft_strlen(main->cmd_info->cmd) == 1 && main->cmd_info->cmd[0] == '.')
+		{
+			printf("minishell: %s: filename argument required\n", main->cmd_info->cmd);
+			printf("%s: usage: . filename [arguments]\n", main->cmd_info->cmd);
+			main->last_exit_status = 2;
+			fork_bad_file(main);
+			return (1);
+		}
+		if (isonlypoint(main->cmd_info->cmd) && ft_strlen(main->cmd_info->cmd) > 1 && main->cmds_paths && main->cmds_paths->paths)
+		{
+			printf("minishell: %s: command not found\n", main->cmd_info->cmd);
+			main->last_exit_status = 127;
+			fork_bad_file(main);
+			return (1);
+		}
+		if (stat(main->cmd_info->cmd, &file_stat) != 0)
+			file_stat.st_mode = 0;
+		if (S_ISDIR(file_stat.st_mode))
+		{
+			printf("minishell: %s: Is a directory\n", main->cmd_info->cmd_path);
+			main->last_exit_status = 126;
+			fork_bad_file(main);
+			return (1);
+		}
 		if (access(main->cmd_info->cmd, F_OK) != 0) // Check si ici on doit pas free des trucs genre infile, main tube etc.
 		{
 			printf("minishell: %s: No such file or directory\n", main->cmd_info->cmd);
@@ -94,6 +134,30 @@ int	gestion_error_relative_path(t_main *main, int type)
 	}
 	else
 	{
+		if (ft_strlen(main->cmd_info->cmd) == 1 && main->cmd_info->cmd[0] == '.')
+		{
+			printf("minishell: %s: filename argument required\n", main->cmd_info->cmd);
+			printf("%s: usage: . filename [arguments]\n", main->cmd_info->cmd);
+			main->last_exit_status = 2;
+			fork_bad_file(main);
+			return (1);
+		}
+		if (isonlypoint(main->cmd_info->cmd) && ft_strlen(main->cmd_info->cmd) > 1 && main->cmds_paths && main->cmds_paths->paths)
+		{
+			printf("minishell: %s: command not found\n", main->cmd_info->cmd);
+			main->last_exit_status = 127;
+			fork_bad_file(main);
+			return (1);
+		}
+		if (stat(main->cmd_info->cmd, &file_stat) != 0)
+			file_stat.st_mode = 0;
+		if (S_ISDIR(file_stat.st_mode))
+		{
+			printf("minishell: %s: Is a directory\n", main->cmd_info->cmd);
+			main->last_exit_status = 126;
+			fork_bad_file(main);
+			return (1);
+		}
 		if (access(main->cmd_info->cmd_path, F_OK) != 0) // Check si ici on doit pas free des trucs genre infile, main tube etc.
 		{
 			printf("minishell: %s: No such file or directory\n", main->cmd_info->cmd);
@@ -134,7 +198,7 @@ void	relative_path_executor(t_main *main, char **envp, int lastcmd)
 	if (main->cmd_info->cmd_path)
 		free(main->cmd_info->cmd_path);
 	//printf("strchr = %s\n", ft_strchr(main->cmd_info->cmd, '/'));
-	if (!ft_strchr(main->cmd_info->cmd, '/') && (!main->cmds_paths || !main->cmds_paths->paths))
+	if (!ft_strchr(main->cmd_info->cmd, '/') && !isonlypoint(main->cmd_info->cmd) && (!main->cmds_paths || !main->cmds_paths->paths))
 	{
 		//printf("PUTTER\n");
 		auto char *tmp = ft_strdup("./");
@@ -197,7 +261,7 @@ void	lcmd_searcher(t_main *main, char **envp, int tube)
 	//if (main->cmd_info->cmd[0] == '.' && main->cmd_info->cmd[1] == '/')
 	//	cmd_found = file_executor(main, -1, 1);
 	cmds_paths_maker(main);
-	if (ft_strchr(main->cmd_info->cmd, '/') || !main->cmds_paths || !main->cmds_paths->paths || !main->cmds_paths->paths[0])
+	if (ft_strchr(main->cmd_info->cmd, '/') || !main->cmds_paths || !main->cmds_paths->paths || !main->cmds_paths->paths[0] || ft_strchr(main->cmd_info->cmd, '.'))
 		relative_path_executor(main, envp, 1);
 	else
 	{

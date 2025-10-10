@@ -178,7 +178,7 @@ void	fork_bad_file(t_main *main)
 	if (pid == 0)
 	{
 		exit_code = main->last_exit_status;
-		printf("Exit status : %d\n", exit_code);
+		//printf("Exit status : %d\n", exit_code);
 		free_execve(&main);
 		exit(exit_code);
 	}
