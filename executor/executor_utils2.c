@@ -82,7 +82,7 @@ int	handle_heredoc(t_main *main)
 	{
 		if (redir_tmp->type == HEREDOC)
 		{
-			fd = ft_heredoc(redir_tmp->filename);
+			fd = ft_heredoc(main, redir_tmp->filename);
 			if (fd != -1)
 			{
 				close(fd);
@@ -118,7 +118,7 @@ int hasinfile_heredocs_only(t_main *main)
 		{
 			if (redir->type == HEREDOC)
 			{
-				redir->fd = ft_heredoc(redir->filename);
+				redir->fd = ft_heredoc(main, redir->filename);
 				if (redir->fd == -1)
 					return (-1);
 			}
