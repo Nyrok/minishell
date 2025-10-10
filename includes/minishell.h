@@ -111,5 +111,8 @@ int			ft_commandisapoint(t_main *main);
 int			ft_commandonlypoints(t_main *main);
 int			isonlypt(char *str);
 void		free_cmd_path(t_main *main);
+void		free_main_paths(t_main *main);
+void		end_fd(int fd);
+void		ft_strdup_cmd_path(t_main *main, int i);
 
 #endif

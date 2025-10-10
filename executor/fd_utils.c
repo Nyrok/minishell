@@ -109,3 +109,12 @@ void	append_opener(t_redir *actual_redir)
 			close(actual_redir->fd);
 	}
 }
+
+void	end_fd(int fd)
+{
+	if (fd != -1)
+	{
+		close(fd);
+		fd = -1;
+	}
+}

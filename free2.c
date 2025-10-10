@@ -69,3 +69,12 @@ void	free_cmd_path(t_main *main)
 		free(main->cmd_info->cmd_path);
 	main->cmd_info->cmd_path = NULL;
 }
+
+void	free_main_paths(t_main *main)
+{
+	if (main->cmds_paths)
+	{
+		free(main->cmds_paths);
+		main->cmds_paths = NULL;
+	}
+}

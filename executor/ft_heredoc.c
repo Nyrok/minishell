@@ -71,6 +71,7 @@ int	ft_heredoc(char *end)
 	char	*line;
 	int		tube[2];
 
+	g_signal = 0;
 	set_heredoc_signal();
 	if (pipe(tube) == -1)
 		return (reset_signal(), -1);
