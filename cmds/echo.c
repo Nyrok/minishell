@@ -14,12 +14,25 @@
 
 static int	is_n_flag(int argc, const char **argv, int *i)
 {
-	if (argc > 1 && ft_strncmp(argv[1], "-n", 2) == 0)
+	int	return_value;
+	int	j;
+
+	return_value = 0;
+	if (argc > 1 && argv)
 	{
-		(*i)++;
-		return (1);
+		while (argv[*i] && argv[*i][0] == '-')
+		{
+			j = 1;
+			while (argv[*i][j] == 'n')
+				j++;
+			if (!argv[*i][j])
+				return_value = 1;
+			else
+				return (return_value);
+			(*i)++;
+		}
 	}
-	return (0);
+	return (return_value);
 }
 
 static size_t	print_echo_args(int fd, int argc, const char **argv, int start)
@@ -62,7 +75,7 @@ int	echo(t_main *main, int argc, const char **argv, int nbcmds)
 	i = 1;
 	n_flag = is_n_flag(argc, argv, &i);
 	len_writed = print_echo_args(fd, argc, argv, i);
-	if (argc == 1 || !n_flag || !len_writed)
+	if (argc == 1 || (!len_writed && !n_flag))
 		write(fd, "\n", 1);
 	close_fd_if_needed(main, nbcmds, fd);
 	return (1);

@@ -104,7 +104,7 @@ char	*get_quoted(const char *str, size_t *i)
 	start = *i;
 	quote = str[start];
 	(*i)++;
-	while (str[*i] && !ft_strchr("|<>", str[*i]) && (str[*i] != quote \
+	while (str[*i] && str[*i] != '|' && (str[*i] != quote \
 	|| (str[*i + 1] && !ft_isspace(str[*i + 1]))))
 		(*i)++;
 	if (str[*i] == quote
