@@ -75,7 +75,7 @@ int	echo(t_main *main, int argc, const char **argv, int nbcmds)
 	i = 1;
 	n_flag = is_n_flag(argc, argv, &i);
 	len_writed = print_echo_args(fd, argc, argv, i);
-	if (argc == 1 || (!len_writed && !n_flag))
+	if (argc == 1 || (!len_writed && !n_flag) || !n_flag)
 		write(fd, "\n", 1);
 	close_fd_if_needed(main, nbcmds, fd);
 	return (1);
