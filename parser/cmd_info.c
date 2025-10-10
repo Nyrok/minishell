@@ -61,13 +61,14 @@ int	count_cmd_info(t_cmd_info *cmd_info)
 
 int	count_cmd_args(t_token *tokens)
 {
-	int	i;
+	int	count;
 
-	i = 1;
-	while (tokens && tokens->type == WORD)
+	count = 1;
+	while (tokens && tokens->type != PIPE)
 	{
+		if (tokens->type == WORD)
+			count++;
 		tokens = tokens->next;
-		i++;
 	}
-	return (i);
+	return (count);
 }

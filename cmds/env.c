@@ -56,7 +56,6 @@ int	check_outfile(t_main *main, int *fd, int nbcmds)
 
 void	print_env(int fd, t_envp *actual, int prefix_export)
 {
-
 	while (actual != NULL)
 	{
 		if (prefix_export)
