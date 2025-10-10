@@ -1,4 +1,3 @@
-.idea/
 .vscode/
 *.o
 *.out
@@ -17,4 +16,13 @@ out2
 out3
 cc.sh
 test.py
-testi
+tester
+tester.c
+test
+tester1
+tester2
+test.sh
+venv/
+.venv/
+paslespermissions
+tester2.c

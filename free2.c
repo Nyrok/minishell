@@ -62,3 +62,10 @@ void	delete_tube(t_main *main)
 		main->tube->fd = -1;
 	}
 }
+
+void	free_cmd_path(t_main *main)
+{
+	if (main->cmd_info->cmd_path)
+		free(main->cmd_info->cmd_path);
+	main->cmd_info->cmd_path = NULL;
+}

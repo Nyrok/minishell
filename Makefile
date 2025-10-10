@@ -22,8 +22,7 @@ SRCS = main.c \
 	executor/fd_utils.c \
 	executor/executor_utils4.c \
 	executor/ft_heredoc.c \
-	executor/executor_utils5.c \
-	executor/executor_utils6.c \
+	executor/file_checker.c \
 	cmds_paths_utils.c \
 	line_reader.c \
 	free.c \

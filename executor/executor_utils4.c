@@ -12,17 +12,6 @@
 
 #include "minishell.h"
 
-int	ft_access(t_main *main, char *pathname)
-{
-	if (access(pathname, X_OK) != 0)
-	{
-		printf("-minishell: %s: Permission denied\n", pathname);
-		main->last_exit_status = 126;
-		return (0);
-	}
-	return (1);
-}
-
 void	close_outfile(t_main *main)
 {
 	if (main->cmd_info->outfile && main->cmd_info->outfile->fd != -1)

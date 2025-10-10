@@ -20,12 +20,8 @@ void	handle_signal_heredoc(int signal)
 	if (signal == SIGINT)
 	{
 		rl_done = 1;
-		ioctl(STDOUT_FILENO, TIOCSTI, "\n");
+		ioctl(STDOUT_FILENO, TIOCSTI, "");
 		g_signal = SIGINT;
-		write(1, "\n", 1);
-		rl_replace_line("", 0);
-		rl_on_new_line();
-		rl_redisplay();
 	}
 }
 

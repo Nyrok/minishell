@@ -12,37 +12,68 @@
 
 #include "minishell.h"
 
-int	file_executor(t_main *main, int file, int last)
-{
-	char	**tmp;
-	int		i;
+//int	file_executor(t_main *main, int file, int last)
+//{
+//	char	**tmp;
+//	int		i;
 
-	i = 0;
-	isfilevalid(main);
-	tmp = ft_split(main->cmd_info->cmd, ' ');
-	main->cmd_info->cmd_path = ft_strdup(tmp[0]);
-	while (tmp[i])
-		free(tmp[i++]);
-	free(tmp);
-	if (last == 0)
-		main->tube->fd = cmd_executor(main, main->str_envp, file, -1);
-	else
-		last_executor(main, main->str_envp, main->tube->fd, -1);
-	free(main->cmd_info->cmd_path);
-	main->cmd_info->cmd_path = NULL;
-	return (1);
-}
+//	i = 0;
+//	isfilevalid(main);
+//	tmp = ft_split(main->cmd_info->cmd, ' ');
+//	main->cmd_info->cmd_path = ft_strdup(tmp[0]);
+//	while (tmp[i])
+//		free(tmp[i++]);
+//	free(tmp);
+//	if (last == 0)
+//		main->tube->fd = cmd_executor(main, main->str_envp, file, -1);
+//	else
+//	{
+//		if (main->cmd_info->infile)
+//			last_executor(main, main->str_envp, main->cmd_info->infile->fd, -1);
+//		else
+//			last_executor(main, main->str_envp, main->tube->fd, -1);
+//	}
+//	free(main->cmd_info->cmd_path);
+//	main->cmd_info->cmd_path = NULL;
+//	return (1);
+//}
 
 void	ft_dup2(int src, int dest)
 {
 	if (dup2(src, dest) == -1)
-		perror("dup2 failed");
+		perror("dup2 failed"); // oui
+}
+
+void	close_heredoc_future_cmds(t_main *main)
+{
+	t_cmd_info	*tmp_cmd_info;
+	t_redir		*tmp_redir;
+
+	if (main->cmd_info && main->cmd_info->next)
+	{
+		tmp_cmd_info = main->cmd_info->next;
+		while (tmp_cmd_info)
+		{
+			tmp_redir = tmp_cmd_info->redirs;
+			while (tmp_redir)
+			{
+				if (tmp_redir->type == HEREDOC && tmp_redir->fd != -1)
+				{
+					close(tmp_redir->fd);
+					tmp_redir->fd = -1;
+				}
+				tmp_redir = tmp_redir->next;
+			}
+			tmp_cmd_info = tmp_cmd_info->next;
+		}
+	}
 }
 
 void	child_executor(t_main *main, int *tube, int file, char **envp)
 {
 	signal(SIGQUIT, SIG_DFL);
 	close(tube[0]);
+	close_heredoc_future_cmds(main);
 	if (file != -1)
 	{
 		ft_dup2(file, STDIN_FILENO);
@@ -74,24 +105,34 @@ int	cmd_executor(t_main *main, char **envp, int file, int i)
 	int		tube[2];
 
 	if (pipe(tube) == -1)
-		return (perror("pipe"), -1);
-	if ((i == -2 && check_if_exist(main) == 0)
-		|| (i != -1 && i != -2 && main->cmds_paths->paths[i] == NULL)
-		|| ft_strlen(main->cmd_info->cmd) == 0)
-		isnocommand(main, file, tube);
+	{
+		perror("pipe");
+		return (-1);
+	}
+	if (i == -2 || (i != -1 && main->cmds_paths->paths[i] == NULL)) // pas sûr de la condition // edit pas sur du tt car on check pas if exist et on ne met pas le tube a null je crois
+	{
+		print_error(main, NOTFOUND, 0);
+		if (main->tube && main->tube->fd != -1)
+		{
+			close(main->tube->fd);
+			main->tube->fd = -1;
+		}
+		close(tube[1]);
+		main->tube->fd = tube[0];
+		fork_bad_file(main);
+		tube[1] = -1;
+		return (main->tube->fd);
+	}
+	pid = fork();
+	if (pid == 0)
+		child_executor(main, tube, file, envp);
 	else
 	{
-		pid = fork();
-		if (pid == 0)
-			child_executor(main, tube, file, envp);
-		else
-		{
-			if (tube[1] != -1)
-				close(tube[1]);
-			if (file != -1)
-				close(file);
-			add_pid(main, pid);
-		}
+		if (tube[1] != -1)
+			close(tube[1]);
+		if (file != -1)
+			close(file);
+		add_pid(main, pid);
 	}
 	return (tube[0]);
 }
@@ -100,7 +141,7 @@ int	executor(char *cmd, struct s_main *main)
 {
 	int	nbcmds;
 
-	main->pids = malloc((count_cmd_info(main->cmd_info) + 1) * sizeof(pid_t));
+	main->pids = malloc((totalcmds(cmd) + 1) * sizeof(pid_t));
 	if (!main->pids)
 		return (0);
 	main->str_envp = envp_to_str(main->envp);
@@ -121,5 +162,6 @@ int	executor(char *cmd, struct s_main *main)
 	if (main->pids)
 		end_pids(&main);
 	no_leaks(main);
+	printf("Exit status : %d\n", main->last_exit_status);
 	return (1);
 }
