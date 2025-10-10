@@ -32,5 +32,6 @@ void	ft_exit(t_main **main, int nbcmds, int onlyonecmd);
 int		builtin_exec(t_main *main, t_envp **envp, int nbcmds, int onlyonecmd);
 void	clear_tube(t_main **main);
 int		check_outfile(t_main *main, int *fd, int nbcmds);
+void	print_env(int fd, t_envp *actual, int prefix_export);
 
 #endif

@@ -59,7 +59,9 @@ void	free_split(char **res, int j)
 {
 	while (j >= 0)
 	{
-		free(res[j]);
+		if (res[j])
+			free(res[j]);
+		res[j] = NULL;
 		j--;
 	}
 	free(res);

@@ -17,7 +17,7 @@ char	**ft_split_env(char const *s)
 	auto int i = 0;
 	auto int j = 0;
 	auto char *c = ft_strchr(s, '=');
-	auto char **res = ft_calloc(sizeof(char *), !!c + 2);
+	auto char **res = ft_calloc(sizeof(char *), 3);
 	if (!res)
 		return (NULL);
 	auto int has_found = 0;

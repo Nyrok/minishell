@@ -66,7 +66,7 @@ int	heredoc_interrupt(char **line, int tube[2])
 	return (1);
 }
 
-int	ft_heredoc(char *end)
+int	ft_heredoc(t_main *main, char *end)
 {
 	char	*line;
 	int		tube[2];
@@ -78,6 +78,7 @@ int	ft_heredoc(char *end)
 	while (1)
 	{
 		line = readline("> ");
+		parse_heredoc_env(main->envp, &line, main->last_exit_status);
 		if (heredoc_interrupt(&line, tube) == -1)
 			return (-1);
 		if (heredoc_interrupt(&line, tube) == 0)
