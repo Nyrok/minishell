@@ -114,5 +114,11 @@ void		free_cmd_path(t_main *main);
 void		free_main_paths(t_main *main);
 void		end_fd(int fd);
 void		ft_strdup_cmd_path(t_main *main, int i);
+int			isonlypt(char *str);
+int			gestion_error_relative_path(t_main *main, int type);
+void		relative_path_free(t_main *main);
+int			error_no_path(t_main *main, int error);
+void		relative_path_executor(t_main *main, char **envp, int lastcmd);
+void		cmd_null(t_main *main);
 
 #endif

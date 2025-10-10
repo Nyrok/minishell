@@ -71,7 +71,7 @@ int	ft_commandonlypoints(t_main *main)
 {
 	if (isonlypt(main->cmd_info->cmd) && ft_strlen(main->cmd_info->cmd) > 1 \
 		&& main->cmds_paths && main->cmds_paths->paths \
-		&& main->cmds_paths->paths[0]) // ajt de cette condition pour export PATH=
+		&& main->cmds_paths->paths[0])
 	{
 		printf("minishell: %s: command not found\n", main->cmd_info->cmd);
 		main->last_exit_status = 127;

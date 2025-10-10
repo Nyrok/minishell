@@ -72,29 +72,8 @@ int	create_out(t_main *main)
 	return (1);
 }
 
-int	handle_heredoc(t_main *main)
-{
-	t_redir	*redir_tmp;
-	int		fd;
-
-	redir_tmp = main->cmd_info->redirs;
-	while (redir_tmp)
-	{
-		if (redir_tmp->type == HEREDOC)
-		{
-			fd = ft_heredoc(redir_tmp->filename);
-			if (fd != -1)
-			{
-				close(fd);
-				return (-1);
-			}
-		}
-		redir_tmp = redir_tmp->next;
-	}
-	return (-1);
-}
-
-int	handle_multiple_cmds(t_main *main, char **envp, int nbcmds, int *error_printed)
+int	handle_multiple_cmds(t_main *main, char **envp,
+		int nbcmds, int *error_printed)
 {
 	setup_cmd_redirs(main->cmd_info);
 	check_tube(&main);
@@ -103,41 +82,6 @@ int	handle_multiple_cmds(t_main *main, char **envp, int nbcmds, int *error_print
 	multiplecmdexector(main, envp, nbcmds);
 	fdcls(&main, 0);
 	return (0);
-}
-
-int hasinfile_heredocs_only(t_main *main)
-{
-	t_cmd_info	*cmd;
-	t_redir		*redir;  // <
-
-	cmd = main->cmd_info;
-	while (cmd)
-	{
-		redir = cmd->redirs;
-		while (redir)
-		{
-			if (redir->type == HEREDOC)
-			{
-				redir->fd = ft_heredoc(redir->filename);
-				if (redir->fd == -1)
-					return (-1);
-			}
-			redir = redir->next;
-		}
-		cmd = cmd->next;
-	}
-	return (0);
-}
-
-void	cmd_null(t_main *main)
-{
-	if (main->cmd_info)
-	{
-		main->last_exit_status = 1;
-		fork_bad_file(main);
-		hasinfile2(&main, 0, 1);
-		fdcls(&main, 0);
-	}
 }
 
 int	multiple_cmd_handler(t_main *main, char **envp, int nbcmds)
@@ -158,7 +102,7 @@ int	multiple_cmd_handler(t_main *main, char **envp, int nbcmds)
 		if (main->cmd_info && main->cmd_info->cmd != NULL)
 			handle_multiple_cmds(main, envp, nbcmds, &error_printed);
 		else
-			cmd_null(main); // modif norme
+			cmd_null(main);
 		nbcmds--;
 		temp_cmd_info = main->cmd_info;
 		main->cmd_info = main->cmd_info->next;

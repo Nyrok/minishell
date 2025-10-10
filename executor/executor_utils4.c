@@ -57,3 +57,32 @@ void	end_pids(t_main **main)
 	i = 3;
 	free(actual);
 }
+
+void	ft_strdup_cmd_path(t_main *main, int i)
+{
+	if (!main->cmds_paths->paths[i] && main->cmd_info \
+		&& ft_strlen(main->cmd_info->cmd) == 0)
+	{
+		free(main->cmd_info->cmd_path);
+		main->cmd_info->cmd_path = ft_strdup(main->cmd_info->cmd);
+		main->last_exit_status = 127;
+	}
+}
+
+int	create_eof_fd(t_main *main)
+{
+	int	pipefd[2];
+
+	if (main->tube && main->tube->fd != -1)
+	{
+		close(main->tube->fd);
+		main->tube->fd = -1;
+	}
+	if (pipe(pipefd) == -1)
+	{
+		perror("pipe");
+		return (-1);
+	}
+	close(pipefd[1]);
+	return (pipefd[0]);
+}
