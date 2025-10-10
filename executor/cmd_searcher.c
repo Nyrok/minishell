@@ -37,13 +37,7 @@ int	llaunch_executions(t_main *main, char **envp, int tube, int i)
 
 void	handle_null_case(t_main *main, char **envp, int tube, int i)
 {
-	if (main->cmds_paths->paths[i] == NULL && main->cmd_info \
-		&& ft_strlen(main->cmd_info->cmd) == 0)
-	{
-		free(main->cmd_info->cmd_path);
-		main->cmd_info->cmd_path = ft_strdup(main->cmd_info->cmd);
-		main->last_exit_status = 127;
-	}
+	ft_strdup_cmd_path(main, i); //norme
 	if (main->cmds_paths->paths[i] == NULL && main->cmd_info->cmd[0] != '/')
 		last_executor(main, envp, tube, i);
 	if (main->cmds_paths->paths[i] == NULL && main->cmd_info->cmd[0] == '/')
@@ -135,21 +129,15 @@ void	relative_path_executor(t_main *main, char **envp, int lastcmd)
 	auto int error = 0;
 	relative_path_free(main);
 	free_cmd_path(main); // le met a null jsp si ici c bien a voir
+	//error = error_no_path(main, error);
 	error = error_no_path(main, error);
 	if (error == 1)
-	{
-		free_cmd_path(main);
-		if (main->cmds_paths)
-		{
-			free(main->cmds_paths);
-			main->cmds_paths = NULL;
-		}
-		return ;
-	}
+		return (free_cmd_path(main), free_main_paths(main)); // norme
 	if (lastcmd == 0)
 	{
 		if (main->cmd_info->infile)
-			main->tube->fd = cmd_executor(main, envp, main->cmd_info->infile->fd, -1);
+			main->tube->fd = cmd_executor(main, envp,
+				main->cmd_info->infile->fd, -1);
 		else
 			main->tube->fd = cmd_executor(main, envp, main->tube->fd, -1);
 	}
@@ -161,11 +149,7 @@ void	relative_path_executor(t_main *main, char **envp, int lastcmd)
 			last_executor(main, envp, main->tube->fd, -1);
 	}
 	free_cmd_path(main);
-	if (main->cmds_paths)
-	{
-		free(main->cmds_paths);
-		main->cmds_paths = NULL;
-	}
+	free_main_paths(main);
 }
 
 void	lcmd_searcher(t_main *main, char **envp, int tube)
@@ -210,6 +194,17 @@ int	launch_executions(t_main *main, char **envp, int file, int i)
 	return (1);
 }
 
+void	ft_strdup_cmd_path(t_main *main, int i)
+{
+	if (!main->cmds_paths->paths[i] && main->cmd_info \
+		&& ft_strlen(main->cmd_info->cmd) == 0)
+	{
+		free(main->cmd_info->cmd_path);
+		main->cmd_info->cmd_path = ft_strdup(main->cmd_info->cmd);
+		main->last_exit_status = 127;
+	}
+}
+
 int	cmd_searcher(t_main *main, char **envp, int file)
 {
 	auto int i = 0;
@@ -226,13 +221,7 @@ int	cmd_searcher(t_main *main, char **envp, int file)
 			if (access(main->cmd_info->cmd_path, X_OK) == 0 \
 				&& ft_strlen(main->cmd_info->cmd) != 0)
 				return (launch_executions(main, envp, file, i), main->tube->fd); // au lieu du break, on gagne des lignes
-			if (!main->cmds_paths->paths[i] && main->cmd_info \
-				&& ft_strlen(main->cmd_info->cmd) == 0)
-			{
-				free(main->cmd_info->cmd_path);
-				main->cmd_info->cmd_path = ft_strdup(main->cmd_info->cmd);
-				main->last_exit_status = 127;
-			}
+			ft_strdup_cmd_path(main, i); // norme
 			if (!main->cmds_paths->paths[i] && main->cmd_info->cmd[0] != '/') // bzr condition on rentre dans les 2 if
 				main->tube->fd = cmd_executor(main, envp, file, i);
 			free_cmd_path(main);

@@ -12,6 +12,7 @@
 
 #include "minishell.h"
 
+
 void	last_child_executor(int tube, t_main *main, char *cmd_path, char **envp)
 {
 	signal(SIGQUIT, SIG_DFL);
@@ -21,8 +22,7 @@ void	last_child_executor(int tube, t_main *main, char *cmd_path, char **envp)
 	if (tube != -1)
 	{
 		ft_dup2(tube, STDIN_FILENO);
-		close(tube);
-		tube = -1;
+		end_fd(tube);
 	}
 	if (main->tube && main->tube->fd != -1)
 		close(main->tube->fd);
@@ -42,23 +42,15 @@ void	last_child_executor(int tube, t_main *main, char *cmd_path, char **envp)
 	}
 }
 
+
 void	last_executor(t_main *main, char **envp, int tube, int i)
 {
 	pid_t	pid;
 
 	if (i == -2 || (i != -1 && main->cmds_paths->paths[i] == NULL))
 	{
-		print_error(main, NOTFOUND, 0);
-		fork_bad_file(main);
-		if (tube != -1)
-			close(tube);
-		if (main->cmd_info->outfile != NULL
-			&& main->cmd_info->outfile->fd != -1)
-		{
-			close(main->cmd_info->outfile->fd);
-			main->cmd_info->outfile->fd = -1;
-		}
-		return ;
+		return (print_error(main, NOTFOUND, 0), \
+			end_fd(tube), close_outfile(main), fork_bad_file(main)); // javais un bad dup2 a cause de end fd avant de fork bad file
 	}
 	if (pipe(main->cmd_info->tube) == -1)
 	{
@@ -71,10 +63,8 @@ void	last_executor(t_main *main, char **envp, int tube, int i)
 		last_child_executor(tube, main, main->cmd_info->cmd_path, envp);
 	else
 	{
-		if (tube != -1)
-			close(tube);
-		if (main->cmd_info->outfile != NULL
-			&& main->cmd_info->outfile->fd != -1)
+		end_fd(tube);
+		if (main->cmd_info->outfile && main->cmd_info->outfile->fd != -1) // a la base main->cmd_info->outfile != NULL
 		{
 			close(main->cmd_info->outfile->fd);
 			main->cmd_info->outfile->fd = -1;
@@ -116,14 +106,15 @@ int	onecmdexector(t_main *main, char **envp)
 	auto int error_printed = 1;
 	auto int has_infile = 0;
 	if (main->cmd_info && main->cmd_info->cmd == NULL)
-		return (hasinfile_heredocs_only(main), main->last_exit_status = 1, fork_bad_file(main),
-		hasinfile2(&main, 0, 1), fdcls(&main, 0), end_pids(&main),
-		free_all_cmd_info(&main), no_leaks(main), -1);
+		return (hasinfile_heredocs_only(main), main->last_exit_status = 1,
+			fork_bad_file(main), hasinfile2(&main, 0, 1), fdcls(&main, 0),
+			end_pids(&main), free_all_cmd_info(&main), no_leaks(main), -1);
 	setup_cmd_redirs(main->cmd_info);
 	hasinfile_heredocs_only(main);
 	has_infile = hasinfile(&main, 0, &error_printed);
 	if (has_infile == -1 || has_infile == -2)
-		return (main->last_exit_status = 1, fork_bad_file(main), free_cmd_info(&main->cmd_info), no_leaks(main), 0);
+		return (main->last_exit_status = 1, fork_bad_file(main), \
+			free_cmd_info(&main->cmd_info), no_leaks(main), 0);
 	if (main->cmd_info->outfile && main->cmd_info->outfile->fd != -1)
 	{
 		close(main->cmd_info->outfile->fd);
@@ -134,14 +125,8 @@ int	onecmdexector(t_main *main, char **envp)
 	if (main->cmd_info->infile != NULL)
 		lcmd_searcher(main, envp, main->cmd_info->infile->fd);
 	else
-	{
 		lcmd_searcher(main, envp, -1);
-	}
-	if (main->tube && main->tube->fd != -1)
-	{
-		close(main->tube->fd);
-		main->tube->fd = -1;
-	}
+	delete_tube(main);
 	return (1);
 }
 
@@ -199,14 +184,10 @@ int	multiplecmdexector(t_main *main, char **envp, int nbcmd)
 		return (1);
 	if (main->cmd_info->infile != NULL && main->cmd_info->outfile == NULL
 		&& nbcmd > 1)
-	{
 		main->tube->fd = cmd_searcher(main, envp, main->cmd_info->infile->fd);
-	}
 	else if (main->cmd_info->infile == NULL && main->cmd_info->outfile == NULL
 		&& nbcmd > 1)
-	{
 		main->tube->fd = cmd_searcher(main, envp, main->tube->fd);
-	}
 	else if (main->cmd_info->infile == NULL)
 		lcmd_searcher(main, envp, main->tube->fd);
 	else if (main->cmd_info->infile != NULL)

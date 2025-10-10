@@ -77,17 +77,14 @@ void	child_executor(t_main *main, int *tube, int file, char **envp)
 	if (file != -1)
 	{
 		ft_dup2(file, STDIN_FILENO);
-		close(file);
-		file = -1;
+		end_fd(file);
 	}
 	if (tube[1] != -1)
 	{
 		ft_dup2(tube[1], STDOUT_FILENO);
-		close(tube[1]);
-		tube[1] = -1;
+		end_fd(tube[1]); // end fd
 	}
-	if (execve(main->cmd_info->cmd_path,
-			(char *const *)main->cmd_info->argv, envp) == -1)
+	if (execve(main->cmd_info->cmd_path, (char *const *)main->cmd_info->argv, envp) == -1)
 	{
 		if (tube[1] != -1)
 			close(tube[1]);
@@ -97,6 +94,16 @@ void	child_executor(t_main *main, int *tube, int file, char **envp)
 		perror("execve failed");
 		exit(exit_code);
 	}
+}
+
+void	handle_error_cmd(t_main	*main, int tube[2])
+{
+	print_error(main, NOTFOUND, 0);
+	delete_tube(main);
+	close(tube[1]);
+	main->tube->fd = tube[0];
+	fork_bad_file(main);
+	tube[1] = -1;
 }
 
 int	cmd_executor(t_main *main, char **envp, int file, int i)
@@ -111,16 +118,7 @@ int	cmd_executor(t_main *main, char **envp, int file, int i)
 	}
 	if (i == -2 || (i != -1 && main->cmds_paths->paths[i] == NULL)) // pas sûr de la condition // edit pas sur du tt car on check pas if exist et on ne met pas le tube a null je crois
 	{
-		print_error(main, NOTFOUND, 0);
-		if (main->tube && main->tube->fd != -1)
-		{
-			close(main->tube->fd);
-			main->tube->fd = -1;
-		}
-		close(tube[1]);
-		main->tube->fd = tube[0];
-		fork_bad_file(main);
-		tube[1] = -1;
+		handle_error_cmd(main, tube);
 		return (main->tube->fd);
 	}
 	pid = fork();
