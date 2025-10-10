@@ -97,6 +97,8 @@ int	error_no_path(t_main *main, int error)
 void	relative_path_executor(t_main *main, char **envp, int lastcmd)
 {
 	auto int error = 0;
+	if (is_a_file_and_not_an_exec(main, envp, lastcmd) == 1)
+		return ;
 	relative_path_free(main);
 	free_cmd_path(main);
 	error = error_no_path(main, error);

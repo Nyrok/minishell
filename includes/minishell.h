@@ -121,5 +121,6 @@ int			error_no_path(t_main *main, int error);
 void		relative_path_executor(t_main *main, char **envp, int lastcmd);
 void		cmd_null(t_main *main);
 void		close_redsirs_norme(t_redir *actual_redir);
+int			is_a_file_and_not_an_exec(t_main *main, char **envp, int lastcmd);
 
 #endif

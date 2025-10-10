@@ -52,3 +52,19 @@ void	close_redsirs_norme(t_redir *actual_redir)
 	close(actual_redir->fd);
 	actual_redir->fd = -1;
 }
+
+int	is_a_file_and_not_an_exec(t_main *main, char **envp, int lastcmd)
+{
+	(void)envp;
+	(void)lastcmd;
+	if (main->cmds_paths->paths && main->cmds_paths->paths[0]
+		&& ft_strchr(main->cmd_info->cmd, '.')
+		&& !ft_strchr(main->cmd_info->cmd, '/'))
+	{
+		printf("minishell: %s: command not found\n", main->cmd_info->cmd);
+		main->last_exit_status = 127;
+		fork_bad_file(main);
+		return (1);
+	}
+	return (0);
+}

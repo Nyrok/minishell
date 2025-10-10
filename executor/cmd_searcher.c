@@ -81,7 +81,8 @@ int	cmd_searcher(t_main *main, char **envp, int file)
 	auto int i = 0;
 	cmds_paths_maker(main);
 	if (ft_strchr(main->cmd_info->cmd, '/') || !main->cmds_paths \
-		|| !main->cmds_paths->paths || !main->cmds_paths->paths[0])
+		|| !main->cmds_paths->paths || !main->cmds_paths->paths[0]
+		|| ft_strchr(main->cmd_info->cmd, '.'))
 		relative_path_executor(main, envp, 0);
 	else
 	{
