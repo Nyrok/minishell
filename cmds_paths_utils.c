@@ -29,7 +29,6 @@ void	cmds_paths_maker(t_main *main)
 	env_value = get_env_value(main->envp, "PATH");
 	if (env_value == NULL)
 	{
-		//printf("ASSAAS\n");
 		main->cmds_paths->paths = NULL;
 		return ;
 	}

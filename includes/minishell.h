@@ -56,7 +56,7 @@ void		list_history_add(t_history **history, char *cmd);
 void		list_history_cleaner(t_main *main);
 void		print_history(t_history *history);
 int			executor(char *cmd, struct s_main *main);
-int			file_executor(t_main *main, int file, int last);
+//int			file_executor(t_main *main, int file, int last);
 void		last_executor(t_main *main, char **envp, int tube,
 				int i);
 int			cmd_executor(t_main *main, char **envp, int file, int i);
@@ -95,15 +95,21 @@ void		delete_tube(t_main *main);
 void		append_opener(t_redir *actual_redir);
 void		ft_dup2(int src, int dest);
 int			isbuilt_in(t_main *main);
-int			ft_access(t_main *main, char *pathname);
+int			ft_execperm(t_main *main, char *pathname);
 void		close_outfile(t_main *main);
 char		*paths_searcher(char *cmd, char *cmd_path, char *paths);
 int			create_eof_fd(t_main *main);
 int			check_if_exist(t_main *main);
-int 		hasinfile_heredocs_only(t_main *main);
+int			hasinfile_heredocs_only(t_main *main);
 void		fork_bad_file(t_main *main);
 int			hasinfile2(struct s_main **main, int error_check, int print);
 void		relative_path_executor(t_main *main, char **envp, int lastcmd);
 void		close_heredoc_future_cmds(t_main *main);
+int			ft_exist(t_main *main, char *pathname);
+int			ft_isadirectory(t_main *main, char *pathname);
+int			ft_commandisapoint(t_main *main);
+int			ft_commandonlypoints(t_main *main);
+int			isonlypt(char *str);
+void		free_cmd_path(t_main *main);
 
 #endif

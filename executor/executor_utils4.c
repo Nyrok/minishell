@@ -12,17 +12,6 @@
 
 #include "minishell.h"
 
-int	ft_access(t_main *main, char *pathname)
-{
-	if (access(pathname, X_OK) != 0)
-	{
-		printf("-minishell: %s: Permission denied\n", pathname);
-		main->last_exit_status = 126;
-		return (0);
-	}
-	return (1);
-}
-
 void	close_outfile(t_main *main)
 {
 	if (main->cmd_info->outfile && main->cmd_info->outfile->fd != -1)
@@ -37,7 +26,6 @@ void	add_pid(t_main *main, pid_t newpid)
 	int		i;
 	pid_t	*actual;
 
-	//printf("EMMMM\n");
 	i = 0;
 	actual = main->pids;
 	while (actual[i] != 0)

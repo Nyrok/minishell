@@ -16,8 +16,8 @@ int	tube_handler(t_main **main)
 {
 	if ((*main)->cmd_info->infile != NULL)
 	{
-		if (fd_opener(main, (*main)->cmd_info->infile, -1, 0) == -1) // parametre 3 de 0 a -1 pour ne pas crash a cause du heredoc
-			return (-1); // remis le fdopener mais pas sur
+		if (fd_opener(main, (*main)->cmd_info->infile, -1, 0) == -1)
+			return (-1); 
 		if ((*main)->tube->fd != -1
 			&& (*main)->cmd_info->infile->fd != (*main)->tube->fd)
 		{

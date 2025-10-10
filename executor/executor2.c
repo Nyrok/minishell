@@ -28,7 +28,7 @@ void	last_child_executor(int tube, t_main *main, char *cmd_path, char **envp)
 		close(main->tube->fd);
 	if (main->cmd_info->outfile != NULL)
 	{
-		fd_opener(&main, main->cmd_info->outfile, 0, 1); // 0 -> -1 useless je pense
+		fd_opener(&main, main->cmd_info->outfile, 0, 1);
 		ft_dup2(main->cmd_info->outfile->fd, STDOUT_FILENO);
 		close_outfile(main);
 	}
@@ -46,9 +46,8 @@ void	last_executor(t_main *main, char **envp, int tube, int i)
 {
 	pid_t	pid;
 
-	if (i == -2 || (i != -1 && main->cmds_paths->paths[i] == NULL)) // pas sûr de la condition // edit pas sur du tt car on check pas if exist et on ne met pas le tube a null je crois
+	if (i == -2 || (i != -1 && main->cmds_paths->paths[i] == NULL))
 	{
-		//printf("CC\n"); 
 		print_error(main, NOTFOUND, 0);
 		fork_bad_file(main);
 		if (tube != -1)
@@ -96,20 +95,20 @@ int	executor_setup(t_main **main, int *nbcmds, char *cmd)
 
 int create_eof_fd(t_main *main)
 {
-    int pipefd[2];
-    
+	int pipefd[2];
+
 	if (main->tube && main->tube->fd != -1)
 	{
 		close(main->tube->fd);
 		main->tube->fd = -1;
 	}
-    if (pipe(pipefd) == -1)
-    {
-        perror("pipe");
-        return (-1);
-    }
-    close(pipefd[1]);
-    return (pipefd[0]);
+	if (pipe(pipefd) == -1)
+	{
+		perror("pipe");
+		return (-1);
+	}
+	close(pipefd[1]);
+	return (pipefd[0]);
 }
 
 int	onecmdexector(t_main *main, char **envp)
@@ -178,7 +177,6 @@ void	fork_bad_file(t_main *main)
 	if (pid == 0)
 	{
 		exit_code = main->last_exit_status;
-		//printf("Exit status : %d\n", exit_code);
 		free_execve(&main);
 		exit(exit_code);
 	}

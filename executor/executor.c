@@ -12,31 +12,31 @@
 
 #include "minishell.h"
 
-int	file_executor(t_main *main, int file, int last)
-{
-	char	**tmp;
-	int		i;
+//int	file_executor(t_main *main, int file, int last)
+//{
+//	char	**tmp;
+//	int		i;
 
-	i = 0;
-	isfilevalid(main);
-	tmp = ft_split(main->cmd_info->cmd, ' '); // Voir si ca passe ici les commandes genre "./cc dd"
-	main->cmd_info->cmd_path = ft_strdup(tmp[0]);
-	while (tmp[i])
-		free(tmp[i++]);
-	free(tmp);
-	if (last == 0)
-		main->tube->fd = cmd_executor(main, main->str_envp, file, -1); // ok enft je ne charge jamais le tube ou le infile
-	else
-	{
-		if (main->cmd_info->infile)
-			last_executor(main, main->str_envp, main->cmd_info->infile->fd, -1);
-		else
-			last_executor(main, main->str_envp, main->tube->fd, -1); // ok enft je ne charge jamais le tube ou le infile
-	}
-	free(main->cmd_info->cmd_path);
-	main->cmd_info->cmd_path = NULL;
-	return (1);
-}
+//	i = 0;
+//	isfilevalid(main);
+//	tmp = ft_split(main->cmd_info->cmd, ' ');
+//	main->cmd_info->cmd_path = ft_strdup(tmp[0]);
+//	while (tmp[i])
+//		free(tmp[i++]);
+//	free(tmp);
+//	if (last == 0)
+//		main->tube->fd = cmd_executor(main, main->str_envp, file, -1);
+//	else
+//	{
+//		if (main->cmd_info->infile)
+//			last_executor(main, main->str_envp, main->cmd_info->infile->fd, -1);
+//		else
+//			last_executor(main, main->str_envp, main->tube->fd, -1);
+//	}
+//	free(main->cmd_info->cmd_path);
+//	main->cmd_info->cmd_path = NULL;
+//	return (1);
+//}
 
 void	ft_dup2(int src, int dest)
 {
@@ -51,7 +51,7 @@ void	close_heredoc_future_cmds(t_main *main)
 
 	if (main->cmd_info && main->cmd_info->next)
 	{
-		tmp_cmd_info = main->cmd_info->next; // s'assurer du bon fonctionnement de cette fonction
+		tmp_cmd_info = main->cmd_info->next;
 		while (tmp_cmd_info)
 		{
 			tmp_redir = tmp_cmd_info->redirs;
@@ -82,7 +82,6 @@ void	child_executor(t_main *main, int *tube, int file, char **envp)
 	}
 	if (tube[1] != -1)
 	{
-		//printf("ccc\n");
 		ft_dup2(tube[1], STDOUT_FILENO);
 		close(tube[1]);
 		tube[1] = -1;
@@ -112,7 +111,6 @@ int	cmd_executor(t_main *main, char **envp, int file, int i)
 	}
 	if (i == -2 || (i != -1 && main->cmds_paths->paths[i] == NULL)) // pas sûr de la condition // edit pas sur du tt car on check pas if exist et on ne met pas le tube a null je crois
 	{
-		//printf("CC2\n"); 
 		print_error(main, NOTFOUND, 0);
 		if (main->tube && main->tube->fd != -1)
 		{
@@ -121,19 +119,10 @@ int	cmd_executor(t_main *main, char **envp, int file, int i)
 		}
 		close(tube[1]);
 		main->tube->fd = tube[0];
-		fork_bad_file(main); // pas de leak ?
+		fork_bad_file(main);
 		tube[1] = -1;
-		//if (file != -1)
-		//	close(file);
 		return (main->tube->fd);
 	}
-	//if ((i == -2 && check_if_exist(main) == 0) || (i > 0 && main->cmds_paths->paths[i] == NULL)) // pas sûr de la condition i != -1 -> i > 0
-	//{
-	//	//printf("CC\n");
-	//	print_error(main, NOTFOUND, 0);
-	//	close(tube[1]);
-	//	tube[1] = -1;
-	//}
 	pid = fork();
 	if (pid == 0)
 		child_executor(main, tube, file, envp);
@@ -152,7 +141,6 @@ int	executor(char *cmd, struct s_main *main)
 {
 	int	nbcmds;
 
-	//printf("ee = %d\n", totalcmds(cmd));
 	main->pids = malloc((totalcmds(cmd) + 1) * sizeof(pid_t));
 	if (!main->pids)
 		return (0);
