@@ -75,9 +75,8 @@ int	env(t_main *main, t_envp *envp, int onlyonecommand, int nbcmds)
 	actual = envp;
 	fd = STDOUT_FILENO;
 	(void)onlyonecommand;
-	if (check_outfile(main, &fd, nbcmds) == 2)
-		return (1);
-	print_env(fd, actual, 0);
+	if (check_outfile(main, &fd, nbcmds) != 2)
+		print_env(fd, actual, 0);
 	main->last_exit_status = 0;
 	return (1);
 }
