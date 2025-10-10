@@ -98,7 +98,7 @@ int	exit_checker(t_main **main, int nbcmds, int onlyonecmd)
 
 void	ft_exit(t_main **main, int nbcmds, int onlyonecmd)
 {
-	auto int exit_code = 0;
+	auto int exit_code = (*main)->last_exit_status;
 	if ((*main)->cmd_info->argc > 2)
 	{
 		printf("minishell: exit: too many arguments\n");

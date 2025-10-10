@@ -46,3 +46,9 @@ int	hasinfile_heredocs_only(t_main *main)
 	}
 	return (0);
 }
+
+void	close_redsirs_norme(t_redir *actual_redir)
+{
+	close(actual_redir->fd);
+	actual_redir->fd = -1;
+}

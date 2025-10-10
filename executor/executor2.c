@@ -51,10 +51,7 @@ void	last_executor(t_main *main, char **envp, int tube, int i)
 			end_fd(tube), close_outfile(main), fork_bad_file(main));
 	}
 	if (pipe(main->cmd_info->tube) == -1)
-	{
-		perror("pipe failed");
-		return ;
-	}
+		return (perror("pipe failed"));
 	close(main->cmd_info->tube[1]);
 	pid = fork();
 	if (pid == 0)
