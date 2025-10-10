@@ -54,12 +54,12 @@ int	check_outfile(t_main *main, int *fd, int nbcmds)
 	return (1);
 }
 
-void	print_env(t_main *main, int fd, t_envp *actual, int nbcmds)
+void	print_env(int fd, t_envp *actual, int prefix_export)
 {
-	if (check_outfile(main, &fd, nbcmds) == 2)
-		return ;
 	while (actual != NULL)
 	{
+		if (prefix_export)
+			write(fd, "export ", 7);
 		write(fd, actual->full, ft_strlen(actual->full));
 		write(fd, "\n", 1);
 		actual = actual->next;
@@ -69,10 +69,13 @@ void	print_env(t_main *main, int fd, t_envp *actual, int nbcmds)
 int	env(t_main *main, t_envp *envp, int onlyonecommand, int nbcmds)
 {
 	t_envp	*actual;
+	int		fd;
 
 	actual = envp;
+	fd = STDOUT_FILENO;
 	(void)onlyonecommand;
-	print_env(main, STDOUT_FILENO, actual, nbcmds);
+	if (check_outfile(main, &fd, nbcmds) != 2)
+		print_env(fd, actual, 0);
 	main->last_exit_status = 0;
 	return (1);
 }

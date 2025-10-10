@@ -49,7 +49,7 @@ static void	replace_word_env(char *env_value, char **word, char *key, size_t *i)
 		*i = 0;
 }
 
-static void	parse_word(t_envp *envp, char **word, int last_exit_status)
+static void	parse_word_env(t_envp *envp, char **word, int last_exit_status)
 {
 	char	*key;
 	size_t	i;
@@ -76,29 +76,27 @@ static void	parse_word(t_envp *envp, char **word, int last_exit_status)
 	}
 }
 
-void	parse_env(t_envp *envp, t_token *tokens, int last_exit_status)
+void	parse_env(t_envp *envp, char **str, int last_exit_status)
 {
-	while (tokens)
+	if ((*str)[0] != '\'' && ft_strchr(*str, '$'))
 	{
-		if (tokens->type == WORD && tokens->word)
-		{
-			if (tokens->word[0] != '\'' && ft_strchr(tokens->word, '$'))
-			{
-				parse_word(envp, &tokens->word, last_exit_status);
-				if (tokens->word[0] != '"')
-					tokens->word = rm_dollars(tokens->word, 0, \
-						ft_strlen(tokens->word));
-			}
-			if (tokens->word[0] == '\'')
-				tokens->word = rm_char(tokens->word, '\'');
-			else if (tokens->word[0] == '"')
-				tokens->word = rm_char(tokens->word, '"');
-			else
-			{
-				tokens->word = rm_char(tokens->word, '"');
-				tokens->word = rm_char(tokens->word, '\'');
-			}
-		}
-		tokens = tokens->next;
+		parse_word_env(envp, str, last_exit_status);
+		if ((*str)[0] != '"')
+			*str = rm_dollars(*str, 0, ft_strlen(*str));
 	}
+	if ((*str)[0] == '\'')
+		*str = rm_char(*str, '\'');
+	else if ((*str)[0] == '"')
+		*str = rm_char(*str, '"');
+	else
+	{
+		*str = rm_char(*str, '"');
+		*str = rm_char(*str, '\'');
+	}
+}
+
+void	parse_heredoc_env(t_envp *envp, char **str, int last_exit_status)
+{
+	if (ft_strchr(*str, '$'))
+		parse_word_env(envp, str, last_exit_status);
 }
