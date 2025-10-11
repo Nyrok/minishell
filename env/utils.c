@@ -47,6 +47,8 @@ int	is_valid_env_name(char *str)
 {
 	if (!str)
 		return (0);
+	if (!ft_strlen(str))
+		return (0);
 	if (ft_isdigit(*str))
 		return (0);
 	if (ft_strlen(str) == 1 && *str == '?')

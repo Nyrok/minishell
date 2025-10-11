@@ -29,6 +29,7 @@ void	set_heredoc_signal(void)
 {
 	struct sigaction	sa;
 
+	g_signal = 0;
 	sa.sa_handler = handle_signal_heredoc;
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = 0;
@@ -68,17 +69,17 @@ int	heredoc_interrupt(char **line, int tube[2])
 
 int	ft_heredoc(t_main *main, char *end)
 {
-	char	*line;
-	int		tube[2];
-
-	g_signal = 0;
+	auto int tube[2];
+	auto int should_expand = !ft_strchr(end, '"') && !ft_strchr(end, '\'');
+	end = rm_char(rm_char(end, '"'), '\'');
 	set_heredoc_signal();
 	if (pipe(tube) == -1)
 		return (reset_signal(), -1);
 	while (1)
 	{
-		line = readline("> ");
-		parse_heredoc_env(main->envp, &line, main->last_exit_status);
+		auto char *line = readline("> ");
+		if (should_expand)
+			parse_heredoc_env(main->envp, &line, main->last_exit_status);
 		if (heredoc_interrupt(&line, tube) == -1)
 			return (-1);
 		if (heredoc_interrupt(&line, tube) == 0)
