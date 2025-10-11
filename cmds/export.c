@@ -29,7 +29,7 @@ int	export(t_main *main, int argc, char **argv, int nbcmds)
 			continue ;
 		auto char **pair = ft_split_env(argv[i]);
 		if (!pair || !is_valid_env_name(pair[0]))
-			printf("-minishell: Invalid env name\n");
+			printf("minishell: Invalid env name\n");
 		else
 			add_or_replace(main, &actual, \
 				ft_strdup(pair[0]), ft_strdup(pair[1]));

@@ -41,19 +41,19 @@ static int	cd_home(t_main *main, char *oldpwd, int onlyonecommand)
 	home = get_env_value(main->envp, "HOME");
 	if (!home)
 	{
-		printf("-minishell: HOME not set\n");
+		printf("minishell: HOME not set\n");
 		main->last_exit_status = 1;
 		return (0);
 	}
 	if (access(home, F_OK) != 0)
 	{
-		printf("-minishell: %s: No such file or directory\n", home);
+		printf("minishell: %s: No such file or directory\n", home);
 		main->last_exit_status = 1;
 		return (0);
 	}
 	if (chdir(home) != 0)
 	{
-		printf("-minishell: Cannot enter into the folder.\n");
+		printf("minishell: Cannot enter into the folder.\n");
 		main->last_exit_status = 1;
 		return (0);
 	}
@@ -66,13 +66,13 @@ static int	cd_error_cases(t_main *main, int total_args, const char *path)
 {
 	if (total_args > 2)
 	{
-		printf("-minishell: Too many arguments");
+		printf("minishell: Too many arguments");
 		main->last_exit_status = 1;
 		return (0);
 	}
 	if (path && path[0] && access(path, F_OK) != 0 && total_args == 2)
 	{
-		printf("-minishell: %s: No such file or directory\n", path);
+		printf("minishell: %s: No such file or directory\n", path);
 		main->last_exit_status = 1;
 		return (0);
 	}
@@ -83,7 +83,7 @@ static int	cd_error_cases(t_main *main, int total_args, const char *path)
 	}
 	if (path && path[0] && chdir(path) != 0 && total_args == 2)
 	{
-		printf("-minishell: Cannot enter into the folder.\n");
+		printf("minishell: Cannot enter into the folder.\n");
 		main->last_exit_status = 1;
 		return (0);
 	}

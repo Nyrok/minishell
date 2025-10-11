@@ -71,7 +71,7 @@ int	ft_heredoc(t_main *main, char **end)
 {
 	auto int tube[2];
 	auto int should_expand = !ft_strchr(*end, '"') && !ft_strchr(*end, '\'');
-	*end = rm_char(rm_char(ft_strdup(*end), '"'), '\'');
+	*end = rm_char(rm_char(*end, '"'), '\'');
 	set_heredoc_signal();
 	if (pipe(tube) == -1)
 		return (reset_signal(), -1);

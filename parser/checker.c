@@ -15,7 +15,7 @@
 int	check_tokens(t_token *tokens)
 {
 	if (tokens->type == PIPE)
-		return (printf("-minishell: You can't start with a pipe\n"), 0);
+		return (printf("minishell: You can't start with a pipe\n"), 0);
 	while (tokens)
 	{
 		if (tokens->type != WORD && tokens->type != END)
@@ -31,7 +31,7 @@ int	check_tokens(t_token *tokens)
 			if (!tokens->next || tokens->next->type != WORD)
 			{
 				tokens->next->type = INVALID;
-				printf("-minishell: Unexpected token '%s' after '%s'\n", \
+				printf("minishell: Unexpected token '%s' after '%s'\n", \
 					tokens->next->word, tokens->word);
 				return (0);
 			}

@@ -15,7 +15,7 @@
 int	no_such_file(t_redir *actual_redir, int print)
 {
 	if (print == 1)
-		printf("-minishell: %s: No such file or directory\n",
+		printf("minishell: %s: No such file or directory\n",
 			actual_redir->filename);
 	return (0);
 }
@@ -30,7 +30,7 @@ int	permission_denied(t_main **main, t_redir *actual_redir, int print)
 		return (0);
 	}
 	if (print == 1)
-		printf("-minishell: %s: Permission denied\n", actual_redir->filename);
+		printf("minishell: %s: Permission denied\n", actual_redir->filename);
 	(*main)->last_exit_status = 126;
 	if ((*main)->cmd_info && (*main)->cmd_info->cmd
 		&& ft_strcmp((*main)->cmd_info->cmd, "echo") == 0)
