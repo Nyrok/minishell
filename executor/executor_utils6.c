@@ -53,13 +53,48 @@ void	close_redsirs_norme(t_redir *actual_redir)
 	actual_redir->fd = -1;
 }
 
+void	execptfile(t_main *main, char **envp, int lastcmd)
+{
+	if (lastcmd == 0)
+	{
+		if (main->cmd_info->infile)
+			main->tube->fd = cmd_executor(main, envp,
+					main->cmd_info->infile->fd, -1);
+		else
+			main->tube->fd = cmd_executor(main, envp, main->tube->fd, -1);
+	}
+	else
+	{
+		if (main->cmd_info->infile)
+			last_executor(main, envp, main->cmd_info->infile->fd, -1);
+		else
+		{
+			last_executor(main, envp, main->tube->fd, -1);
+		}
+	}
+	free_cmd_path(main);
+}
+
 int	is_a_file_and_not_an_exec(t_main *main, char **envp, int lastcmd)
 {
-	(void)envp;
-	(void)lastcmd;
 	if (main->cmds_paths->paths && main->cmds_paths->paths[0]
+		&& check_if_exist(main, 1) != 0 && !ft_strchr(main->cmd_info->cmd, '/')
+		&& ft_strchr(main->cmd_info->cmd, '.'))
+	{
+		free_cmd_path(main);
+		if (check_if_exist(main, 1) == -1)
+		{
+			printf("minishell: %s: Permission denied\n", main->cmd_info->cmd);
+			main->last_exit_status = 127;
+			return (fork_bad_file(main), 1);
+		}
+		execptfile(main, envp, lastcmd);
+		return (1);
+	}
+	else if (main->cmds_paths->paths && main->cmds_paths->paths[0]
 		&& ft_strchr(main->cmd_info->cmd, '.')
-		&& !ft_strchr(main->cmd_info->cmd, '/'))
+		&& !ft_strchr(main->cmd_info->cmd, '/')
+		&& ft_strlen(main->cmd_info->cmd) > 1)
 	{
 		printf("minishell: %s: command not found\n", main->cmd_info->cmd);
 		main->last_exit_status = 127;

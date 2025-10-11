@@ -28,7 +28,7 @@ int	tube_handler(t_main **main)
 	return (1);
 }
 
-int	check_if_exist(t_main *main)
+int	check_if_exist(t_main *main, int ispoint)
 {
 	auto int i = 0;
 	auto int cmd_found = 0;
@@ -42,14 +42,16 @@ int	check_if_exist(t_main *main)
 				main->cmd_info->cmd_path, main->cmds_paths->paths[i++]);
 		if (access(tmp, F_OK) == 0)
 		{
+			if (ispoint == 1 && access(tmp, X_OK) == 0)
+				main->cmd_info->cmd_path = ft_strdup(tmp);
 			cmd_found = 1;
+			if (ispoint == 1 && access(tmp, X_OK) != 0)
+				cmd_found = -1;
 			break ;
 		}
 		free(tmp);
 		tmp = NULL;
 	}
-	if (access(main->cmd_info->cmd, F_OK) == 0)
-		cmd_found = 1;
 	if (tmp)
 		free(tmp);
 	return (cmd_found);
@@ -68,7 +70,7 @@ void	print_not_found(t_main *main, int error_code, int cmd_found)
 			printf("minishell: %s: Is a directory\n", main->cmd_info->cmd_path);
 			main->last_exit_status = 126;
 		}
-		else if (check_if_exist(main) == 0
+		else if (check_if_exist(main, 0) == 0
 			|| ft_strlen(main->cmd_info->cmd) == 0)
 		{
 			printf("minishell: %s: command not found\n", main->cmd_info->cmd);
