@@ -78,7 +78,7 @@ int	handle_heredoc(t_main *main)
 	{
 		if (redir_tmp->type == HEREDOC)
 		{
-			fd = ft_heredoc(main, redir_tmp->filename);
+			fd = ft_heredoc(main, &redir_tmp->filename);
 			if (fd != -1)
 			{
 				close(fd);

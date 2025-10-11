@@ -86,7 +86,7 @@ int			check_access(t_main *main, int j, char *filename);
 int			isfilevalid(t_main *main);
 int			tube_handler(t_main **main);
 int			fdcls(t_main **main, int error);
-int			ft_heredoc(t_main *main, char *end);
+int			ft_heredoc(t_main *main, char **end);
 int			free_execve(t_main **main);
 void		free_envp(t_envp **envp);
 int			no_such_file(t_redir *actual_redir, int print);
