@@ -28,7 +28,7 @@ char	*rm_char(char *str, const char c)
 			count++;
 	result = ft_calloc(ft_strlen(str) - count + 1, sizeof(char));
 	if (!result)
-		return (NULL);
+		return (str);
 	i = -1;
 	j = 0;
 	while (++i < ft_strlen(str))
@@ -88,7 +88,7 @@ char	*get_word(const char *str, size_t *i)
 				(*i)++;
 			if (str[*i] == quote \
 				&& (!str[*i + 1] || ft_isspace(str[*i + 1])))
-				(*i)++;
+				break ;
 		}
 		if (str[*i])
 			(*i)++;

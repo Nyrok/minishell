@@ -36,7 +36,7 @@ int	hasinfile_heredocs_only(t_main *main)
 		{
 			if (redir->type == HEREDOC)
 			{
-				redir->fd = ft_heredoc(main, redir->filename);
+				redir->fd = ft_heredoc(main, &redir->filename);
 				if (redir->fd == -1)
 					return (-1);
 			}

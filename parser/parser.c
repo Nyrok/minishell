@@ -60,10 +60,16 @@ static void	parse_word(t_token *tokens, t_cmd_info **list, t_cmd_info **obj)
 static void	parse_tokens_env(t_envp *envp, t_token *tokens, \
 	int last_exit_status)
 {
+	t_token	*last_token;
+
+	last_token = NULL;
 	while (tokens)
 	{
-		if (tokens->type == WORD && tokens->word)
+		if (last_token && last_token->type == HEREDOC)
+			parse_heredoc_env(envp, &tokens->word, last_exit_status);
+		else if (tokens->type == WORD && tokens->word)
 			parse_env(envp, &tokens->word, last_exit_status);
+		last_token = tokens;
 		tokens = tokens->next;
 	}
 }
