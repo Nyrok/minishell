@@ -80,16 +80,11 @@ int	fdcls(t_main **main, int error)
 		actual_redir = to_free->redirs;
 		while (actual_redir != NULL)
 		{
-			if (actual_redir->good != 1 && actual_redir->type == HEREDOC && actual_redir->fd != -1)
-			{
-				close(actual_redir->fd);
-				actual_redir->fd = -1;
-			}
+			if (actual_redir->good != 1 && actual_redir->type == HEREDOC
+				&& actual_redir->fd != -1)
+				close_redsirs_norme(actual_redir);
 			else if (actual_redir->type != HEREDOC && actual_redir->fd != -1)
-			{
-				close(actual_redir->fd);
-				actual_redir->fd = -1;
-			}
+				close_redsirs_norme(actual_redir);
 			actual_redir = actual_redir->next;
 		}
 		cmd_tmp = cmd_tmp->next;
