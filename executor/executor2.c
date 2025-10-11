@@ -12,7 +12,6 @@
 
 #include "minishell.h"
 
-
 void	last_child_executor(int tube, t_main *main, char *cmd_path, char **envp)
 {
 	signal(SIGQUIT, SIG_DFL);
@@ -42,7 +41,6 @@ void	last_child_executor(int tube, t_main *main, char *cmd_path, char **envp)
 	}
 }
 
-
 void	last_executor(t_main *main, char **envp, int tube, int i)
 {
 	pid_t	pid;
@@ -50,13 +48,10 @@ void	last_executor(t_main *main, char **envp, int tube, int i)
 	if (i == -2 || (i != -1 && main->cmds_paths->paths[i] == NULL))
 	{
 		return (print_error(main, NOTFOUND, 0), \
-			end_fd(tube), close_outfile(main), fork_bad_file(main)); // javais un bad dup2 a cause de end fd avant de fork bad file
+			end_fd(tube), close_outfile(main), fork_bad_file(main));
 	}
 	if (pipe(main->cmd_info->tube) == -1)
-	{
-		perror("pipe failed");
-		return ;
-	}
+		return (perror("pipe failed"));
 	close(main->cmd_info->tube[1]);
 	pid = fork();
 	if (pid == 0)
@@ -64,7 +59,7 @@ void	last_executor(t_main *main, char **envp, int tube, int i)
 	else
 	{
 		end_fd(tube);
-		if (main->cmd_info->outfile && main->cmd_info->outfile->fd != -1) // a la base main->cmd_info->outfile != NULL
+		if (main->cmd_info->outfile && main->cmd_info->outfile->fd != -1)
 		{
 			close(main->cmd_info->outfile->fd);
 			main->cmd_info->outfile->fd = -1;
@@ -81,24 +76,6 @@ int	executor_setup(t_main **main, int *nbcmds, char *cmd)
 	(*main)->pids[0] = 0;
 	setup_tube(*main);
 	return (1);
-}
-
-int create_eof_fd(t_main *main)
-{
-	int pipefd[2];
-
-	if (main->tube && main->tube->fd != -1)
-	{
-		close(main->tube->fd);
-		main->tube->fd = -1;
-	}
-	if (pipe(pipefd) == -1)
-	{
-		perror("pipe");
-		return (-1);
-	}
-	close(pipefd[1]);
-	return (pipefd[0]);
 }
 
 int	onecmdexector(t_main *main, char **envp)
@@ -128,46 +105,6 @@ int	onecmdexector(t_main *main, char **envp)
 		lcmd_searcher(main, envp, -1);
 	delete_tube(main);
 	return (1);
-}
-
-int	hasinfile2(struct s_main **main, int error_check, int print)
-{
-	t_redir		*actual_redir;
-	int			total;
-	int			has_infile;
-
-	total = 0;
-	actual_redir = (*main)->cmd_info->redirs;
-	(void)error_check;
-	while (actual_redir != NULL)
-	{
-		has_infile = fd_opener(main, actual_redir, -1, print);
-		if (has_infile == -1)
-			return (-1);
-		if (has_infile == -2)
-			return (-2);
-		if (actual_redir->type == 3)
-			total = 1;
-		actual_redir = actual_redir->next;
-	}
-	return (total);
-}
-
-void	fork_bad_file(t_main *main)
-{
-	pid_t	pid;
-	int		exit_code;
-
-	pid = fork();
-	if (pid == 0)
-	{
-		exit_code = main->last_exit_status;
-		free_execve(&main);
-		exit(exit_code);
-	}
-	else
-		add_pid(main, pid);
-	main->tube->fd = create_eof_fd(main);
 }
 
 int	multiplecmdexector(t_main *main, char **envp, int nbcmd)

@@ -99,7 +99,7 @@ int			ft_execperm(t_main *main, char *pathname);
 void		close_outfile(t_main *main);
 char		*paths_searcher(char *cmd, char *cmd_path, char *paths);
 int			create_eof_fd(t_main *main);
-int			check_if_exist(t_main *main);
+int			check_if_exist(t_main *main, int ispoint);
 int			hasinfile_heredocs_only(t_main *main);
 void		fork_bad_file(t_main *main);
 int			hasinfile2(struct s_main **main, int error_check, int print);
@@ -114,5 +114,13 @@ void		free_cmd_path(t_main *main);
 void		free_main_paths(t_main *main);
 void		end_fd(int fd);
 void		ft_strdup_cmd_path(t_main *main, int i);
+int			isonlypt(char *str);
+int			gestion_error_relative_path(t_main *main, int type);
+void		relative_path_free(t_main *main);
+int			error_no_path(t_main *main, int error);
+void		relative_path_executor(t_main *main, char **envp, int lastcmd);
+void		cmd_null(t_main *main);
+void		close_redsirs_norme(t_redir *actual_redir);
+int			is_a_file_and_not_an_exec(t_main *main, char **envp, int lastcmd);
 
 #endif

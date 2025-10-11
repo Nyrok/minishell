@@ -12,38 +12,6 @@
 
 #include "minishell.h"
 
-//int	file_executor(t_main *main, int file, int last)
-//{
-//	char	**tmp;
-//	int		i;
-
-//	i = 0;
-//	isfilevalid(main);
-//	tmp = ft_split(main->cmd_info->cmd, ' ');
-//	main->cmd_info->cmd_path = ft_strdup(tmp[0]);
-//	while (tmp[i])
-//		free(tmp[i++]);
-//	free(tmp);
-//	if (last == 0)
-//		main->tube->fd = cmd_executor(main, main->str_envp, file, -1);
-//	else
-//	{
-//		if (main->cmd_info->infile)
-//			last_executor(main, main->str_envp, main->cmd_info->infile->fd, -1);
-//		else
-//			last_executor(main, main->str_envp, main->tube->fd, -1);
-//	}
-//	free(main->cmd_info->cmd_path);
-//	main->cmd_info->cmd_path = NULL;
-//	return (1);
-//}
-
-void	ft_dup2(int src, int dest)
-{
-	if (dup2(src, dest) == -1)
-		perror("dup2 failed"); // oui
-}
-
 void	close_heredoc_future_cmds(t_main *main)
 {
 	t_cmd_info	*tmp_cmd_info;
@@ -82,9 +50,10 @@ void	child_executor(t_main *main, int *tube, int file, char **envp)
 	if (tube[1] != -1)
 	{
 		ft_dup2(tube[1], STDOUT_FILENO);
-		end_fd(tube[1]); // end fd
+		end_fd(tube[1]);
 	}
-	if (execve(main->cmd_info->cmd_path, (char *const *)main->cmd_info->argv, envp) == -1)
+	if (execve(main->cmd_info->cmd_path,
+			(char *const *)main->cmd_info->argv, envp) == -1)
 	{
 		if (tube[1] != -1)
 			close(tube[1]);
@@ -116,7 +85,7 @@ int	cmd_executor(t_main *main, char **envp, int file, int i)
 		perror("pipe");
 		return (-1);
 	}
-	if (i == -2 || (i != -1 && main->cmds_paths->paths[i] == NULL)) // pas sûr de la condition // edit pas sur du tt car on check pas if exist et on ne met pas le tube a null je crois
+	if (i == -2 || (i != -1 && main->cmds_paths->paths[i] == NULL))
 	{
 		handle_error_cmd(main, tube);
 		return (main->tube->fd);
@@ -160,6 +129,5 @@ int	executor(char *cmd, struct s_main *main)
 	if (main->pids)
 		end_pids(&main);
 	no_leaks(main);
-	//printf("Exit status : %d\n", main->last_exit_status);
 	return (1);
 }
