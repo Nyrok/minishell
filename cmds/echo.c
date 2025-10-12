@@ -78,5 +78,6 @@ int	echo(t_main *main, int argc, const char **argv, int nbcmds)
 	if (argc == 1 || (!len_writed && !n_flag) || !n_flag)
 		write(fd, "\n", 1);
 	close_fd_if_needed(main, nbcmds, fd);
+	main->last_exit_status = 0;
 	return (1);
 }

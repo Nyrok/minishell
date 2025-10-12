@@ -78,7 +78,7 @@ int	ft_heredoc(t_main *main, char **end)
 	while (1)
 	{
 		auto char *line = readline("> ");
-		if (should_expand)
+		if (line && should_expand)
 			parse_heredoc_env(main->envp, &line, main->last_exit_status);
 		if (heredoc_interrupt(&line, tube) == -1)
 			return (-1);

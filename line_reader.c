@@ -36,7 +36,7 @@ void	line_reader(t_main *main)
 
 	while (1)
 	{
-		user_input = readline(PURPLE "minishell>" RESET);
+		user_input = readline("minishell>");
 		if (user_input == NULL)
 			ft_ctrld(main);
 		if (main->history == NULL && user_input)
