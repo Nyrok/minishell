@@ -49,12 +49,14 @@ static void	replace_word_env(char *env_value, char **word, char *key, size_t *i)
 		*i = 0;
 }
 
-static void	parse_word_env(t_envp *envp, char **word, int last_exit_status)
+void	parse_word_env(t_envp *envp, char **word, int last_exit_status)
 {
 	char	*key;
 	size_t	i;
 	char	*env_value;
 
+	if (!ft_strchr(*word, '$'))
+		return ;
 	i = 0;
 	while (word && (*word) && (*word)[i] && ft_strlen(*word) > 1)
 	{
@@ -78,25 +80,27 @@ static void	parse_word_env(t_envp *envp, char **word, int last_exit_status)
 
 void	parse_env(t_envp *envp, char **str, int last_exit_status)
 {
-	if ((*str)[0] != '\'' && ft_strchr(*str, '$'))
+	auto int i = 0;
+	auto int quote = -1;
+	while ((*str)[i])
 	{
-		parse_word_env(envp, str, last_exit_status);
-		if ((*str)[0] != '"')
-			*str = rm_dollars(*str, 0, ft_strlen(*str));
+		if (quote > -1 && (*str)[quote] == (*str)[i])
+		{
+			*str = three_strjoin(*str, ft_substr(*str, 0, quote), \
+				ft_substr(*str, quote + 1, i - quote - 1), \
+				ft_substr(*str, i + 1, ft_strlen(*str)));
+			i--;
+			quote = -1;
+		}
+		if (quote < 0 && ft_strchr("'\"", (*str)[i]))
+			quote = i;
+		else if (quote > -1 && (*str)[quote] != '\'' && ft_strchr(*str, '$'))
+		{
+			parse_word_env(envp, str, last_exit_status);
+			if ((*str)[quote] != '"')
+				*str = rm_dollars(*str, 0, ft_strlen(*str));
+		}
+		if ((*str)[i])
+			i++;
 	}
-	if ((*str)[0] == '\'')
-		*str = rm_char(*str, '\'');
-	else if ((*str)[0] == '"')
-		*str = rm_char(*str, '"');
-	else
-	{
-		*str = rm_char(*str, '"');
-		*str = rm_char(*str, '\'');
-	}
-}
-
-void	parse_heredoc_env(t_envp *envp, char **str, int last_exit_status)
-{
-	if (ft_strchr(*str, '$'))
-		parse_word_env(envp, str, last_exit_status);
 }

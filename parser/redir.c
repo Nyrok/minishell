@@ -67,3 +67,25 @@ void	setup_cmd_redirs(t_cmd_info *cmd_info)
 		actual_redir = actual_redir->next;
 	}
 }
+
+t_token	*get_redir_token(const char *str, size_t *i)
+{
+	t_token	*token;
+
+	token = NULL;
+	if (str[*i] == '>' && ++(*i))
+	{
+		if (str[*i] == '>' && ++(*i))
+			token = create_token(ft_strdup(">>"), APPEND);
+		else
+			token = create_token(ft_strdup(">"), REDOUT);
+	}
+	else if (str[*i] == '<' && ++(*i))
+	{
+		if (str[*i] == '<' && ++(*i))
+			token = create_token(ft_strdup("<<"), HEREDOC);
+		else
+			token = create_token(ft_strdup("<"), REDIN);
+	}
+	return (token);
+}

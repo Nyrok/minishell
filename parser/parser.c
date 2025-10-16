@@ -66,7 +66,8 @@ static void	parse_tokens_env(t_envp *envp, t_token *tokens, \
 	while (tokens)
 	{
 		if (last_token && last_token->type == HEREDOC)
-			parse_heredoc_env(envp, &tokens->word, last_exit_status);
+		{
+		}
 		else if (tokens->type == WORD && tokens->word)
 			parse_env(envp, &tokens->word, last_exit_status);
 		last_token = tokens;
