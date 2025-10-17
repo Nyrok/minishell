@@ -12,18 +12,18 @@
 
 #include "minishell.h"
 
-char	*rm_char(char *str, const char c)
+char	*rm_nchar(char *str, const char c, size_t n)
 {
 	size_t	i;
 	size_t	j;
-	int		count;
+	size_t	count;
 	char	*result;
 
 	if (!str)
 		return (str);
 	count = 0;
 	i = -1;
-	while (++i < ft_strlen(str))
+	while (++i < ft_strlen(str) && count < n)
 		if (str[i] == c)
 			count++;
 	result = ft_calloc(ft_strlen(str) - count + 1, sizeof(char));
@@ -31,10 +31,29 @@ char	*rm_char(char *str, const char c)
 		return (str);
 	i = -1;
 	j = 0;
-	while (++i < ft_strlen(str))
+	while (++i < ft_strlen(str) && count < n)
 		if (str[i] != c)
 			result[j++] = str[i];
 	free(str);
+	return (result);
+}
+
+char	*three_strjoin(char *old, char *s1, char *s2, char *s3)
+{
+	char	*tmp;
+	char	*result;
+
+	tmp = ft_strjoin(s1, s2);
+	if (!tmp)
+		return (NULL);
+	free(s1);
+	free(s2);
+	result = ft_strjoin(tmp, s3);
+	if (!result)
+		return (NULL);
+	free(tmp);
+	free(s3);
+	free(old);
 	return (result);
 }
 
@@ -69,26 +88,21 @@ char	*rm_dollars(char *str, size_t start, size_t n)
 
 char	*get_word(const char *str, size_t *i)
 {
-	size_t	start;
-	char	quote;
-
-	start = *i;
-	quote = 0;
+	auto size_t start = *i;
+	auto char quote = 0;
 	while (str[*i])
 	{
 		if (!quote && (ft_isspace(str[*i]) || ft_strchr("|<>", str[*i])) \
 		&& (*i)--)
 			break ;
-		if ((str[*i] == '\'' || str[*i] == '"'))
+		if (!quote && ft_strchr("'\"", str[*i]))
 		{
 			quote = str[*i];
 			(*i)++;
-			while (str[*i] && (str[*i] != quote \
-				|| (str[*i + 1] && !ft_isspace(str[*i + 1]))))
+			while (str[*i] && str[*i] != quote)
 				(*i)++;
-			if (str[*i] == quote \
-				&& (!str[*i + 1] || ft_isspace(str[*i + 1])))
-				break ;
+			if (str[*i] == quote)
+				quote = 0;
 		}
 		if (str[*i])
 			(*i)++;
@@ -96,41 +110,30 @@ char	*get_word(const char *str, size_t *i)
 	return ((void)(str[*i] && (*i)++), ft_substr(str, start, *i - start));
 }
 
-char	*get_quoted(const char *str, size_t *i)
+void	parse_quotes(char **str)
 {
-	size_t	start;
-	char	quote;
-
-	start = *i;
-	quote = str[start];
-	(*i)++;
-	while (str[*i] && (str[*i] != quote \
-	|| (str[*i + 1] && !ft_isspace(str[*i + 1]))))
-		(*i)++;
-	if (str[*i] == quote
-		&& (!str[*i + 1] || ft_isspace(str[*i + 1])))
-		(*i)++;
-	return (ft_substr(str, start, *i - start));
-}
-
-t_token	*get_redir_token(const char *str, size_t *i)
-{
-	t_token	*token;
-
-	token = NULL;
-	if (str[*i] == '>' && ++(*i))
+	auto int i = 0;
+	auto int quote = -1;
+	while ((*str)[i])
 	{
-		if (str[*i] == '>' && ++(*i))
-			token = create_token(ft_strdup(">>"), APPEND);
-		else
-			token = create_token(ft_strdup(">"), REDOUT);
+		while (quote == -1 && ft_isspace((*str)[i]))
+			i++;
+		if (quote > -1 && (*str)[quote] == (*str)[i])
+		{
+			*str = three_strjoin(*str, ft_substr(*str, 0, quote), \
+				ft_substr(*str, quote + 1, i - quote - 1), \
+				ft_strdup(*str + i + 1));
+			i--;
+			quote = -1;
+		}
+		if (quote == -1)
+		{
+			if (ft_strchr("'\"", (*str)[i]))
+				quote = i;
+			else if (ft_strchr("|<>", (*str)[i]))
+				break ;
+		}
+		if ((*str)[i])
+			i++;
 	}
-	else if (str[*i] == '<' && ++(*i))
-	{
-		if (str[*i] == '<' && ++(*i))
-			token = create_token(ft_strdup("<<"), HEREDOC);
-		else
-			token = create_token(ft_strdup("<"), REDIN);
-	}
-	return (token);
 }

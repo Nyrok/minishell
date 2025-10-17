@@ -71,15 +71,13 @@ int	ft_heredoc(t_main *main, char **end)
 {
 	auto int tube[2];
 	auto int should_expand = !ft_strchr(*end, '"') && !ft_strchr(*end, '\'');
-	*end = rm_char(rm_char(*end, '"'), '\'');
+	*end = ft_strtrim(*end, "'\"");
 	set_heredoc_signal();
 	if (pipe(tube) == -1)
 		return (reset_signal(), -1);
 	while (1)
 	{
 		auto char *line = readline("> ");
-		if (line && should_expand)
-			parse_heredoc_env(main->envp, &line, main->last_exit_status);
 		if (heredoc_interrupt(&line, tube) == -1)
 			return (-1);
 		if (heredoc_interrupt(&line, tube) == 0)
@@ -89,6 +87,8 @@ int	ft_heredoc(t_main *main, char **end)
 			free(line);
 			break ;
 		}
+		if (line && should_expand)
+			parse_word_env(main->envp, &line, main->last_exit_status);
 		write(tube[1], line, ft_strlen(line));
 		write(tube[1], "\n", 1);
 		free(line);
