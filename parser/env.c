@@ -86,7 +86,7 @@ void	parse_env(t_envp *envp, char **str, int last_exit_status)
 	{
 		if ((*str)[i] == '"')
 			double_quote = !double_quote;
-		if (!double_quote && (*str)[i] == '\'' && i++)
+		if (!double_quote && (*str)[i] == '\'' && ++i)
 			while ((*str)[i] && (*str)[i] != '\'')
 				i++;
 		else if ((*str)[i] == '$')
