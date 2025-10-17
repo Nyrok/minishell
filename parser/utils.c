@@ -114,3 +114,24 @@ char	*get_word(const char *str, size_t *i)
 	}
 	return ((void)(str[*i] && (*i)++), ft_substr(str, start, *i - start));
 }
+
+void	parse_quotes(char **str)
+{
+	auto int i = 0;
+	auto int quote = -1;
+	while ((*str)[i])
+	{
+		if (quote > -1 && (*str)[quote] == (*str)[i])
+		{
+			*str = three_strjoin(*str, ft_substr(*str, 0, quote), \
+				ft_substr(*str, quote + 1, i - quote - 1), \
+				ft_substr(*str, i + 1, ft_strlen(*str)));
+			i--;
+			quote = -1;
+		}
+		if (quote < 0 && ft_strchr("'\"", (*str)[i]))
+			quote = i;
+		if ((*str)[i])
+			i++;
+	}
+}
