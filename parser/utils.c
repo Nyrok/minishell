@@ -88,26 +88,21 @@ char	*rm_dollars(char *str, size_t start, size_t n)
 
 char	*get_word(const char *str, size_t *i)
 {
-	size_t	start;
-	char	quote;
-
-	start = *i;
-	quote = 0;
+	auto size_t start = *i;
+	auto char quote = 0;
 	while (str[*i])
 	{
 		if (!quote && (ft_isspace(str[*i]) || ft_strchr("|<>", str[*i])) \
 		&& (*i)--)
 			break ;
-		if ((str[*i] == '\'' || str[*i] == '"'))
+		if (!quote && ft_strchr("'\"", str[*i]))
 		{
 			quote = str[*i];
 			(*i)++;
-			while (str[*i] && (str[*i] != quote \
-				|| (str[*i + 1] && !ft_isspace(str[*i + 1]))))
+			while (str[*i] && str[*i] != quote)
 				(*i)++;
-			if (str[*i] == quote \
-				&& (!str[*i + 1] || ft_isspace(str[*i + 1])))
-				break ;
+			if (str[*i] == quote)
+				quote = 0;
 		}
 		if (str[*i])
 			(*i)++;
@@ -121,16 +116,23 @@ void	parse_quotes(char **str)
 	auto int quote = -1;
 	while ((*str)[i])
 	{
+		while (quote == -1 && ft_isspace((*str)[i]))
+			i++;
 		if (quote > -1 && (*str)[quote] == (*str)[i])
 		{
 			*str = three_strjoin(*str, ft_substr(*str, 0, quote), \
 				ft_substr(*str, quote + 1, i - quote - 1), \
-				ft_substr(*str, i + 1, ft_strlen(*str)));
+				ft_strdup(*str + i + 1));
 			i--;
 			quote = -1;
 		}
-		if (quote < 0 && ft_strchr("'\"", (*str)[i]))
-			quote = i;
+		if (quote == -1)
+		{
+			if (ft_strchr("'\"", (*str)[i]))
+				quote = i;
+			else if (ft_strchr("|<>", (*str)[i]))
+				break ;
+		}
 		if ((*str)[i])
 			i++;
 	}

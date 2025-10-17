@@ -70,6 +70,7 @@ static void	parse_tokens_env(t_envp *envp, t_token *tokens, \
 		}
 		else if (tokens->type == WORD && tokens->word)
 		{
+			printf("TOKEN %s\n", tokens->word);
 			parse_env(envp, &tokens->word, last_exit_status);
 			parse_quotes(&tokens->word);
 		}
