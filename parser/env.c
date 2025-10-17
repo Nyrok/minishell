@@ -81,18 +81,17 @@ void	parse_word_env(t_envp *envp, char **word, int last_exit_status)
 void	parse_env(t_envp *envp, char **str, int last_exit_status)
 {
 	auto int i = 0;
+	auto int double_quote = 0;
 	while ((*str)[i])
 	{
-		if ((*str)[i] == '\'')
-		{
-			i++;
+		if ((*str)[i] == '"')
+			double_quote = !double_quote;
+		if (!double_quote && (*str)[i] == '\'' && i++)
 			while ((*str)[i] && (*str)[i] != '\'')
 				i++;
-		}
 		else if ((*str)[i] == '$')
 		{
-			auto int start = i;
-			i++;
+			auto int start = i++;
 			while ((*str)[i] && is_valid_env_char((*str)[i]))
 				i++;
 			auto char *to_expand = ft_substr(*str, start, i - start);
@@ -103,6 +102,7 @@ void	parse_env(t_envp *envp, char **str, int last_exit_status)
 			*str = three_strjoin(*str, prefix, to_expand, suffix);
 			continue ;
 		}
-		i++;
+		if ((*str)[i])
+			i++;
 	}
 }
