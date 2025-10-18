@@ -105,8 +105,7 @@ void	parse_env(t_envp *envp, char **str, int last_exit_status)
 			while ((*str)[j] && (*str)[j] != '\'')
 				j++;
 			if ((*str)[j] == '\'')
-				while ((*str)[i] && (*str)[i] != '\'')
-					i++;
+				i = j;
 		}
 		if ((*str)[i] == '$')
 		{
