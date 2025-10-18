@@ -47,8 +47,8 @@ void	line_reader(t_main *main)
 
 	while (1)
 	{
-		handle_sigint_status_code(main);
 		user_input = readline("minishell>");
+		handle_sigint_status_code(main);
 		if (user_input == NULL)
 			ft_ctrld(main);
 		if (main->history == NULL && user_input)
