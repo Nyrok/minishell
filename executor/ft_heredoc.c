@@ -56,7 +56,6 @@ int	heredoc_interrupt(char **line, int tube[2])
 			free(*line);
 		close(tube[0]);
 		close(tube[1]);
-		g_signal = 0;
 		reset_signal();
 		return (-1);
 	}

@@ -59,6 +59,8 @@ void	free_tokens(t_token **tokens)
 	t_token	*last_token;
 	t_token	*current_token;
 
+	if (tokens == NULL || *tokens == NULL)
+		return ;
 	last_token = *tokens;
 	if (last_token)
 		current_token = last_token->next;

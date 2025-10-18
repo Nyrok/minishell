@@ -44,7 +44,7 @@ int	main(int argc, char **argv, char **envp)
 
 	if (argc >= 2)
 	{
-		printf("Pas d'arguments stp !\n");
+		printf("minishell: Can't be launch with args.\n");
 		return (1);
 	}
 	sa.sa_handler = handle_signal;

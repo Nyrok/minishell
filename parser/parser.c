@@ -35,8 +35,6 @@ static t_cmd_info	*parse_redir(t_token *tokens, t_cmd_info **l, t_cmd_info *o)
 
 static void	parse_word(t_token *tokens, t_cmd_info **list, t_cmd_info **obj)
 {
-	if (!ft_strlen(tokens->word))
-		return ;
 	if (!*obj)
 	{
 		*obj = create_cmd_info(tokens->word, count_cmd_args(tokens->next));
@@ -67,7 +65,7 @@ static void	parse_tokens_env(t_envp *envp, t_token *tokens, \
 	last_token = NULL;
 	while (tokens)
 	{
-		if (last_token && last_token->type == HEREDOC)
+		if (last_token && last_token->type == HEREDOC && tokens->type == WORD)
 		{
 		}
 		else if (tokens->type == WORD && tokens->word)
