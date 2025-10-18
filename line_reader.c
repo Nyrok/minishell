@@ -59,7 +59,7 @@ void	line_reader(t_main *main)
 			add_history(user_input);
 		main->tokens = tokenize_input(user_input);
 		main->cmd_info = parse_tokens(main, main->tokens);
-		if (main->cmd_info && !user_input)
+		if (user_input && main->cmd_info)
 			executor(user_input, main);
 		free(user_input);
 		free_cmd_info(&main->cmd_info);

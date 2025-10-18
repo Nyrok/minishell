@@ -83,6 +83,8 @@ t_cmd_info	*parse_tokens(t_main *main, t_token *tokens)
 	t_cmd_info	*cmd_infos;
 	t_cmd_info	*cmd_info;
 
+	if (!tokens)
+		return (NULL);
 	if (!check_tokens(tokens))
 		return (NULL);
 	parse_tokens_env(main->envp, tokens, main->last_exit_status);
