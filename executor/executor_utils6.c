@@ -16,7 +16,7 @@ void	cmd_null(t_main *main)
 {
 	if (main->cmd_info)
 	{
-		main->last_exit_status = 1;
+		main->last_exit_status = 0;
 		fork_bad_file(main);
 		hasinfile2(&main, 0, 1);
 		fdcls(&main, 0);
