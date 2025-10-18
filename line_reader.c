@@ -12,6 +12,17 @@
 
 #include "minishell.h"
 
+extern int	g_signal;
+
+static void	handle_sigint_status_code(t_main *main)
+{
+	if (g_signal == SIGINT)
+	{
+		main->last_exit_status = 130;
+		g_signal = 0;
+	}
+}
+
 void	ft_ctrld(t_main *main)
 {
 	if (main->tube)
@@ -36,6 +47,7 @@ void	line_reader(t_main *main)
 
 	while (1)
 	{
+		handle_sigint_status_code(main);
 		user_input = readline("minishell>");
 		if (user_input == NULL)
 			ft_ctrld(main);
@@ -47,12 +59,8 @@ void	line_reader(t_main *main)
 			add_history(user_input);
 		main->tokens = tokenize_input(user_input);
 		main->cmd_info = parse_tokens(main, main->tokens);
-		if (main->cmd_info)
-		{
-			if (!user_input)
-				break ;
+		if (main->cmd_info && !user_input)
 			executor(user_input, main);
-		}
 		free(user_input);
 		free_cmd_info(&main->cmd_info);
 		free_tokens(&main->tokens);

@@ -32,5 +32,6 @@ char	*ft_strtrim(const char *s1, const char *set)
 	if (!result)
 		return (NULL);
 	ft_strlcpy(result, &s1[start], len + 1);
+	free((char *)s1);
 	return (result);
 }

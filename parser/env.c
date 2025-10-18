@@ -49,6 +49,19 @@ static void	replace_word_env(char *env_value, char **word, char *key, size_t *i)
 		*i = 0;
 }
 
+static void	expand(t_envp *envp, char **str, int last_exit_status, int *i)
+{
+	auto int start = (*i)++;
+	while ((*str)[*i] && is_valid_env_char((*str)[*i]))
+		(*i)++;
+	auto char *to_expand = ft_substr(*str, start, *i - start);
+	parse_word_env(envp, &to_expand, last_exit_status);
+	auto char *prefix = ft_substr(*str, 0, start);
+	auto char *suffix = ft_strdup(*str + *i);
+	*i = start + ft_strlen(to_expand);
+	*str = three_strjoin(*str, prefix, to_expand, suffix);
+}
+
 void	parse_word_env(t_envp *envp, char **word, int last_exit_status)
 {
 	char	*key;
@@ -87,19 +100,17 @@ void	parse_env(t_envp *envp, char **str, int last_exit_status)
 		if ((*str)[i] == '"')
 			double_quote = !double_quote;
 		if (!double_quote && (*str)[i] == '\'' && ++i)
-			while ((*str)[i] && (*str)[i] != '\'')
-				i++;
-		else if ((*str)[i] == '$')
 		{
-			auto int start = i++;
-			while ((*str)[i] && is_valid_env_char((*str)[i]))
-				i++;
-			auto char *to_expand = ft_substr(*str, start, i - start);
-			parse_word_env(envp, &to_expand, last_exit_status);
-			auto char *prefix = ft_substr(*str, 0, start);
-			auto char *suffix = ft_strdup(*str + i);
-			i = start + ft_strlen(to_expand);
-			*str = three_strjoin(*str, prefix, to_expand, suffix);
+			auto int j = i;
+			while ((*str)[j] && (*str)[j] != '\'')
+				j++;
+			if ((*str)[j] == '\'')
+				while ((*str)[i] && (*str)[i] != '\'')
+					i++;
+		}
+		if ((*str)[i] == '$')
+		{
+			expand(envp, str, last_exit_status, &i);
 			continue ;
 		}
 		if ((*str)[i])
