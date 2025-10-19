@@ -54,7 +54,7 @@ t_history	*list_history_init(char *cmd);
 void		list_history_add(t_history **history, char *cmd);
 void		list_history_cleaner(t_main *main);
 void		print_history(t_history *history);
-int			executor(char *cmd, struct s_main *main);
+int			executor(struct s_main *main);
 void		last_executor(t_main *main, char **envp, int tube,
 				int i);
 int			cmd_executor(t_main *main, char **envp, int file, int i);
@@ -64,7 +64,7 @@ int			onecmdexector(t_main *main, char **envp);
 void		add_pid(t_main *main, pid_t newpid);
 void		end_pids(t_main **main);
 int			no_leaks(t_main *main);
-int			executor_setup(t_main **main, int *nbcmds, char *cmd);
+int			executor_setup(t_main **main, int *nbcmds);
 int			print_error(t_main *main, int error_code, int cmd_found);
 int			cmd_searcher(t_main *main, char **envp, int file);
 void		lcmd_searcher(t_main *main, char **envp, int tube);
