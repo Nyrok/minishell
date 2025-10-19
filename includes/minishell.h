@@ -50,17 +50,14 @@ struct s_main
 };
 
 void		line_reader(t_main *main_struct);
-
 t_history	*list_history_init(char *cmd);
 void		list_history_add(t_history **history, char *cmd);
 void		list_history_cleaner(t_main *main);
 void		print_history(t_history *history);
 int			executor(char *cmd, struct s_main *main);
-//int			file_executor(t_main *main, int file, int last);
 void		last_executor(t_main *main, char **envp, int tube,
 				int i);
 int			cmd_executor(t_main *main, char **envp, int file, int i);
-int			totalcmds(char *cmd);
 int			multiplecmdexector(t_main *main,
 				char **envp, int nbcmd);
 int			onecmdexector(t_main *main, char **envp);
@@ -73,17 +70,11 @@ int			cmd_searcher(t_main *main, char **envp, int file);
 void		lcmd_searcher(t_main *main, char **envp, int tube);
 int			hasinfile(struct s_main **main, int error_check, int *print);
 void		setup_tube(t_main *main);
-void		reset_tube(t_main *main);
 int			fd_opener(t_main **main, t_redir *actual_redir,
 				int error_check, int print);
 int			multiple_cmd_handler(t_main *main,
 				char **envp, int nbcmds);
-void		free_redir(t_redir **redir);
-int			create_out(t_main *main);
-int			handle_heredoc(t_main *main);
 void		handle_signal(int signal);
-int			check_access(t_main *main, int j, char *filename);
-int			isfilevalid(t_main *main);
 int			tube_handler(t_main **main);
 int			fdcls(t_main **main, int error);
 int			ft_heredoc(t_main *main, char **end);
@@ -114,13 +105,8 @@ void		free_cmd_path(t_main *main);
 void		free_main_paths(t_main *main);
 void		end_fd(int fd);
 void		ft_strdup_cmd_path(t_main *main, int i);
-int			isonlypt(char *str);
-int			gestion_error_relative_path(t_main *main, int type);
-void		relative_path_free(t_main *main);
-int			error_no_path(t_main *main, int error);
-void		relative_path_executor(t_main *main, char **envp, int lastcmd);
 void		cmd_null(t_main *main);
-void		close_redsirs_norme(t_redir *actual_redir);
+void		close_redir_fd(t_redir *actual_redir);
 int			is_a_file_and_not_an_exec(t_main *main, char **envp, int lastcmd);
 
 #endif

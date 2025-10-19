@@ -25,7 +25,7 @@ void	handle_signal_heredoc(int signal)
 	}
 }
 
-void	set_heredoc_signal(void)
+static void	set_heredoc_signal(void)
 {
 	struct sigaction	sa;
 
@@ -36,7 +36,7 @@ void	set_heredoc_signal(void)
 	sigaction(SIGINT, &sa, NULL);
 }
 
-void	reset_signal(void)
+static void	reset_signal(void)
 {
 	struct sigaction	sa;
 
@@ -48,7 +48,7 @@ void	reset_signal(void)
 	signal(SIGQUIT, SIG_IGN);
 }
 
-int	heredoc_interrupt(char **line, int tube[2])
+static int	heredoc_interrupt(char **line, int tube[2])
 {
 	if (g_signal == SIGINT)
 	{
@@ -70,7 +70,7 @@ int	ft_heredoc(t_main *main, char **end)
 {
 	auto int tube[2];
 	auto int should_expand = !ft_strchr(*end, '"') && !ft_strchr(*end, '\'');
-	*end = ft_strtrim(*end, "'\"");
+	*end = rm_char(rm_char(*end, '\''), '"');
 	set_heredoc_signal();
 	if (pipe(tube) == -1)
 		return (reset_signal(), -1);

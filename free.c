@@ -12,8 +12,6 @@
 
 #include "minishell.h"
 
-void		free_redir(t_redir **redir);
-
 void	free_all_cmd_info(t_main **main)
 {
 	t_cmd_info	*cmd_tmp;

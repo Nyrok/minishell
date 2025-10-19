@@ -37,7 +37,7 @@ void	close_heredoc_future_cmds(t_main *main)
 	}
 }
 
-void	child_executor(t_main *main, int *tube, int file, char **envp)
+static void	child_executor(t_main *main, int *tube, int file, char **envp)
 {
 	signal(SIGQUIT, SIG_DFL);
 	close(tube[0]);
@@ -65,7 +65,7 @@ void	child_executor(t_main *main, int *tube, int file, char **envp)
 	}
 }
 
-void	handle_error_cmd(t_main	*main, int tube[2])
+static void	handle_error_cmd(t_main	*main, int tube[2])
 {
 	print_error(main, NOTFOUND, 0);
 	delete_tube(main);
@@ -108,7 +108,7 @@ int	executor(char *cmd, struct s_main *main)
 {
 	int	nbcmds;
 
-	main->pids = malloc((totalcmds(cmd) + 1) * sizeof(pid_t));
+	main->pids = malloc((count_cmd_info(main->cmd_info) + 1) * sizeof(pid_t));
 	if (!main->pids)
 		return (0);
 	main->str_envp = envp_to_str(main->envp);

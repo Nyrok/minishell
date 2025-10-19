@@ -23,7 +23,7 @@ static void	handle_sigint_status_code(t_main *main)
 	}
 }
 
-void	ft_ctrld(t_main *main)
+static void	ft_ctrld(t_main *main)
 {
 	if (main->tube)
 	{
@@ -47,7 +47,7 @@ void	line_reader(t_main *main)
 
 	while (1)
 	{
-		user_input = readline("minishell>");
+		user_input = readline("minishell$ ");
 		handle_sigint_status_code(main);
 		if (user_input == NULL)
 			ft_ctrld(main);
