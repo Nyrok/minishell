@@ -61,7 +61,6 @@ void	clear_tube(t_main **main)
 void	free_exit(t_main **main)
 {
 	t_cmd_info	*tmp_cmd_info;
-	int			fd_tty;
 
 	while ((*main)->cmd_info)
 	{
@@ -75,12 +74,7 @@ void	free_exit(t_main **main)
 	}
 	if ((*main)->pids)
 		free((*main)->pids);
-	fd_tty = open("/dev/tty", O_WRONLY);
-	if (fd_tty != -1)
-	{
-		write(fd_tty, "exit\n", 5);
-		close(fd_tty);
-	}
+	printf("exit\n");
 }
 
 int	exit_checker(t_main **main, int nbcmds, int onlyonecmd)

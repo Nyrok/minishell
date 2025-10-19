@@ -32,7 +32,8 @@ int	fd_opener(t_main **main, t_redir *actual_redir, int error_check, int print)
 		actual_redir->fd = open(actual_redir->filename,
 				O_CREAT | O_WRONLY | O_TRUNC, 0777);
 	else if (actual_redir->type == REDOUT && actual_redir->good == 0)
-		actual_redir->fd = open(actual_redir->filename, O_CREAT, 0777);
+		actual_redir->fd = open(actual_redir->filename, O_CREAT | O_TRUNC,
+				0777);
 	if (actual_redir->fd == -1 && error_check == 0)
 		return (-1);
 	if (actual_redir->good == 0 && actual_redir->fd != -1)

@@ -70,9 +70,8 @@ void	last_executor(t_main *main, char **envp, int tube, int i)
 	main->tube->fd = main->cmd_info->tube[0];
 }
 
-int	executor_setup(t_main **main, int *nbcmds, char *cmd)
+int	executor_setup(t_main **main, int *nbcmds)
 {
-	(void)cmd;
 	*nbcmds = count_cmd_info((*main)->cmd_info);
 	(*main)->pids[0] = 0;
 	setup_tube(*main);
