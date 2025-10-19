@@ -12,6 +12,19 @@
 
 #include "minishell.h"
 
+static t_envp	**get_env_addr(t_envp **envp, char *key)
+{
+	while (*envp)
+	{
+		if (ft_strcmp((*envp)->key, key) == 0)
+		{
+			return (envp);
+		}
+		envp = &(*envp)->next;
+	}
+	return (NULL);
+}
+
 static t_envp	*default_env(void)
 {
 	t_envp		*head;
@@ -99,17 +112,4 @@ t_envp	*init_env(char **envp)
 		free(pair);
 	}
 	return (head);
-}
-
-t_envp	**get_env_addr(t_envp **envp, char *key)
-{
-	while (*envp)
-	{
-		if (ft_strcmp((*envp)->key, key) == 0)
-		{
-			return (envp);
-		}
-		envp = &(*envp)->next;
-	}
-	return (NULL);
 }

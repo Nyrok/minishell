@@ -12,61 +12,6 @@
 
 #include "minishell.h"
 
-int	check_access(t_main *main, int j, char *filename)
-{
-	if (j == 0)
-	{
-		printf("minishell: ./: Is a file\n");
-		main->last_exit_status = 127;
-		return (-1);
-	}
-	if (filename != NULL)
-	{
-		if (access(filename, F_OK) != 0)
-		{
-			printf("minishell: ./%s: No such file or directory\n", filename);
-			main->last_exit_status = 127;
-			return (-1);
-		}
-		else if (access(filename, F_OK | X_OK) != 0)
-		{
-			printf("minishell: ./%s: No such file or directory\n", filename);
-			main->last_exit_status = 126;
-			return (-1);
-		}
-	}
-	return (1);
-}
-
-int	isfilevalid(t_main *main)
-{
-	auto int i = 0;
-	while (main->cmd_info->cmd[i] && main->cmd_info->cmd[i + 1])
-	{
-		if (main->cmd_info->cmd[i] != '.' || main->cmd_info->cmd[i + 1] != '/')
-			break ;
-		i += 2;
-	}
-	auto int j = 0;
-	while (main->cmd_info->cmd[i + j])
-		j++;
-	if (j == 0)
-		return (check_access(main, j, NULL));
-	auto char *filename = malloc((j + 1) * sizeof(char));
-	if (!filename)
-		return (-1);
-	j = 0;
-	while (main->cmd_info->cmd[i + j])
-	{
-		filename[j] = main->cmd_info->cmd[i + j];
-		j++;
-	}
-	filename[j] = '\0';
-	if (check_access(main, 1, filename) == -1)
-		return (free(filename), -1);
-	return (free(filename), 1);
-}
-
 int	fdcls(t_main **main, int error)
 {
 	t_cmd_info	*cmd_tmp;
@@ -82,9 +27,9 @@ int	fdcls(t_main **main, int error)
 		{
 			if (actual_redir->good != 1 && actual_redir->type == HEREDOC
 				&& actual_redir->fd != -1)
-				close_redsirs_norme(actual_redir);
+				close_redir_fd(actual_redir);
 			else if (actual_redir->type != HEREDOC && actual_redir->fd != -1)
-				close_redsirs_norme(actual_redir);
+				close_redir_fd(actual_redir);
 			actual_redir = actual_redir->next;
 		}
 		cmd_tmp = cmd_tmp->next;

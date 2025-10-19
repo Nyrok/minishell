@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-char	*rm_nchar(char *str, const char c, size_t n)
+char	*rm_char(char *str, const char c)
 {
 	size_t	i;
 	size_t	j;
@@ -23,7 +23,7 @@ char	*rm_nchar(char *str, const char c, size_t n)
 		return (str);
 	count = 0;
 	i = -1;
-	while (++i < ft_strlen(str) && count < n)
+	while (++i < ft_strlen(str))
 		if (str[i] == c)
 			count++;
 	result = ft_calloc(ft_strlen(str) - count + 1, sizeof(char));
@@ -31,7 +31,7 @@ char	*rm_nchar(char *str, const char c, size_t n)
 		return (str);
 	i = -1;
 	j = 0;
-	while (++i < ft_strlen(str) && count < n)
+	while (++i < ft_strlen(str))
 		if (str[i] != c)
 			result[j++] = str[i];
 	free(str);
@@ -57,35 +57,6 @@ char	*three_strjoin(char *old, char *s1, char *s2, char *s3)
 	return (result);
 }
 
-char	*rm_dollars(char *str, size_t start, size_t n)
-{
-	size_t	i;
-	size_t	j;
-	int		count;
-	char	*result;
-
-	if (!str)
-		return (str);
-	count = 0;
-	i = -1;
-	while (++i < n)
-		if (str[start + i] == '$' && str[start + i + 1] \
-			&& (is_valid_env_char(str[start + i + 1]) \
-		|| ft_strchr("'\"", str[start + i + 1])))
-			count++;
-	result = ft_calloc(n - count + 1, sizeof(char));
-	i = -1;
-	j = 0;
-	while (result && ++i < n)
-		if (str[start + i] != '$' || !str[start + i + 1] \
-			|| (!is_valid_env_char(str[start + i + 1]) \
-			&& !ft_strchr("'\"", str[start + i + 1])))
-			result[j++] = str[start + i];
-	if (result)
-		free(str);
-	return (result);
-}
-
 char	*get_word(const char *str, size_t *i)
 {
 	auto size_t start = *i;
@@ -98,10 +69,15 @@ char	*get_word(const char *str, size_t *i)
 		if (!quote && ft_strchr("'\"", str[*i]))
 		{
 			quote = str[*i];
-			(*i)++;
-			while (str[*i] && str[*i] != quote)
+			if (ft_strchr(&str[*i + 1], quote))
+			{
 				(*i)++;
-			if (str[*i] == quote)
+				while (str[*i] && str[*i] != quote)
+					(*i)++;
+				if (str[*i] == quote)
+					quote = 0;
+			}
+			else
 				quote = 0;
 		}
 		if (str[*i])

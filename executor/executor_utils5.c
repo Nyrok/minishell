@@ -67,25 +67,3 @@ int	hasinfile2(struct s_main **main, int error_check, int print)
 	}
 	return (total);
 }
-
-int	handle_heredoc(t_main *main)
-{
-	t_redir	*redir_tmp;
-	int		fd;
-
-	redir_tmp = main->cmd_info->redirs;
-	while (redir_tmp)
-	{
-		if (redir_tmp->type == HEREDOC)
-		{
-			fd = ft_heredoc(main, &redir_tmp->filename);
-			if (fd != -1)
-			{
-				close(fd);
-				return (-1);
-			}
-		}
-		redir_tmp = redir_tmp->next;
-	}
-	return (-1);
-}

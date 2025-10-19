@@ -71,13 +71,3 @@ void	setup_tube(t_main *main)
 	main->tube->next = NULL;
 	main->tube->fd = -1;
 }
-
-void	reset_tube(t_main *main)
-{
-	if (main->tube != NULL && main->tube->fd >= 0)
-	{
-		close(main->tube->fd);
-		main->tube->fd = -1;
-	}
-	main->tube = NULL;
-}

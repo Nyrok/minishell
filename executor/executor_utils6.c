@@ -16,7 +16,7 @@ void	cmd_null(t_main *main)
 {
 	if (main->cmd_info)
 	{
-		main->last_exit_status = 1;
+		main->last_exit_status = 0;
 		fork_bad_file(main);
 		hasinfile2(&main, 0, 1);
 		fdcls(&main, 0);
@@ -47,13 +47,13 @@ int	hasinfile_heredocs_only(t_main *main)
 	return (0);
 }
 
-void	close_redsirs_norme(t_redir *actual_redir)
+void	close_redir_fd(t_redir *actual_redir)
 {
 	close(actual_redir->fd);
 	actual_redir->fd = -1;
 }
 
-void	execptfile(t_main *main, char **envp, int lastcmd)
+static void	execptfile(t_main *main, char **envp, int lastcmd)
 {
 	if (lastcmd == 0)
 	{
