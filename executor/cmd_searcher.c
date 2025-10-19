@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int	llaunch_executions(t_main *main, char **envp, int tube, int i)
+static int	llaunch_executions(t_main *main, char **envp, int tube, int i)
 {
 	if (i == -2)
 	{
@@ -25,7 +25,7 @@ int	llaunch_executions(t_main *main, char **envp, int tube, int i)
 	return (1);
 }
 
-void	handle_null_case(t_main *main, char **envp, int tube, int i)
+static void	handle_null_case(t_main *main, char **envp, int tube, int i)
 {
 	ft_strdup_cmd_path(main, i);
 	if (main->cmds_paths->paths[i] == NULL && main->cmd_info->cmd[0] != '/')
@@ -63,7 +63,7 @@ void	lcmd_searcher(t_main *main, char **envp, int tube)
 	}
 }
 
-int	launch_executions(t_main *main, char **envp, int file, int i)
+static int	launch_executions(t_main *main, char **envp, int file, int i)
 {
 	if (i == -2)
 	{

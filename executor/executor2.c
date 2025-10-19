@@ -12,7 +12,8 @@
 
 #include "minishell.h"
 
-void	last_child_executor(int tube, t_main *main, char *cmd_path, char **envp)
+static void	last_child_executor(int tube, t_main *main, \
+	char *cmd_path, char **envp)
 {
 	signal(SIGQUIT, SIG_DFL);
 	close_heredoc_future_cmds(main);

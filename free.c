@@ -12,8 +12,6 @@
 
 #include "minishell.h"
 
-void		free_redir(t_redir **redir);
-
 void	free_all_cmd_info(t_main **main)
 {
 	t_cmd_info	*cmd_tmp;
@@ -59,6 +57,8 @@ void	free_tokens(t_token **tokens)
 	t_token	*last_token;
 	t_token	*current_token;
 
+	if (tokens == NULL || *tokens == NULL)
+		return ;
 	last_token = *tokens;
 	if (last_token)
 		current_token = last_token->next;

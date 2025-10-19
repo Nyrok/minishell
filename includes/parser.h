@@ -54,8 +54,7 @@ void		parse_word_env(t_envp *envp, char **word, int last_exit_status);
 void		parse_env(t_envp *envp, char **str, int last_exit_status);
 void		parse_quotes(char **str);
 char		*three_strjoin(char *old, char *s1, char *s2, char *s3);
-char		*rm_nchar(char *str, const char c, size_t n);
-char		*rm_dollars(char *str, size_t start, size_t n);
+char		*rm_char(char *str, const char c);
 int			count_cmd_info(t_cmd_info *cmd_info);
 
 #endif

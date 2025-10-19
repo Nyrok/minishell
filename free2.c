@@ -12,19 +12,6 @@
 
 #include "minishell.h"
 
-void	free_redir(t_redir **redir)
-{
-	t_redir		*redir_to_free;
-
-	redir_to_free = *redir;
-	*redir = (*redir)->next;
-	if (redir_to_free->filename)
-		free(redir_to_free->filename);
-	if (redir_to_free->fd != -1)
-		close(redir_to_free->fd);
-	free(redir_to_free);
-}
-
 int	free_execve(t_main **main)
 {
 	delete_tube(*main);

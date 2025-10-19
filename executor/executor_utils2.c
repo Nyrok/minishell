@@ -41,7 +41,7 @@ int	fd_opener(t_main **main, t_redir *actual_redir, int error_check, int print)
 	return (1);
 }
 
-void	check_tube(t_main **main)
+static void	check_tube(t_main **main)
 {
 	if ((*main)->tube == NULL)
 	{
@@ -51,29 +51,7 @@ void	check_tube(t_main **main)
 	}
 }
 
-int	create_out(t_main *main)
-{
-	t_redir	*redir_tmp;
-
-	while (main->cmd_info->redirs)
-	{
-		redir_tmp = main->cmd_info->redirs;
-		main->cmd_info->redirs = main->cmd_info->redirs->next;
-		if (redir_tmp->type == REDOUT)
-		{
-			redir_tmp->fd = open(redir_tmp->filename,
-					O_CREAT, 0777);
-			if (redir_tmp->fd == -1)
-				return (-1);
-			close(redir_tmp->fd);
-		}
-		free(redir_tmp->filename);
-		free(redir_tmp);
-	}
-	return (1);
-}
-
-int	handle_multiple_cmds(t_main *main, char **envp,
+static int	handle_multiple_cmds(t_main *main, char **envp,
 		int nbcmds, int *error_printed)
 {
 	setup_cmd_redirs(main->cmd_info);

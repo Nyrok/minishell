@@ -57,7 +57,7 @@ int	check_if_exist(t_main *main, int ispoint)
 	return (cmd_found);
 }
 
-void	print_not_found(t_main *main, int error_code, int cmd_found)
+static void	print_not_found(t_main *main, int error_code, int cmd_found)
 {
 	struct stat	file_stat;
 
@@ -99,20 +99,4 @@ int	print_error(t_main *main, int error_code, int cmd_found)
 		return (-1);
 	}
 	return (1);
-}
-
-int	totalcmds(char *cmd)
-{
-	int	i;
-	int	total;
-
-	i = 0;
-	total = 1;
-	while (cmd[i])
-	{
-		if (cmd[i] == '|')
-			total++;
-		i++;
-	}
-	return (total);
 }

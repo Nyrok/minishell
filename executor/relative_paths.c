@@ -26,7 +26,7 @@ int	isonlypt(char *str)
 	return (1);
 }
 
-int	gestion_error_relative_path(t_main *main, int type)
+static int	handle_error_relative_path(t_main *main, int type)
 {
 	if (ft_commandisapoint(main) == 1)
 		return (1);
@@ -53,7 +53,7 @@ int	gestion_error_relative_path(t_main *main, int type)
 	return (0);
 }
 
-void	relative_path_free(t_main *main)
+static void	relative_path_free(t_main *main)
 {
 	if (main->cmds_paths && main->cmds_paths->paths
 		&& !main->cmds_paths->paths[0])
@@ -75,7 +75,7 @@ void	relative_path_free(t_main *main)
 	}
 }
 
-int	error_no_path(t_main *main, int error)
+static int	error_no_path(t_main *main, int error)
 {
 	if (!ft_strchr(main->cmd_info->cmd, '/') && !isonlypt(main->cmd_info->cmd)
 		&& (!main->cmds_paths || !main->cmds_paths->paths))
@@ -84,12 +84,12 @@ int	error_no_path(t_main *main, int error)
 		main->cmd_info->cmd_path = ft_strjoin(tmp, main->cmd_info->cmd);
 		if (tmp)
 			free(tmp);
-		error = gestion_error_relative_path(main, 1);
+		error = handle_error_relative_path(main, 1);
 	}
 	else
 	{
 		main->cmd_info->cmd_path = ft_strdup(main->cmd_info->cmd);
-		error = gestion_error_relative_path(main, 1);
+		error = handle_error_relative_path(main, 1);
 	}
 	return (error);
 }

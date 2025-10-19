@@ -46,6 +46,8 @@ t_token	*tokenize_input(const char *input)
 
 	i = 0;
 	tokens = NULL;
+	if (!input)
+		return (NULL);
 	while (input[i])
 	{
 		while (ft_isspace(input[i]))
