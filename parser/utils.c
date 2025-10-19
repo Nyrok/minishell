@@ -104,7 +104,31 @@ void	parse_quotes(char **str)
 		}
 		if (quote == -1)
 		{
-			if (ft_strchr("'\"", (*str)[i]))
+			if ((*str)[i] && ft_strchr("'\"", (*str)[i]) \
+			&& ft_strchr(&(*str)[i + 1], (*str)[i]))
+				quote = i;
+			else if (ft_strchr("|<>", (*str)[i]))
+				break ;
+		}
+		if ((*str)[i])
+			i++;
+	}
+}
+
+void	parse_heredoc_delimiter(char **str)
+{
+	auto int i = 0;
+	auto int quote = -1;
+	while ((*str)[i])
+	{
+		while (quote == -1 && ft_isspace((*str)[i]))
+			i++;
+		if (quote > -1 && (*str)[quote] == (*str)[i])
+			quote = -1;
+		if (quote == -1)
+		{
+			if ((*str)[i] && ft_strchr("'\"", (*str)[i]) \
+			&& ft_strchr(&(*str)[i + 1], (*str)[i]))
 				quote = i;
 			else if (ft_strchr("|<>", (*str)[i]))
 				break ;

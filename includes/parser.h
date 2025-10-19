@@ -53,6 +53,7 @@ void		setup_cmd_redirs(t_cmd_info *cmd_info);
 void		parse_word_env(t_envp *envp, char **word, int last_exit_status);
 void		parse_env(t_envp *envp, char **str, int last_exit_status);
 void		parse_quotes(char **str);
+void		parse_heredoc_delimiter(char **str);
 char		*three_strjoin(char *old, char *s1, char *s2, char *s3);
 char		*rm_char(char *str, const char c);
 int			count_cmd_info(t_cmd_info *cmd_info);
