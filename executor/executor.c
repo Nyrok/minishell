@@ -104,7 +104,7 @@ int	cmd_executor(t_main *main, char **envp, int file, int i)
 	return (tube[0]);
 }
 
-int	executor(char *cmd, struct s_main *main)
+int	executor(struct s_main *main)
 {
 	int	nbcmds;
 
@@ -112,7 +112,7 @@ int	executor(char *cmd, struct s_main *main)
 	if (!main->pids)
 		return (0);
 	main->str_envp = envp_to_str(main->envp);
-	if (executor_setup(&main, &nbcmds, cmd) == -1)
+	if (executor_setup(&main, &nbcmds) == -1)
 		return (free_cmd_info(&main->cmd_info), no_leaks(main),
 			end_pids(&main), 0);
 	if (nbcmds == 1)

@@ -12,6 +12,13 @@
 
 #include "minishell.h"
 
+void	error_cd(t_main *main)
+{
+	main->last_exit_status = 1;
+	printf("minishell: cd: error retrieving current directory: chdir: ");
+	printf("cannot access this directories: No such file or directory\n");
+}
+
 static int	changepwd(t_main *main, char *oldpwd, int onlyonecommand)
 {
 	char	*buffer;
@@ -20,7 +27,7 @@ static int	changepwd(t_main *main, char *oldpwd, int onlyonecommand)
 	if (!buffer)
 		return (free(buffer), -1);
 	if (getcwd(buffer, 1024) == NULL)
-		return (free(buffer), -1);
+		return (free(buffer), error_cd(main), -1);
 	if (onlyonecommand == 1)
 	{
 		add_or_replace(main, &main->envp, ft_strdup("OLDPWD"), \
